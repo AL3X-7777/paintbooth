@@ -107,13 +107,24 @@ class LibraryController:
         remembered for exports.
         """
         app = self.app
-        if any(v.is_bus for v in self.library.values()):
+        from ..coach import TEMPLATE_VERSION
+
+        buses = [v for v in self.library.values() if v.is_bus]
+        if buses:
+            # coaches already known: just bring their templates up to date after an update
+            game_dir = (app.settings.get("game_dirs") or {}).get("ets2")
+            if app.settings.get("coach_templates") != TEMPLATE_VERSION and game_dir:
+                app.settings["coach_templates"] = TEMPLATE_VERSION
+                threading.Thread(
+                    target=self._bus_templates, args=(Path(game_dir), buses), daemon=True
+                ).start()
             return
         known = (app.settings.get("game_dirs") or {}).get("ets2")
         game = Path(known) if known else appdirs.find_game_dir("ets2")
         if game is None or not (game / "dlc_bus.scs").is_file():
             return
         app.settings.setdefault("game_dirs", {})["ets2"] = str(game)
+        app.settings["coach_templates"] = TEMPLATE_VERSION
         app.status("Adding the coaches from the Coaches DLC…")
         threading.Thread(target=self._scan, args=(game / "dlc_bus.scs", "ets2"), daemon=True).start()
 

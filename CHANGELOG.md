@@ -3,6 +3,18 @@
 Each release on GitHub shows the section for its version. Add a new section at the top before
 tagging a release (see RELEASING.md).
 
+## 0.14.0
+- Coach blueprints now include the bumpers, panels and other parts the MAN and Scania get from
+  the vehicle's own list (only the Volvo's were found before). The templates are rewritten at
+  the next start.
+- **Windows and black trim are painted by default** on coaches (untick *Paint windows and
+  gloss-black trim* to keep them stock). Leave a window or trim area transparent in your image to
+  keep it as it is; any colour there, white included, goes onto the glass at half strength and
+  onto the trim fully.
+- The MAN's gloss-black parts (made with a black texture) are now recognised as trim; chrome is
+  no longer mistaken for it. Gloss-black accessories such as the front grille get the paint too.
+- Coach blueprint images can be any size (they no longer need power-of-two sides).
+
 ## 0.13.0
 - **Coaches appear by themselves:** Paintbooth finds ETS2 in your Steam libraries and adds the
   three coaches to the vehicle list at start-up (no scan needed), with their templates in

@@ -176,7 +176,8 @@ class CoachModel(unittest.TestCase):
         self.assertEqual(coach.paint_region(body), coach.TILES[0])
 
     def test_films(self):
-        d, g = coach.with_films(self.cab, "/f/glass.mat", "/f/trim.mat")
+        ((path, d, g),) = coach.with_films(self.cab, "/f/glass.mat", "/f/trim.mat")
+        self.assertEqual(path, "/vehicle/bus/test/cab.pmd")
         self.assertEqual(pmd.material_table(d)[0][-2:], ["/f/glass.mat", "/f/trim.mat"])
         m = pmg.read(g)
         self.assertEqual(len(m.pieces), 4 + 3)  # window: outside + inside; trim: outside only

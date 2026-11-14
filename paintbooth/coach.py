@@ -45,6 +45,8 @@ from PIL import Image, ImageDraw
 
 from . import pmd, pmg
 
+#: Raise when the templates change, so start-up writes them again for existing users.
+TEMPLATE_VERSION = 3
 #: The virtual paint UV space of the coaches, in pixels.
 VIRTUAL = 4096
 #: Film template size (pixels) and how far films sit off the surface (metres).
@@ -94,6 +96,7 @@ class _Mat:
     diffuse: float  # brightest diffuse channel
     shininess: float
     tint: tuple[float, float, float] | None  # glass only
+    texture: str = ""  # the texture_base file name, lower case ("" when there is none)
 
 
 def _parse_mat(text: str) -> _Mat:
@@ -109,11 +112,13 @@ def _parse_mat(text: str) -> _Mat:
 
     eff = re.search(r'effect\s*:\s*"([^"]+)"', text)
     tint = vec("glass_tint_color")
+    src = re.search(r'texture\s*:\s*"texture_base"\s*\{[^}]*?source\s*:\s*"([^"]+)"', text)
     return _Mat(
         effect=eff.group(1) if eff else "",
         diffuse=max(vec("diffuse") or (1.0,)),
         shininess=num("shininess", 0.0),
         tint=(tint[0], tint[1], tint[2]) if tint and len(tint) >= 3 else None,
+        texture=src.group(1).rsplit("/", 1)[-1].lower() if src else "",
     )
 
 
@@ -128,9 +133,17 @@ def is_window(m: _Mat) -> bool:
 
 
 def is_gloss_black(m: _Mat) -> bool:
-    """True for dark, glossy, untextured-looking parts (window surrounds, pillars, trims)."""
+    """True for gloss-black parts (window surrounds, pillars, grilles).
+
+    SCS makes them two ways: a dark diffuse colour on a glossy material (Volvo), or a black
+    texture such as ``maintruckpaint_black`` (MAN). Metal (chrome, aluminium) is never trim, even
+    when its diffuse colour is dark.
+    """
     skip = ("truckpaint", "glass", "shadow", "lamp", "decal", ".a.", "flare")
-    return not any(k in m.effect for k in skip) and m.diffuse < 0.05 and m.shininess >= 100
+    if any(k in m.effect for k in skip) or any(k in m.texture for k in ("chrome", "alu", "metal", "steel")):
+        return False
+    glossy = m.shininess >= 100
+    return glossy and (m.diffuse < 0.05 or "black" in m.texture)
 
 
 # ---------------------------------------------------------------------------------- models
@@ -245,15 +258,23 @@ def load_body(read: Reader, vehicle_id: str, cabin_id: str, model: str) -> Body:
     """
     cab = load_cabin(read, model)
     short = cabin_id.split(".", 1)[0]
-    cab_def = read(f"def/vehicle/bus/{vehicle_id}/cabin/{short}.sii")
     defaults: list[str] = []
     types: set[str] = set()
-    for d in _DEFAULTS_RE.findall(cab_def.decode("utf-8", "replace")) if cab_def else []:
-        if "/accessory/" in d:
-            types.add(d.split("/accessory/", 1)[1].split("/", 1)[0])
-            acc = _accessory_model(read, d)
-            if acc:
-                defaults.append(acc)
+    # defaults come from the cabin (Volvo) and from the vehicle's data.sii (MAN, Scania)
+    for def_file in (
+        f"def/vehicle/bus/{vehicle_id}/cabin/{short}.sii",
+        f"def/vehicle/bus/{vehicle_id}/data.sii",
+    ):
+        text = (read(def_file) or b"").decode("utf-8", "replace")
+        for d in _DEFAULTS_RE.findall(text):
+            if "/accessory/" not in d:
+                continue
+            acc_text = (read(d.lstrip("/")) or b"").decode("utf-8", "replace")
+            fits = _SUITABLE_RE.findall(acc_text)
+            m = _EXTERIOR_RE.search(acc_text)
+            if m and (not fits or cabin_id in fits) and m.group(1) not in defaults:
+                types.add(d.split("/accessory/", 1)[1].split("/", 1)[0])
+                defaults.append(m.group(1))
     others: list[str] = []
     listdir: Callable[[str], list[str]] | None = getattr(read, "listdir", None)
     for t in sorted(types):
@@ -293,6 +314,9 @@ def _on_body(acc: CabinModel, cab: CabinModel, margin: float = 0.5) -> bool:
         return False
     a = np.concatenate(pos)
     c = np.concatenate([p.positions for p in cab.model.pieces if len(p.positions)])
+    if _no_film(acc.pmd_path) or "mirror" in acc.pmd_path.replace("\\", "/").rsplit("/", 2)[-2]:
+        # lamps, logos, badges and mirrors are placed by locators; drawn here they float in the views
+        return False
     return bool(
         (a.min(axis=0) >= c.min(axis=0) - margin).all() and (a.max(axis=0) <= c.max(axis=0) + margin).all()
     )
@@ -577,11 +601,18 @@ def film_material(tobj: str, glossy: bool) -> bytes:
     return FILM_MAT.format(shininess=shininess, spec=spec, tobj=tobj).encode()
 
 
-def with_films(body: Body | CabinModel, glass_mat: str, trim_mat: str) -> tuple[bytes, bytes]:
-    """Return the cabin's ``.pmd`` and ``.pmg`` with window and trim films added.
+def _no_film(pmd_path: str) -> bool:
+    """True for accessories that never get films: lamps, logos and badges (by their folder)."""
+    folder = pmd_path.replace("\\", "/").rsplit("/", 2)[-2]
+    return any(k in folder for k in ("light", "logo", "badge"))
+
+
+def with_films(body: Body | CabinModel, glass_mat: str, trim_mat: str) -> list[tuple[str, bytes, bytes]]:
+    """Return the models that get window and trim films, with the films added.
 
     The films use the blueprint layout of the whole body, so they line up with the paint job
-    baked from the same image. Only the cabin model gets films; accessories keep their own.
+    baked from the same image. The cabin gets window and trim films; its default accessories
+    (window frames, grilles, mirrors) get trim films; lamps, logos and badges get none.
 
     Args:
         body: The body (or just its cabin model).
@@ -589,18 +620,31 @@ def with_films(body: Body | CabinModel, glass_mat: str, trim_mat: str) -> tuple[
         trim_mat: Mod path of the trim film material.
 
     Returns:
-        ``(pmd bytes, pmg bytes)``. The original pieces and materials are unchanged.
+        ``(pmd path, pmd bytes, pmg bytes)`` per changed model. The original pieces and materials
+        are unchanged; the films are new pieces using two new materials.
     """
     body = body if isinstance(body, Body) else Body(body, [], [])
-    cab = body.cab
-    n = len(pmd.material_table(cab.pmd_data)[0])
     layout = Layout.for_body(body)
-    new: list[pmg.Piece] = []
-    for p in cab.pieces(is_window):
-        new += film_piece(p, layout, n, double_sided=True)
-    for p in cab.pieces(is_gloss_black):
-        new += film_piece(p, layout, n + 1, double_sided=False)
-    return pmd.add_materials(cab.pmd_data, [glass_mat, trim_mat]), pmg.add_pieces(cab.model, new)
+    out = []
+    for m in [body.cab, *body.defaults]:
+        if m is not body.cab and _no_film(m.pmd_path):
+            continue
+        n = len(pmd.material_table(m.pmd_data)[0])
+        new: list[pmg.Piece] = []
+        # windows only on the cabin: accessory "glass" is lamp lenses and mirror glass
+        for p in m.pieces(is_window) if m is body.cab else []:
+            new += film_piece(p, layout, n, double_sided=True)
+        for p in m.pieces(is_gloss_black):
+            new += film_piece(p, layout, n + 1, double_sided=False)
+        if new:
+            out.append(
+                (
+                    m.pmd_path,
+                    pmd.add_materials(m.pmd_data, [glass_mat, trim_mat]),
+                    pmg.add_pieces(m.model, new),
+                )
+            )
+    return out
 
 
 def write_templates(read: Reader, vehicles: Iterable[object], out_dir: Path) -> list[Path]:

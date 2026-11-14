@@ -350,8 +350,14 @@ def _validate_numbers(it: AdvancedTruckSkin, idx: int) -> list[Problem]:
     return probs
 
 
-def _validate_entry(e: SuitableImage, idx: int, fld: str, what: str, base: Path | None) -> list[Problem]:
-    """Check one skin or accessory image entry (``what`` is e.g. "Skin image 1")."""
+def _validate_entry(
+    e: SuitableImage, idx: int, fld: str, what: str, base: Path | None, any_size: bool = False
+) -> list[Problem]:
+    """Check one skin or accessory image entry (``what`` is e.g. "Skin image 1").
+
+    ``any_size`` skips the power-of-two rule, for coach blueprints (they are baked into a
+    texture of the right size, so the image itself can be any size).
+    """
     probs: list[Problem] = []
     p = resolve(e.image, base)
     if not e.image:
@@ -362,7 +368,7 @@ def _validate_entry(e: SuitableImage, idx: int, fld: str, what: str, base: Path 
         size = image_size(p)
         if size is None:
             probs.append(Problem("error", idx, fld, f"{what}: cannot read {p.name}"))
-        elif not (is_pot(size[0]) and is_pot(size[1])):
+        elif not any_size and not (is_pot(size[0]) and is_pot(size[1])):
             probs.append(
                 Problem(
                     "error",
@@ -379,11 +385,13 @@ def _validate_images(it: AdvancedTruckSkin, idx: int, base: Path | None) -> list
     probs: list[Problem] = []
     if not it.entries("CabVariantSkin"):
         probs.append(Problem("error", idx, "CabVariantSkin", "Add at least one skin image"))
+    veh = it.vehicle()
+    blueprint = veh is not None and veh.is_bus and not it.vars.bool(UV_LAYOUT)
     for arr, label in (("CabVariantSkin", "Skin"), ("AccessorySkins", "Accessory")):
         for k, e in enumerate(it.entries(arr)):
             fld = f"{arr}[{k}]"
             what = f"{label} image {k + 1}"
-            probs += _validate_entry(e, idx, fld, what, base)
+            probs += _validate_entry(e, idx, fld, what, base, any_size=blueprint and arr == "CabVariantSkin")
             if not e.suitable:
                 kind = "cabin" if arr == "CabVariantSkin" else "accessory"
                 probs.append(Problem("error", idx, fld, f"{what}: tick at least one {kind}"))
@@ -431,7 +439,7 @@ def _validate_bus(it: AdvancedTruckSkin, idx: int, base: Path | None) -> list[Pr
                     f"Skin image {k + 1} is {size[0]}x{size[1]}; coach templates are 2:1 (4096x2048)",
                 )
             )
-    if uv_layout and it.vars.bool(PAINT_WINDOWS):
+    if uv_layout and it.vars.value(PAINT_WINDOWS) == "true":  # only when the user ticked it
         probs.append(
             Problem(
                 "error", idx, PAINT_WINDOWS, "Painting windows needs images drawn on the blueprint template"
@@ -821,8 +829,10 @@ def _plan_bus_blueprint(
                 ]
                 unit = ("accessory_paint_job_data", f"{n}_{j}.{t}.paint_job", unit_attrs)
                 files.append(OutFile(f"{def_dir}/{n}_{j}.sii", sii_file([unit]).encode()))
-                if it.vars.bool(PAINT_WINDOWS):
-                    files += _film_files(body, src, f"{pj_root}/{n}_{j}")
+                if it.vars.bool(PAINT_WINDOWS, True):  # on unless the user turned it off
+                    # bodies share some accessory models; the first body's films win for those
+                    taken = {f.path for f in files}
+                    files += [f for f in _film_files(body, src, f"{pj_root}/{n}_{j}") if f.path not in taken]
                 j += 1
     except (OSError, ValueError) as e:
         raise RuntimeError(f"{it.display()}: could not read the coach from the game: {e}") from e
@@ -868,21 +878,21 @@ def _film_files(body: object, src: Path, root: str) -> list[OutFile]:
     """
     from . import coach
 
-    cab = body.cab  # type: ignore[attr-defined]
     glass = TextureJob(src, "film", None, "DXT5", None, coach.GLASS_OPACITY)
     trim = TextureJob(src, "film", None, "DXT5", None, 1.0)
-    pmd_bytes, pmg_bytes = coach.with_films(body, f"/{root}/film_glass.mat", f"/{root}/film_trim.mat")  # type: ignore[arg-type]
-    rel = cab.pmd_path.lstrip("/")
-    return [
+    models = coach.with_films(body, f"/{root}/film_glass.mat", f"/{root}/film_trim.mat")  # type: ignore[arg-type]
+    out = [
         OutFile(f"{root}/film_glass.dds", job=glass),
         OutFile(f"{root}/film_glass.tobj", tobj_bytes(f"/{root}/film_glass.dds", profile="skin")),
         OutFile(f"{root}/film_trim.dds", job=trim),
         OutFile(f"{root}/film_trim.tobj", tobj_bytes(f"/{root}/film_trim.dds", profile="skin")),
         OutFile(f"{root}/film_glass.mat", coach.film_material(f"/{root}/film_glass.tobj", glossy=False)),
         OutFile(f"{root}/film_trim.mat", coach.film_material(f"/{root}/film_trim.tobj", glossy=True)),
-        OutFile(rel, pmd_bytes),
-        OutFile(rel[: -len(".pmd")] + ".pmg", pmg_bytes),
     ]
+    for path, pmd_bytes, pmg_bytes in models:  # the changed models replace the game's own
+        rel = path.lstrip("/")
+        out += [OutFile(rel, pmd_bytes), OutFile(rel[: -len(".pmd")] + ".pmg", pmg_bytes)]
+    return out
 
 
 def _manifest_files(

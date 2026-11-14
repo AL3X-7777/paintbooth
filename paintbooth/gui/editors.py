@@ -1214,7 +1214,7 @@ class TruckSkinEditor(ttk.Notebook):
 
     def _load_windows(self, it: AdvancedTruckSkin) -> None:
         """Show the coach options; they work only for coaches."""
-        self.win_on.set(it.vars.bool("PaintWindows"))
+        self.win_on.set(it.vars.bool("PaintWindows", True))  # on by default for coaches
         self.uv_on.set(it.vars.bool("UvLayout"))
         veh = it.vehicle()
         state = ["!disabled"] if veh is not None and veh.is_bus else ["disabled"]
