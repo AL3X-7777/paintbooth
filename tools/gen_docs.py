@@ -11,7 +11,7 @@ It writes three things:
   ``docs/api/index.html`` in a browser; the search box covers every module, class and function.
   This step needs ``pdoc`` and a Python with tkinter (the GUI modules import it), and is skipped with a
   note when either is missing.
-* ``docs/reference/modules.md``: every module with its purpose (the first docstring paragraph) and size.
+* ``docs/reference/modules.md``: every module with its purpose (the first docstring paragraph).
 * ``docs/reference/build-actions.md``: every Mods Studio 2 build action the template engine supports,
   taken from the ``Engine.a_*`` docstrings.
 
@@ -65,14 +65,14 @@ def modules_md() -> str:
         "Every module in the `paintbooth` package, with its purpose.",
         "The full API of each one is in the [HTML reference](../api/index.html).",
         "",
-        "| Module | Lines | Purpose |",
-        "|---|---:|---|",
+        "| Module | Purpose |",
+        "|---|---|",
     ]
     for name, path in _modules():
         src = path.read_text(encoding="utf-8")
         doc = _first_paragraph(ast.get_docstring(ast.parse(src)))
         cell = doc.replace("|", "\\|")  # a | would end the Markdown table cell
-        rows.append(f"| `{name}` | {len(src.splitlines())} | {cell} |")
+        rows.append(f"| `{name}` | {cell} |")
     return HEADER + "\n".join(rows) + "\n"
 
 

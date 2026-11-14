@@ -5,54 +5,54 @@
 Every module in the `paintbooth` package, with its purpose.
 The full API of each one is in the [HTML reference](../api/index.html).
 
-| Module | Lines | Purpose |
-|---|---:|---|
-| `paintbooth` | 11 | Paintbooth - a fast, offline paint job (skin) mod builder for ETS2 / ATS. |
-| `paintbooth.__main__` | 256 | Command line entry point: ``paintbooth <command> ...`` (or ``python -m paintbooth``). |
-| `paintbooth.app` | 9 | Paintbooth desktop window (kept for compatibility: ``python -m paintbooth.app``). |
-| `paintbooth.appdirs` | 379 | Paintbooth's folders and files on disk, and the default 'paintbooth by AL3X' icons. |
-| `paintbooth.bcn` | 292 | DXT1 / DXT5 (BC1 / BC3) texture compression, done carefully for paint job textures. |
-| `paintbooth.builder` | 799 | Turn a loaded :class:`~paintbooth.model.Project` into a finished .scs mod - fast. |
-| `paintbooth.formats` | 255 | Writers for the game file formats Paintbooth produces. |
-| `paintbooth.gui` | 1 | Paintbooth desktop UI. |
-| `paintbooth.gui.codeeditor` | 699 | Code editor for XML: line numbers, colouring, find/replace, go to line, auto-indent. |
-| `paintbooth.gui.colorgen` | 153 | 'Generate color' dialog: a plain 64x64 DDS swatch with any colour and opacity. |
-| `paintbooth.gui.colorpick` | 778 | Colour picker used everywhere in the app. |
-| `paintbooth.gui.editors` | 1508 | Editors for the two built-in kinds of project item: the mod manifest and Advanced Skins. |
-| `paintbooth.gui.export_ctl` | 233 | Exporting the open project to a .scs mod (F5, Shift+F5, File > Export...). |
-| `paintbooth.gui.icons` | 368 | Ribbon, toolbar and status icons, drawn in code with Pillow (no bundled artwork). |
-| `paintbooth.gui.library_ctl` | 158 | The user's vehicle library (``Documents\Paintbooth\Vehicles\*.xml``) as seen by the main window. |
-| `paintbooth.gui.main` | 983 | Paintbooth main window: a fast, dark, Mods Studio 2-style editor for .pb / .ms2 projects. |
-| `paintbooth.gui.prefs` | 135 | Reading and writing the Paintbooth settings file (``~/.paintbooth.json``). |
-| `paintbooth.gui.project_ctl` | 302 | Opening, saving and closing projects, and noticing when the file changes on disk. |
-| `paintbooth.gui.psdmaker` | 167 | Template folder bar for the Skins tab, and template-pack import. |
-| `paintbooth.gui.ribbon` | 258 | The Office-style ribbon at the top of the main window. |
-| `paintbooth.gui.settings` | 444 | The Settings window (ribbon > Program > Settings, or File > Settings). |
-| `paintbooth.gui.startscreen` | 328 | Start screen (shown when Paintbooth opens) and the File side bar. |
-| `paintbooth.gui.theme` | 492 | Colours, fonts and ttk styles for the Paintbooth window (dark theme by default, light on request). |
-| `paintbooth.gui.tools` | 860 | SCS Tools ribbon windows: vehicle library manager, colour converter and TOBJ editor. |
-| `paintbooth.gui.tpleditor` | 850 | Editor for Mods Studio 2 template items. |
-| `paintbooth.gui.tutorials` | 611 | File > Tutorials: how to use Paintbooth, and the paint job modding basics behind it. |
-| `paintbooth.gui.widgets` | 866 | Reusable widgets for the Paintbooth window. |
-| `paintbooth.gui.winutil` | 152 | Tool windows that reopen where the user left them, with a title bar that matches the theme. |
-| `paintbooth.hashfs` | 372 | Read-only access to SCS HashFS archives (.scs, versions 1 and 2). |
-| `paintbooth.model` | 764 | Project and vehicle definitions of the ``project.xml`` format, loaded from plain XML files. |
-| `paintbooth.ms2` | 966 | Project files: Paintbooth .pb and Mods Studio 2 .ms2 (same format): open, edit, save. |
-| `paintbooth.ms2build` | 773 | Export a Mods Studio 2 project (.ms2/.pb) to a game mod. |
-| `paintbooth.ms2data` | 303 | The user's own Mods Studio 2 installation: its mod templates and data lists. |
-| `paintbooth.ms2skeleton` | 419 | Create new MS2-format projects and items from scratch. |
-| `paintbooth.ms2tpl` | 1071 | Run a Mods Studio 2 template item (lightbox, windscreen decal, cargo container, ...) into mod files. |
-| `paintbooth.names` | 78 | Name rules shared by the validators: SCS tokens such as package, skin and vehicle names. |
-| `paintbooth.newproject` | 103 | Create a new, empty project folder for the ``project.xml`` pipeline (``paintbooth new``). |
-| `paintbooth.packer` | 152 | Minimal, fast ZIP (.scs) writer. |
-| `paintbooth.pmd` | 177 | SCS model descriptors (.pmd, version 4): read and rewrite the material table. |
-| `paintbooth.safepath` | 110 | Path safety checks for every place Paintbooth turns untrusted text into a file path. |
-| `paintbooth.scanner` | 473 | Generate vehicle definitions from the game's own data. |
-| `paintbooth.server` | 419 | Local, offline browser UI for a ``project.xml`` project (``paintbooth ui``). |
-| `paintbooth.session` | 198 | A live ``project.xml`` session: watches files, reloads the project, optionally rebuilds. |
-| `paintbooth.templates` | 465 | Paint job templates: import a template pack and find the folder for a vehicle. |
-| `paintbooth.tplbuild` | 459 | Validate and export Mods Studio 2 template items (see :mod:`paintbooth.ms2tpl` for the build engine). |
-| `paintbooth.updates` | 72 | Check GitHub for a newer Paintbooth release (only tells the user; nothing is downloaded). |
-| `paintbooth.util` | 37 | Small pure helpers shared by the core modules and the GUI. |
-| `paintbooth.vehlib` | 742 | Vehicle library: editable XML definitions of trucks (cabins + paintable accessories). |
-| `paintbooth.xmldom` | 237 | A tiny XML DOM that writes files exactly like .NET's XmlSerializer. |
+| Module | Purpose |
+|---|---|
+| `paintbooth` | Paintbooth - a fast, offline paint job (skin) mod builder for ETS2 / ATS. |
+| `paintbooth.__main__` | Command line entry point: ``paintbooth <command> ...`` (or ``python -m paintbooth``). |
+| `paintbooth.app` | Paintbooth desktop window (kept for compatibility: ``python -m paintbooth.app``). |
+| `paintbooth.appdirs` | Paintbooth's folders and files on disk, and the default 'paintbooth by AL3X' icons. |
+| `paintbooth.bcn` | DXT1 / DXT5 (BC1 / BC3) texture compression, done carefully for paint job textures. |
+| `paintbooth.builder` | Turn a loaded :class:`~paintbooth.model.Project` into a finished .scs mod - fast. |
+| `paintbooth.formats` | Writers for the game file formats Paintbooth produces. |
+| `paintbooth.gui` | Paintbooth desktop UI. |
+| `paintbooth.gui.codeeditor` | Code editor for XML: line numbers, colouring, find/replace, go to line, auto-indent. |
+| `paintbooth.gui.colorgen` | 'Generate color' dialog: a plain 64x64 DDS swatch with any colour and opacity. |
+| `paintbooth.gui.colorpick` | Colour picker used everywhere in the app. |
+| `paintbooth.gui.editors` | Editors for the two built-in kinds of project item: the mod manifest and Advanced Skins. |
+| `paintbooth.gui.export_ctl` | Exporting the open project to a .scs mod (F5, Shift+F5, File > Export...). |
+| `paintbooth.gui.icons` | Ribbon, toolbar and status icons, drawn in code with Pillow (no bundled artwork). |
+| `paintbooth.gui.library_ctl` | The user's vehicle library (``Documents\Paintbooth\Vehicles\*.xml``) as seen by the main window. |
+| `paintbooth.gui.main` | Paintbooth main window: a fast, dark, Mods Studio 2-style editor for .pb / .ms2 projects. |
+| `paintbooth.gui.prefs` | Reading and writing the Paintbooth settings file (``~/.paintbooth.json``). |
+| `paintbooth.gui.project_ctl` | Opening, saving and closing projects, and noticing when the file changes on disk. |
+| `paintbooth.gui.psdmaker` | Template folder bar for the Skins tab, and template-pack import. |
+| `paintbooth.gui.ribbon` | The Office-style ribbon at the top of the main window. |
+| `paintbooth.gui.settings` | The Settings window (ribbon > Program > Settings, or File > Settings). |
+| `paintbooth.gui.startscreen` | Start screen (shown when Paintbooth opens) and the File side bar. |
+| `paintbooth.gui.theme` | Colours, fonts and ttk styles for the Paintbooth window (dark theme by default, light on request). |
+| `paintbooth.gui.tools` | SCS Tools ribbon windows: vehicle library manager, colour converter and TOBJ editor. |
+| `paintbooth.gui.tpleditor` | Editor for Mods Studio 2 template items. |
+| `paintbooth.gui.tutorials` | File > Tutorials: how to use Paintbooth, and the paint job modding basics behind it. |
+| `paintbooth.gui.widgets` | Reusable widgets for the Paintbooth window. |
+| `paintbooth.gui.winutil` | Tool windows that reopen where the user left them, with a title bar that matches the theme. |
+| `paintbooth.hashfs` | Read-only access to SCS HashFS archives (.scs, versions 1 and 2). |
+| `paintbooth.model` | Project and vehicle definitions of the ``project.xml`` format, loaded from plain XML files. |
+| `paintbooth.ms2` | Project files: Paintbooth .pb and Mods Studio 2 .ms2 (same format): open, edit, save. |
+| `paintbooth.ms2build` | Export a Mods Studio 2 project (.ms2/.pb) to a game mod. |
+| `paintbooth.ms2data` | The user's own Mods Studio 2 installation: its mod templates and data lists. |
+| `paintbooth.ms2skeleton` | Create new MS2-format projects and items from scratch. |
+| `paintbooth.ms2tpl` | Run a Mods Studio 2 template item (lightbox, windscreen decal, cargo container, ...) into mod files. |
+| `paintbooth.names` | Name rules shared by the validators: SCS tokens such as package, skin and vehicle names. |
+| `paintbooth.newproject` | Create a new, empty project folder for the ``project.xml`` pipeline (``paintbooth new``). |
+| `paintbooth.packer` | Minimal, fast ZIP (.scs) writer. |
+| `paintbooth.pmd` | SCS model descriptors (.pmd, version 4): read and rewrite the material table. |
+| `paintbooth.safepath` | Path safety checks for every place Paintbooth turns untrusted text into a file path. |
+| `paintbooth.scanner` | Generate vehicle definitions from the game's own data. |
+| `paintbooth.server` | Local, offline browser UI for a ``project.xml`` project (``paintbooth ui``). |
+| `paintbooth.session` | A live ``project.xml`` session: watches files, reloads the project, optionally rebuilds. |
+| `paintbooth.templates` | Paint job templates: import a template pack and find the folder for a vehicle. |
+| `paintbooth.tplbuild` | Validate and export Mods Studio 2 template items (see :mod:`paintbooth.ms2tpl` for the build engine). |
+| `paintbooth.updates` | Check GitHub for a newer Paintbooth release (only tells the user; nothing is downloaded). |
+| `paintbooth.util` | Small pure helpers shared by the core modules and the GUI. |
+| `paintbooth.vehlib` | Vehicle library: editable XML definitions of trucks (cabins + paintable accessories). |
+| `paintbooth.xmldom` | A tiny XML DOM that writes files exactly like .NET's XmlSerializer. |
