@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="man.tgx_2020" game="ets2" brand="MAN" name="TGX" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="gm.man.tgx_2020.cabin" name="GM" model="/vehicle/truck/man_tgx_2020/cabin/cab_gm.pmd"/>
+  <variant id="gn.man.tgx_2020.cabin" name="GN" model="/vehicle/truck/man_tgx_2020/cabin/cab_gn.pmd"/>
+  <variant id="gx.man.tgx_2020.cabin" name="GX" model="/vehicle/truck/man_tgx_2020/cabin/cab_gx.pmd"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="f_bumper.pnt_pla_duty" group="F Bumper" name="Duty Painted"/>
+  <accessory value="f_fender_chs.pnt_duty" group="F Fender Chs" name="Painted"/>
+  <accessory value="mirror.cam_pnt" group="Mirror" name="Painted, Camera (cam_pnt)"/>
+  <accessory value="mirror.cam_pnt_gn" group="Mirror" name="Painted, Camera (cam_pnt_gn)"/>
+  <accessory value="mirror.pnt_pla" group="Mirror" name="Painted"/>
+  <accessory value="mirror.pnt_pla_bs" group="Mirror" name="Painted, Sensor"/>
+  <accessory value="r_deflector.gm" group="R Deflector" name="Aero (gm)"/>
+  <accessory value="r_deflector.gm_2024" group="R Deflector" name="Aero II"/>
+  <accessory value="r_deflector.gn" group="R Deflector" name="Aero (gn)"/>
+  <accessory value="r_fender.pnt_4x2" group="R Fender" name="Painted (pnt_4x2)"/>
+  <accessory value="r_fender.pnt_6x22" group="R Fender" name="Painted (pnt_6x22)"/>
+  <accessory value="r_fender.pnt_6x4" group="R Fender" name="Painted (pnt_6x4)"/>
+  <accessory value="r_fender.pnt_8x4" group="R Fender" name="Painted (pnt_8x4)"/>
+  <accessory value="r_fendr_top.pnt_4x2" group="R Fendr Top" name="Painted (pnt_4x2)"/>
+  <accessory value="r_fendr_top.pnt_6x22" group="R Fendr Top" name="Painted (pnt_6x22)"/>
+  <accessory value="r_fendr_top.pnt_6x4" group="R Fendr Top" name="Painted (pnt_6x4)"/>
+  <accessory value="r_fendr_top.pnt_8x4" group="R Fendr Top" name="Painted (pnt_8x4)"/>
+  <accessory value="r_light.led_pnt" group="R Light" name="LED Painted"/>
+  <accessory value="r_light.old_pnt" group="R Light" name="Painted"/>
+  <accessory value="sideskirt.4x2" group="Sideskirt" name="Stock, Aero (4x2)"/>
+  <accessory value="sideskirt.4x2_e" group="Sideskirt" name="Stock (4x2_e)"/>
+  <accessory value="sideskirt.4x2_p" group="Sideskirt" name="Painted, Aero (4x2_p)"/>
+  <accessory value="sideskirt.4x2_p_e" group="Sideskirt" name="Painted (4x2_p_e)"/>
+  <accessory value="sideskirt.fender_p" group="Sideskirt" name="Painted, Aero (fender_p)"/>
+  <accessory value="sideskirt.fender_p_e" group="Sideskirt" name="Painted (fender_p_e)"/>
+  <accessory value="sideskirt.fender_s" group="Sideskirt" name="Stock, Aero (fender_s)"/>
+  <accessory value="sideskirt.fender_s_e" group="Sideskirt" name="Stock (fender_s_e)"/>
+</vehicle>

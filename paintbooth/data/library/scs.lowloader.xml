@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="scs.lowloader" game="ets2" brand="SCS" name="Lowloader" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.long" name="Low Loader (long)"/>
+  <variant id="body.short" name="Low Loader (short)"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="f_body.paint" group="F Body" name="Painted"/>
+  <accessory value="f_body.std" group="F Body" name="Standard"/>
+  <accessory value="markers.simple" group="Markers" name="Standard"/>
+  <accessory value="markers.us_style" group="Markers" name="Exclusive"/>
+  <accessory value="r_banner.dog" group="R Banner" name="Long Vehicle Dog"/>
+  <accessory value="r_banner.long" group="R Banner" name="Long Vehicle"/>
+  <accessory value="r_banner.wide" group="R Banner" name="Wide Vehicle"/>
+  <accessory value="r_bumper.eco_2" group="R Bumper" name="Standard Eco"/>
+  <accessory value="r_bumper.euro_3" group="R Bumper" name="Standard"/>
+  <accessory value="r_bumper.paint" group="R Bumper" name="Exclusive"/>
+  <accessory value="r_mudflap.simple" group="R Mudflap" name="Standard"/>
+  <accessory value="r_mudflap.w_lead" group="R Mudflap" name="Exclusive"/>
+  <accessory value="rear_body.beacon" group="Rear Body" name="Beacon"/>
+  <accessory value="rear_body.strobe" group="Rear Body" name="Strobe"/>
+</vehicle>

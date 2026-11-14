@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="schmitz.ski" game="ets2" brand="Schmitz" name="Ski" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.light_24" name="S.KI LIGHT 24/7.2 AK"/>
+  <variant id="body.light_24_sc" name="S.KI LIGHT 24/7.2 AK Sliding Cover"/>
+  <variant id="body.light_33" name="S.KI LIGHT 33/9.6 AK"/>
+  <variant id="body.light_33_sc" name="S.KI LIGHT 33/9.6 AK Sliding Cover"/>
+  <variant id="body.solid_24" name="S.KI SOLID 24/7.2 SR"/>
+  <variant id="body.solid_24_sc" name="S.KI SOLID 24/7.2 SR Sliding Cover"/>
+  <variant id="body.solid_33" name="S.KI SOLID 31/9.6 SR"/>
+  <variant id="body.solid_33_sc" name="S.KI SOLID 31/9.6 SR Sliding Cover"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="body.light_24" group="Body" name="Light 24"/>
+  <accessory value="body.light_24_sc" group="Body" name="Light 24 Sc"/>
+  <accessory value="body.light_33" group="Body" name="Light 33"/>
+  <accessory value="body.light_33_sc" group="Body" name="Light 33 Sc"/>
+  <accessory value="body.solid_24" group="Body" name="Solid 24"/>
+  <accessory value="body.solid_24_sc" group="Body" name="Solid 24 Sc"/>
+  <accessory value="body.solid_33" group="Body" name="Solid 33"/>
+  <accessory value="body.solid_33_sc" group="Body" name="Solid 33 Sc"/>
+  <accessory value="chassis.ch_2_24_dal" group="Chassis" name="Ch 2 24 Dal"/>
+  <accessory value="chassis.ch_2_24_dsl" group="Chassis" name="Ch 2 24 Dsl"/>
+  <accessory value="chassis.ch_3_24_dal" group="Chassis" name="Ch 3 24 Dal"/>
+  <accessory value="chassis.ch_3_24_dsl" group="Chassis" name="Ch 3 24 Dsl"/>
+  <accessory value="chassis.ch_3_33_dal" group="Chassis" name="Ch 3 33 Dal"/>
+  <accessory value="chassis.ch_3_33_dsl" group="Chassis" name="Ch 3 33 Dsl"/>
+  <accessory value="chs_f_l.cg_2_24" group="Chs F L" name="Simple Side Protection (cg_2_24)"/>
+  <accessory value="chs_f_l.cg_3_24" group="Chs F L" name="Simple Side Protection (cg_3_24)"/>
+  <accessory value="chs_f_l.cg_3_33" group="Chs F L" name="Simple Side Protection (cg_3_33)"/>
+  <accessory value="chs_f_l.cg_ext_2_24" group="Chs F L" name="Simple Side Protection + Extinguisher (cg_ext_2_24)"/>
+  <accessory value="chs_f_l.cg_ext_3_24" group="Chs F L" name="Simple Side Protection + Extinguisher (cg_ext_3_24)"/>
+  <accessory value="chs_f_l.cg_ext_3_33" group="Chs F L" name="Simple Side Protection + Extinguisher (cg_ext_3_33)"/>
+  <accessory value="chs_f_l.cg_wt_2_24" group="Chs F L" name="Simple Side Protection + Water Tank (cg_wt_2_24)"/>
+  <accessory value="chs_f_l.cg_wt_3_24" group="Chs F L" name="Simple Side Protection + Water Tank (cg_wt_3_24)"/>
+  <accessory value="chs_f_l.cg_wt_3_33" group="Chs F L" name="Simple Side Protection + Water Tank (cg_wt_3_33)"/>
+  <accessory value="chs_f_l.cgp_2_24" group="Chs F L" name="Painted Side Protection (cgp_2_24)"/>
+  <accessory value="chs_f_l.cgp_3_24" group="Chs F L" name="Painted Side Protection (cgp_3_24)"/>
+  <accessory value="chs_f_l.cgp_3_33" group="Chs F L" name="Painted Side Protection (cgp_3_33)"/>
+  <accessory value="chs_f_l.cgp_ext_2_24" group="Chs F L" name="Painted Side Protection + Extinguisher (cgp_ext_2_24)"/>
+  <accessory value="chs_f_l.cgp_ext_3_24" group="Chs F L" name="Painted Side Protection + Extinguisher (cgp_ext_3_24)"/>
+  <accessory value="chs_f_l.cgp_ext_3_33" group="Chs F L" name="Painted Side Protection + Extinguisher (cgp_ext_3_33)"/>
+  <accessory value="chs_f_l.cgp_wt_2_24" group="Chs F L" name="Painted Side Protection + Water Tank (cgp_wt_2_24)"/>
+  <accessory value="chs_f_l.cgp_wt_3_24" group="Chs F L" name="Painted Side Protection + Water Tank (cgp_wt_3_24)"/>
+  <accessory value="chs_f_l.cgp_wt_3_33" group="Chs F L" name="Painted Side Protection + Water Tank (cgp_wt_3_33)"/>
+  <accessory value="chs_f_r.cg_2_24" group="Chs F R" name="Simple Side Protection (cg_2_24)"/>
+  <accessory value="chs_f_r.cg_3_24" group="Chs F R" name="Simple Side Protection (cg_3_24)"/>
+  <accessory value="chs_f_r.cg_3_33" group="Chs F R" name="Simple Side Protection (cg_3_33)"/>
+  <accessory value="chs_f_r.cg_ext_2_24" group="Chs F R" name="Simple Side Protection + Extinguisher (cg_ext_2_24)"/>
+  <accessory value="chs_f_r.cg_ext_3_24" group="Chs F R" name="Simple Side Protection + Extinguisher (cg_ext_3_24)"/>
+  <accessory value="chs_f_r.cg_ext_3_33" group="Chs F R" name="Simple Side Protection + Extinguisher (cg_ext_3_33)"/>
+  <accessory value="chs_f_r.cg_st_2_24" group="Chs F R" name="Simple Side Protection + Spare Tire (cg_st_2_24)"/>
+  <accessory value="chs_f_r.cg_st_3_33" group="Chs F R" name="Simple Side Protection + Spare Tire (cg_st_3_33)"/>
+  <accessory value="chs_f_r.cg_wt_2_24" group="Chs F R" name="Simple Side Protection + Water Tank (cg_wt_2_24)"/>
+  <accessory value="chs_f_r.cg_wt_3_24" group="Chs F R" name="Simple Side Protection + Water Tank (cg_wt_3_24)"/>
+  <accessory value="chs_f_r.cg_wt_3_33" group="Chs F R" name="Simple Side Protection + Water Tank (cg_wt_3_33)"/>
+  <accessory value="chs_f_r.cgp_2_24" group="Chs F R" name="Painted Side Protection (cgp_2_24)"/>
+  <accessory value="chs_f_r.cgp_3_24" group="Chs F R" name="Painted Side Protection (cgp_3_24)"/>
+  <accessory value="chs_f_r.cgp_3_33" group="Chs F R" name="Painted Side Protection (cgp_3_33)"/>
+  <accessory value="chs_f_r.cgp_ext_2_24" group="Chs F R" name="Painted Side Protection + Extinguisher (cgp_ext_2_24)"/>
+  <accessory value="chs_f_r.cgp_ext_3_24" group="Chs F R" name="Painted Side Protection + Extinguisher (cgp_ext_3_24)"/>
+  <accessory value="chs_f_r.cgp_ext_3_33" group="Chs F R" name="Painted Side Protection + Extinguisher (cgp_ext_3_33)"/>
+  <accessory value="chs_f_r.cgp_sp_2_24" group="Chs F R" name="Cgp Sp 2 24"/>
+  <accessory value="chs_f_r.cgp_sp_3_33" group="Chs F R" name="Cgp Sp 3 33"/>
+  <accessory value="chs_f_r.cgp_st_2_24" group="Chs F R" name="Painted Side Protection + Spare Tire (cgp_st_2_24)"/>
+  <accessory value="chs_f_r.cgp_st_3_33" group="Chs F R" name="Painted Side Protection + Spare Tire (cgp_st_3_33)"/>
+  <accessory value="chs_f_r.cgp_wt_2_24" group="Chs F R" name="Painted Side Protection + Water Tank (cgp_wt_2_24)"/>
+  <accessory value="chs_f_r.cgp_wt_3_24" group="Chs F R" name="Painted Side Protection + Water Tank (cgp_wt_3_24)"/>
+  <accessory value="chs_f_r.cgp_wt_3_33" group="Chs F R" name="Painted Side Protection + Water Tank (cgp_wt_3_33)"/>
+  <accessory value="f_body.box_pl" group="F Body" name="Plastic Box (box_pl)"/>
+  <accessory value="f_body.doc" group="F Body" name="Plastic Box (doc)"/>
+  <accessory value="l_body.ladder" group="L Body" name="Ladder"/>
+  <accessory value="l_body.tools" group="L Body" name="Tools"/>
+  <accessory value="markers.simple_2_24" group="Markers" name="Standard (simple_2_24)"/>
+  <accessory value="markers.simple_3_24" group="Markers" name="Standard (simple_3_24)"/>
+  <accessory value="markers.simple_3_33" group="Markers" name="Standard (simple_3_33)"/>
+  <accessory value="r_body.ladder" group="R Body" name="Ladder"/>
+  <accessory value="r_body.tools" group="R Body" name="Tools"/>
+  <accessory value="r_bumper.exclusive" group="R Bumper" name="Exclusive"/>
+  <accessory value="r_bumper.paint" group="R Bumper" name="Painted"/>
+  <accessory value="r_bumper.simple" group="R Bumper" name="Standard"/>
+  <accessory value="r_bumper.simple2" group="R Bumper" name="Standard II"/>
+  <accessory value="r_bumper.simple3" group="R Bumper" name="Standard III"/>
+  <accessory value="r_mudflap.logo" group="R Mudflap" name="Schmitz"/>
+</vehicle>

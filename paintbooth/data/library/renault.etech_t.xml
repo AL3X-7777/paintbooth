@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="renault.etech_t" game="ets2" brand="Renault" name="E-Tech T" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="sleeper.renault.etech_t.cabin" name="Sleeper" model="/vehicle/truck/renault_etech_t/cabin/cabin_b.pmd"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+</vehicle>

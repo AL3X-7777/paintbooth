@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="tirsan.shf" game="ets2" brand="Tirsan" name="Shf" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.cont_20" name="T.SHF S / 20 - 12 / 27"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="chs_f_l.cg" group="Chs F L" name="Simple Side Protection"/>
+  <accessory value="chs_f_l.cg_ext" group="Chs F L" name="Simple Side Protection + Extinguisher"/>
+  <accessory value="chs_f_l.wt" group="Chs F L" name="Water Tank"/>
+  <accessory value="chs_f_l.wt_ext" group="Chs F L" name="Water Tank + Extinguisher"/>
+  <accessory value="chs_f_r.cg" group="Chs F R" name="Simple Side Protection"/>
+  <accessory value="chs_f_r.cg_b_pl" group="Chs F R" name="Simple Side Protection + Plastic Box"/>
+  <accessory value="chs_f_r.wt" group="Chs F R" name="Water Tank"/>
+  <accessory value="f_body.st" group="F Body" name="Spare Tire"/>
+  <accessory value="markers.simple" group="Markers" name="Standard"/>
+  <accessory value="r_bumper.exclusive" group="R Bumper" name="Exclusive"/>
+  <accessory value="r_bumper.paint" group="R Bumper" name="Painted"/>
+  <accessory value="r_bumper.simple" group="R Bumper" name="Standard"/>
+  <accessory value="r_bumper.simple2" group="R Bumper" name="Standard II"/>
+  <accessory value="r_mudflap.logo" group="R Mudflap" name="Tırsan"/>
+  <accessory value="r_mudflap.logo_uk" group="R Mudflap" name="Tırsan UK"/>
+  <accessory value="rear_body.bpaint" group="Rear Body" name="Buffer Paint"/>
+  <accessory value="rear_body.bsteel" group="Rear Body" name="Buffer Steel"/>
+</vehicle>

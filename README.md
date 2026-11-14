@@ -16,7 +16,7 @@ installation, read at export time.
 
 ## Install (Windows, works offline)
 
-Download **Paintbooth Setup 0.14.0.exe** from [Releases](https://github.com/AL3X-7777/paintbooth/releases)
+Download **Paintbooth Setup 0.15.0.exe** from [Releases](https://github.com/AL3X-7777/paintbooth/releases)
 and run it. It needs no admin rights and no internet, and it includes everything Paintbooth needs,
 Python too. You can choose the install folder (default `%LOCALAPPDATA%\Programs\Paintbooth`;
 updates go to the same folder) and tick *Create a desktop icon*. A Start-menu entry is always
@@ -32,7 +32,7 @@ Paintbooth used to be called Paint booth, and before that Skinyard. Installing i
 removes the old program and moves `Documents\Paint booth` (or `Documents\Skinyard`) to
 `Documents\Paintbooth`, with the same folders inside. Your settings and recent projects come along.
 
-No installer? Unzip **Paintbooth 0.14.0 portable.zip** anywhere and run `Paintbooth.exe`.
+No installer? Unzip **Paintbooth 0.15.0 portable.zip** anywhere and run `Paintbooth.exe`.
 
 ### Your Paintbooth folder
 
@@ -162,6 +162,14 @@ Shortcuts: **Ctrl+Shift+S** save as · **F5** export (to the default export fold
 
 ## Vehicles - editable XML, live
 
+**Vehicle library.** Paintbooth comes with a library of every ETS2 truck, coach and ownable
+trailer, with the in-game names of their cabins, bodies and paintable parts. It is installed the
+first time Paintbooth starts. **Vehicles > Install vehicle library** installs it again: the newest
+version from GitHub when you're online, else the built-in one, plus any truck, coach or trailer
+mods in your ETS2 mod folder. It lives in `Documents\Paintbooth\Vehicles\Library`; your own
+vehicle files next to it are never changed. Paintbooth builds the library from the game's own
+files; no Mods Studio 2 data is included.
+
 Every MS2 project stores the full definition of the trucks it uses, so those appear in the
 Vehicle list straight away ("stored in this project"). Your **vehicle library** is the folder
 `Documents\Paintbooth\Vehicles`. Put vehicle XML files there in either format:
@@ -273,6 +281,6 @@ a verified Mods Studio 2 export, but check your first one in game.
 ## Development and releases
 
 Source and releases: <https://github.com/AL3X-7777/paintbooth>. Every push is built and tested on
-GitHub (Actions); pushing a tag such as `v0.14.0` publishes a release. See [RELEASING.md](RELEASING.md).
+GitHub (Actions); pushing a tag such as `v0.15.0` publishes a release. See [RELEASING.md](RELEASING.md).
 Changes per version: [CHANGELOG.md](CHANGELOG.md). Code signing and privacy: [CODE_SIGNING.md](CODE_SIGNING.md).
 

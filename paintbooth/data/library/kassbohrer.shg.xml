@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="kassbohrer.shg" game="ets2" brand="Kassbohrer" name="Shg" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.cont_20" name="K.SHG AVMH / 45 - 12 / 27 (cont_20)"/>
+  <variant id="body.cont_220" name="K.SHG AVMH / 45 - 12 / 27 (cont_220)"/>
+  <variant id="body.cont_40" name="K.SHG AVMH / 45 - 12 / 27 (cont_40)"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="chs_f_l.cg" group="Chs F L" name="Simple Side Protection"/>
+  <accessory value="chs_f_l.cg_bch" group="Chs F L" name="Simple Side Protection + Chromed Box"/>
+  <accessory value="chs_f_l.cg_bp" group="Chs F L" name="Simple Side Protection + Painted Box"/>
+  <accessory value="chs_f_l.cg_bpl" group="Chs F L" name="Simple Side Protection + Plastic Box"/>
+  <accessory value="chs_f_l.cg_st" group="Chs F L" name="Simple Side Protection + Spare Tire"/>
+  <accessory value="chs_f_r.cg" group="Chs F R" name="Simple Side Protection"/>
+  <accessory value="chs_f_r.cg_bch" group="Chs F R" name="Simple Side Protection + Chromed Box"/>
+  <accessory value="chs_f_r.cg_bp" group="Chs F R" name="Simple Side Protection + Painted Box"/>
+  <accessory value="chs_f_r.cg_bpl" group="Chs F R" name="Simple Side Protection + Plastic Box"/>
+  <accessory value="chs_f_r.cg_st" group="Chs F R" name="Simple Side Protection + Spare Tire"/>
+  <accessory value="l_body.ext" group="L Body" name="Extinguisher"/>
+  <accessory value="markers.simple" group="Markers" name="Standard"/>
+  <accessory value="r_bumper.exclusive" group="R Bumper" name="Exclusive"/>
+  <accessory value="r_bumper.paint" group="R Bumper" name="Painted"/>
+  <accessory value="r_bumper.simple" group="R Bumper" name="Standard"/>
+  <accessory value="r_mudflap.logo" group="R Mudflap" name="Kässbohrer"/>
+  <accessory value="r_mudflap.logo_uk" group="R Mudflap" name="Kässbohrer UK"/>
+  <accessory value="rear_body.bmp_stl" group="Rear Body" name="Steel Bumper"/>
+  <accessory value="rear_body.bmp_stl2" group="Rear Body" name="Steel Bumper II"/>
+</vehicle>

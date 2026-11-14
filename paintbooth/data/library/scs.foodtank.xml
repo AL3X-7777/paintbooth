@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="scs.foodtank" game="ets2" brand="SCS" name="Food Tank" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.tank_10_ch" name="Food Tank Chrome (tank_10_ch)"/>
+  <variant id="body.tank_10_p" name="Food Tank Paint (tank_10_p)"/>
+  <variant id="body.tank_8_ch" name="Food Tank Chrome (tank_8_ch)"/>
+  <variant id="body.tank_8_p" name="Food Tank Paint (tank_8_p)"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="body.tank_10_ch" group="Body" name="Tank 10 Ch"/>
+  <accessory value="body.tank_10_p" group="Body" name="Tank 10 P"/>
+  <accessory value="body.tank_8_ch" group="Body" name="Tank 8 Ch"/>
+  <accessory value="body.tank_8_p" group="Body" name="Tank 8 P"/>
+  <accessory value="chs_f_l.cage_short" group="Chs F L" name="Simple Side Protection"/>
+  <accessory value="chs_f_l.cage_short_t" group="Chs F L" name="Simple Side Protection + Spare Tire"/>
+  <accessory value="chs_f_l.chrome_box" group="Chs F L" name="Chromed Box"/>
+  <accessory value="chs_f_l.paint_box" group="Chs F L" name="Painted Box"/>
+  <accessory value="chs_f_l.side01_sh" group="Chs F L" name="Full Protection Sideskirts"/>
+  <accessory value="chs_f_l.side01_sh_t" group="Chs F L" name="Full Protection Sideskirts + Spare Tire"/>
+  <accessory value="chs_f_r.cage_short" group="Chs F R" name="Simple Side Protection"/>
+  <accessory value="chs_f_r.cage_short_t" group="Chs F R" name="Simple Side Protection + Spare Tire"/>
+  <accessory value="chs_f_r.chrome_box" group="Chs F R" name="Chromed Box"/>
+  <accessory value="chs_f_r.paint_box" group="Chs F R" name="Painted Box"/>
+  <accessory value="chs_f_r.side01_sh" group="Chs F R" name="Full Protection Sideskirts"/>
+  <accessory value="chs_f_r.side01_sh_t" group="Chs F R" name="Full Protection Sideskirts + Spare Tire"/>
+  <accessory value="chs_r_l.chrome_box" group="Chs R L" name="Chromed Box"/>
+  <accessory value="chs_r_l.paint_box" group="Chs R L" name="Painted Box"/>
+  <accessory value="chs_r_l.pl_box" group="Chs R L" name="Plastic Box"/>
+  <accessory value="chs_r_l.water_tank" group="Chs R L" name="Water Tank"/>
+  <accessory value="chs_r_r.chrome_box" group="Chs R R" name="Chromed Box"/>
+  <accessory value="chs_r_r.paint_box" group="Chs R R" name="Painted Box"/>
+  <accessory value="chs_r_r.pl_box" group="Chs R R" name="Plastic Box"/>
+  <accessory value="chs_r_r.water_tank" group="Chs R R" name="Water Tank"/>
+  <accessory value="f_body.chrome" group="F Body" name="Chromed"/>
+  <accessory value="f_body.paint" group="F Body" name="Painted"/>
+  <accessory value="l_body.hose" group="L Body" name="Hose (hose)"/>
+  <accessory value="l_body.hose_8" group="L Body" name="Hose (hose_8)"/>
+  <accessory value="markers.simple" group="Markers" name="Standard (simple)"/>
+  <accessory value="markers.simple_8" group="Markers" name="Standard (simple_8)"/>
+  <accessory value="markers.us_style" group="Markers" name="Exclusive (us_style)"/>
+  <accessory value="markers.us_style_8" group="Markers" name="Exclusive (us_style_8)"/>
+  <accessory value="r_banner.ali_dep" group="R Banner" name="A + D"/>
+  <accessory value="r_banner.alimentari" group="R Banner" name="A"/>
+  <accessory value="r_banner.deperibili" group="R Banner" name="D"/>
+  <accessory value="r_body.hose" group="R Body" name="Hose (hose)"/>
+  <accessory value="r_body.hose_8" group="R Body" name="Hose (hose_8)"/>
+  <accessory value="r_bumper.eco_2" group="R Bumper" name="Standard Eco"/>
+  <accessory value="r_bumper.euro_3" group="R Bumper" name="Standard"/>
+  <accessory value="r_bumper.led" group="R Bumper" name="Exclusive LED"/>
+  <accessory value="r_mudflap.exclusive" group="R Mudflap" name="Exclusive"/>
+  <accessory value="r_mudflap.simple" group="R Mudflap" name="Standard"/>
+  <accessory value="rear_body.chrome" group="Rear Body" name="Chromed"/>
+  <accessory value="rear_body.paint" group="Rear Body" name="Painted"/>
+</vehicle>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="schwmuller.curtain" game="ets2" brand="Schwmuller" name="Platform" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.curtain" name="Platform"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="body.curtain" group="Body" name="Curtain"/>
+  <accessory value="chs_f_l.pallet1" group="Chs F L" name="Pallet Box"/>
+  <accessory value="chs_f_l.pallet1p" group="Chs F L" name="Painted Pallet Box"/>
+  <accessory value="chs_f_l.sp1" group="Chs F L" name="Simple Side Skirt"/>
+  <accessory value="chs_f_l.sp1p" group="Chs F L" name="Simple Painted Side Skirt"/>
+  <accessory value="chs_f_l.sp2" group="Chs F L" name="Side Skirt"/>
+  <accessory value="chs_f_l.sp2_b1" group="Chs F L" name="Side Skirt + Chromed Box"/>
+  <accessory value="chs_f_l.sp2_b1p" group="Chs F L" name="Side Skirt + Painted Box"/>
+  <accessory value="chs_f_l.sp2_b2" group="Chs F L" name="Side Skirt + Store Box (sp2_b2)"/>
+  <accessory value="chs_f_l.sp2_b3" group="Chs F L" name="Side Skirt + Stow Box"/>
+  <accessory value="chs_f_l.sp2_b4" group="Chs F L" name="Side Skirt + Store Box (sp2_b4)"/>
+  <accessory value="chs_f_l.sp2_et" group="Chs F L" name="Side Skirt + Tire Rack"/>
+  <accessory value="chs_f_l.sp2_t" group="Chs F L" name="Side Skirt + Spare Tire"/>
+  <accessory value="chs_f_l.sp2p" group="Chs F L" name="Painted Side Skirt"/>
+  <accessory value="chs_f_l.sp2p_b1" group="Chs F L" name="Painted Side Skirt + Chromed Box"/>
+  <accessory value="chs_f_l.sp2p_b1p" group="Chs F L" name="Painted Side Skirt + Painted Box"/>
+  <accessory value="chs_f_l.sp2p_b2" group="Chs F L" name="Painted Side Skirt + Store Box (sp2p_b2)"/>
+  <accessory value="chs_f_l.sp2p_b3" group="Chs F L" name="Painted Side Skirt + Stow Box"/>
+  <accessory value="chs_f_l.sp2p_b4" group="Chs F L" name="Painted Side Skirt + Store Box (sp2p_b4)"/>
+  <accessory value="chs_f_l.sp2p_et" group="Chs F L" name="Painted Side Skirt + Tire Rack"/>
+  <accessory value="chs_f_l.sp2p_t" group="Chs F L" name="Painted Side Skirt + Spare Tire"/>
+  <accessory value="chs_f_r.pallet1" group="Chs F R" name="Pallet Box"/>
+  <accessory value="chs_f_r.pallet1p" group="Chs F R" name="Painted Pallet Box"/>
+  <accessory value="chs_f_r.sp1" group="Chs F R" name="Simple Side Skirt"/>
+  <accessory value="chs_f_r.sp1p" group="Chs F R" name="Simple Painted Side Skirt"/>
+  <accessory value="chs_f_r.sp2" group="Chs F R" name="Side Skirt"/>
+  <accessory value="chs_f_r.sp2_b1" group="Chs F R" name="Side Skirt + Chromed Box"/>
+  <accessory value="chs_f_r.sp2_b1p" group="Chs F R" name="Side Skirt + Painted Box"/>
+  <accessory value="chs_f_r.sp2_b2" group="Chs F R" name="Side Skirt + Store Box (sp2_b2)"/>
+  <accessory value="chs_f_r.sp2_b3" group="Chs F R" name="Side Skirt + Stow Box"/>
+  <accessory value="chs_f_r.sp2_b4" group="Chs F R" name="Side Skirt + Store Box (sp2_b4)"/>
+  <accessory value="chs_f_r.sp2_et" group="Chs F R" name="Side Skirt + Tire Rack"/>
+  <accessory value="chs_f_r.sp2_t" group="Chs F R" name="Side Skirt + Spare Tire"/>
+  <accessory value="chs_f_r.sp2p" group="Chs F R" name="Painted Side Skirt"/>
+  <accessory value="chs_f_r.sp2p_b1" group="Chs F R" name="Painted Side Skirt + Chromed Box"/>
+  <accessory value="chs_f_r.sp2p_b1p" group="Chs F R" name="Painted Side Skirt + Painted Box"/>
+  <accessory value="chs_f_r.sp2p_b2" group="Chs F R" name="Painted Side Skirt + Store Box (sp2p_b2)"/>
+  <accessory value="chs_f_r.sp2p_b3" group="Chs F R" name="Painted Side Skirt + Stow Box"/>
+  <accessory value="chs_f_r.sp2p_b4" group="Chs F R" name="Painted Side Skirt + Store Box (sp2p_b4)"/>
+  <accessory value="chs_f_r.sp2p_et" group="Chs F R" name="Painted Side Skirt + Tire Rack"/>
+  <accessory value="chs_f_r.sp2p_t" group="Chs F R" name="Painted Side Skirt + Spare Tire"/>
+  <accessory value="chs_r_l.b1" group="Chs R L" name="Chromed Box"/>
+  <accessory value="chs_r_l.b1_b2" group="Chs R L" name="Chromed Box + Store Box (b1_b2)"/>
+  <accessory value="chs_r_l.b1_b3" group="Chs R L" name="Chromed Box + Stow Box"/>
+  <accessory value="chs_r_l.b1_b4" group="Chs R L" name="Chromed Box + Store Box (b1_b4)"/>
+  <accessory value="chs_r_l.b1_et" group="Chs R L" name="Chromed Box + Tire Rack"/>
+  <accessory value="chs_r_l.b1_t" group="Chs R L" name="Chromed Box + Spare Tire"/>
+  <accessory value="chs_r_l.b1p" group="Chs R L" name="Painted Box"/>
+  <accessory value="chs_r_l.b1p_b2" group="Chs R L" name="Painted Box + Store Box (b1p_b2)"/>
+  <accessory value="chs_r_l.b1p_b3" group="Chs R L" name="Painted Box + Stow Box"/>
+  <accessory value="chs_r_l.b1p_b4" group="Chs R L" name="Painted Box + Store Box (b1p_b4)"/>
+  <accessory value="chs_r_l.b1p_et" group="Chs R L" name="Painted Box + Tire Rack"/>
+  <accessory value="chs_r_l.b1p_t" group="Chs R L" name="Painted Box + Spare Tire"/>
+  <accessory value="chs_r_l.b2" group="Chs R L" name="Store Box (b2)"/>
+  <accessory value="chs_r_l.b2_b2" group="Chs R L" name="Store Box + Store Box (b2_b2)"/>
+  <accessory value="chs_r_l.b2_b3" group="Chs R L" name="Store Box + Stow Box (b2_b3)"/>
+  <accessory value="chs_r_l.b2_b4" group="Chs R L" name="Store Box + Store Box (b2_b4)"/>
+  <accessory value="chs_r_l.b2_et" group="Chs R L" name="Store Box + Tire Rack (b2_et)"/>
+  <accessory value="chs_r_l.b2_t" group="Chs R L" name="Store Box + Spare Tire (b2_t)"/>
+  <accessory value="chs_r_l.b3" group="Chs R L" name="Stow Box"/>
+  <accessory value="chs_r_l.b3_b2" group="Chs R L" name="Stow Box + Store Box (b3_b2)"/>
+  <accessory value="chs_r_l.b3_b3" group="Chs R L" name="Stow Box + Stow Box"/>
+  <accessory value="chs_r_l.b3_b4" group="Chs R L" name="Stow Box + Store Box (b3_b4)"/>
+  <accessory value="chs_r_l.b3_et" group="Chs R L" name="Stow Box + Tire Rack"/>
+  <accessory value="chs_r_l.b3_t" group="Chs R L" name="Stow Box + Spare Tire"/>
+  <accessory value="chs_r_l.b4" group="Chs R L" name="Store Box (b4)"/>
+  <accessory value="chs_r_l.b4_b2" group="Chs R L" name="Store Box + Store Box (b4_b2)"/>
+  <accessory value="chs_r_l.b4_b3" group="Chs R L" name="Store Box + Stow Box (b4_b3)"/>
+  <accessory value="chs_r_l.b4_b4" group="Chs R L" name="Store Box + Store Box (b4_b4)"/>
+  <accessory value="chs_r_l.b4_et" group="Chs R L" name="Store Box + Tire Rack (b4_et)"/>
+  <accessory value="chs_r_l.b4_t" group="Chs R L" name="Store Box + Spare Tire (b4_t)"/>
+  <accessory value="chs_r_l.et" group="Chs R L" name="Tire Rack"/>
+  <accessory value="chs_r_l.t" group="Chs R L" name="Spare Tire"/>
+  <accessory value="chs_r_r.b1" group="Chs R R" name="Chromed Box"/>
+  <accessory value="chs_r_r.b1_et" group="Chs R R" name="Chromed Box + Tire Rack"/>
+  <accessory value="chs_r_r.b1_t" group="Chs R R" name="Chromed Box + Spare Tire"/>
+  <accessory value="chs_r_r.b1p" group="Chs R R" name="Painted Box"/>
+  <accessory value="chs_r_r.b1p_et" group="Chs R R" name="Painted Box + Tire Rack"/>
+  <accessory value="chs_r_r.b1p_t" group="Chs R R" name="Painted Box + Spare Tire"/>
+  <accessory value="chs_r_r.b2" group="Chs R R" name="Store Box (b2)"/>
+  <accessory value="chs_r_r.b2_et" group="Chs R R" name="Store Box + Tire Rack (b2_et)"/>
+  <accessory value="chs_r_r.b2_t" group="Chs R R" name="Store Box + Spare Tire (b2_t)"/>
+  <accessory value="chs_r_r.b3" group="Chs R R" name="Stow Box"/>
+  <accessory value="chs_r_r.b3_et" group="Chs R R" name="Stow Box + Tire Rack"/>
+  <accessory value="chs_r_r.b3_t" group="Chs R R" name="Stow Box + Spare Tire"/>
+  <accessory value="chs_r_r.b4" group="Chs R R" name="Store Box (b4)"/>
+  <accessory value="chs_r_r.b4_et" group="Chs R R" name="Store Box + Tire Rack (b4_et)"/>
+  <accessory value="chs_r_r.b4_t" group="Chs R R" name="Store Box + Spare Tire (b4_t)"/>
+  <accessory value="chs_r_r.et" group="Chs R R" name="Tire Rack"/>
+  <accessory value="chs_r_r.t" group="Chs R R" name="Spare Tire"/>
+  <accessory value="markers.markers1" group="Markers" name="Standard"/>
+  <accessory value="r_bumper.rbumper1" group="R Bumper" name="Exclusive"/>
+  <accessory value="r_bumper.rbumper1p" group="R Bumper" name="Exclusive Painted"/>
+  <accessory value="r_bumper.rbumper2" group="R Bumper" name="Standard"/>
+  <accessory value="r_bumper.rbumper2p" group="R Bumper" name="Painted"/>
+  <accessory value="r_mudflap.empty" group="R Mudflap" name="Standard"/>
+  <accessory value="r_mudflap.empty_wide" group="R Mudflap" name="Standard + Schwarzmüller Special"/>
+  <accessory value="r_mudflap.logo" group="R Mudflap" name="Exclusive"/>
+  <accessory value="r_mudflap.logo_wide" group="R Mudflap" name="Exclusive + Schwarzmüller Special"/>
+</vehicle>

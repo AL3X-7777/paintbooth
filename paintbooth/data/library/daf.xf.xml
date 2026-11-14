@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="daf.xf" game="ets2" brand="DAF" name="XF105" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="s_cab_plus.daf.xf.cabin" name="Space Cab Plus"/>
+  <variant id="space_cab.daf.xf.cabin" name="Space"/>
+  <variant id="super_s_cab.daf.xf.cabin" name="Super Space"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="r_bumper.chrome" group="R Bumper" name="Centurion"/>
+  <accessory value="r_bumper.paint" group="R Bumper" name="Celeritas"/>
+  <accessory value="r_bumper.steel" group="R Bumper" name="Thor"/>
+  <accessory value="r_chs_cover.ch_4x2_et_p" group="R Chs Cover" name="Diva (ch_4x2_et_p)"/>
+  <accessory value="r_chs_cover.ch_4x2_p" group="R Chs Cover" name="Diva (ch_4x2_p)"/>
+  <accessory value="r_chs_cover.ch_6x2_p" group="R Chs Cover" name="Diva (ch_6x2_p)"/>
+  <accessory value="r_chs_cover.ch_6x4_p" group="R Chs Cover" name="Diva (ch_6x4_p)"/>
+</vehicle>

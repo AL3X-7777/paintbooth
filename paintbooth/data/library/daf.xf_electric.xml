@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="daf.xf_electric" game="ets2" brand="DAF" name="XF Electric" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="slh.daf.xf_electric.cabin" name="Sleeper High" model="/vehicle/truck/daf_xf_electric/cabin/cab_slh.pmd"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+</vehicle>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="kogel.cargo" game="ets2" brand="Kogel" name="Cargo" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.curtain_13" name="Cargo (curtain_13)"/>
+  <variant id="body.curtain_15" name="Cargo (curtain_15)"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="body.curtain_13" group="Body" name="Curtain 13"/>
+  <accessory value="body.curtain_15" group="Body" name="Curtain 15"/>
+  <accessory value="chassis.ch_2_13" group="Chassis" name="Ch 2 13"/>
+  <accessory value="chassis.ch_3_13" group="Chassis" name="Ch 3 13"/>
+  <accessory value="chassis.ch_3_13_sp" group="Chassis" name="Ch 3 13 Sp"/>
+  <accessory value="chassis.ch_3_15" group="Chassis" name="Ch 3 15"/>
+  <accessory value="chs_f_l.cg_2_13" group="Chs F L" name="Simple Side Protection (cg_2_13)"/>
+  <accessory value="chs_f_l.cg_3_13" group="Chs F L" name="Simple Side Protection (cg_3_13)"/>
+  <accessory value="chs_f_l.cg_3_15" group="Chs F L" name="Simple Side Protection (cg_3_15)"/>
+  <accessory value="chs_f_l.cg_bch_2_13" group="Chs F L" name="Simple Side Protection + Chromed Box (cg_bch_2_13)"/>
+  <accessory value="chs_f_l.cg_bch_3_13" group="Chs F L" name="Simple Side Protection + Chromed Box (cg_bch_3_13)"/>
+  <accessory value="chs_f_l.cg_bch_3_15" group="Chs F L" name="Simple Side Protection + Chromed Box (cg_bch_3_15)"/>
+  <accessory value="chs_f_l.cg_bp_2_13" group="Chs F L" name="Simple Side Protection + Painted Box (cg_bp_2_13)"/>
+  <accessory value="chs_f_l.cg_bp_3_13" group="Chs F L" name="Simple Side Protection + Painted Box (cg_bp_3_13)"/>
+  <accessory value="chs_f_l.cg_bp_3_15" group="Chs F L" name="Simple Side Protection + Painted Box (cg_bp_3_15)"/>
+  <accessory value="chs_f_l.cg_bpl_2_13" group="Chs F L" name="Simple Side Protection + Plastic Box (cg_bpl_2_13)"/>
+  <accessory value="chs_f_l.cg_bpl_3_13" group="Chs F L" name="Simple Side Protection + Plastic Box (cg_bpl_3_13)"/>
+  <accessory value="chs_f_l.cg_bpl_3_15" group="Chs F L" name="Simple Side Protection + Plastic Box (cg_bpl_3_15)"/>
+  <accessory value="chs_f_l.cg_st_2_13" group="Chs F L" name="Simple Side Protection + Spare Tire (cg_st_2_13)"/>
+  <accessory value="chs_f_l.cg_st_3_13" group="Chs F L" name="Simple Side Protection + Spare Tire (cg_st_3_13)"/>
+  <accessory value="chs_f_l.cg_st_3_15" group="Chs F L" name="Simple Side Protection + Spare Tire (cg_st_3_15)"/>
+  <accessory value="chs_f_l.cgp_2_13" group="Chs F L" name="Painted Side Protection (cgp_2_13)"/>
+  <accessory value="chs_f_l.cgp_3_13" group="Chs F L" name="Painted Side Protection (cgp_3_13)"/>
+  <accessory value="chs_f_l.cgp_3_15" group="Chs F L" name="Painted Side Protection (cgp_3_15)"/>
+  <accessory value="chs_f_l.cgp_bch_2_13" group="Chs F L" name="Painted Side Protection + Chromed Box (cgp_bch_2_13)"/>
+  <accessory value="chs_f_l.cgp_bch_3_13" group="Chs F L" name="Painted Side Protection + Chromed Box (cgp_bch_3_13)"/>
+  <accessory value="chs_f_l.cgp_bch_3_15" group="Chs F L" name="Painted Side Protection + Chromed Box (cgp_bch_3_15)"/>
+  <accessory value="chs_f_l.cgp_bp_2_13" group="Chs F L" name="Painted Side Protection + Painted Box (cgp_bp_2_13)"/>
+  <accessory value="chs_f_l.cgp_bp_3_13" group="Chs F L" name="Painted Side Protection + Painted Box (cgp_bp_3_13)"/>
+  <accessory value="chs_f_l.cgp_bp_3_15" group="Chs F L" name="Painted Side Protection + Painted Box (cgp_bp_3_15)"/>
+  <accessory value="chs_f_l.cgp_bpl_2_13" group="Chs F L" name="Painted Side Protection + Plastic Box (cgp_bpl_2_13)"/>
+  <accessory value="chs_f_l.cgp_bpl_3_13" group="Chs F L" name="Painted Side Protection + Plastic Box (cgp_bpl_3_13)"/>
+  <accessory value="chs_f_l.cgp_bpl_3_15" group="Chs F L" name="Painted Side Protection + Plastic Box (cgp_bpl_3_15)"/>
+  <accessory value="chs_f_l.cgp_st_2_13" group="Chs F L" name="Painted Side Protection + Spare Tire (cgp_st_2_13)"/>
+  <accessory value="chs_f_l.cgp_st_3_13" group="Chs F L" name="Painted Side Protection + Spare Tire (cgp_st_3_13)"/>
+  <accessory value="chs_f_l.cgp_st_3_15" group="Chs F L" name="Painted Side Protection + Spare Tire (cgp_st_3_15)"/>
+  <accessory value="chs_f_l.pal_3_13" group="Chs F L" name="Pallet Box (pal_3_13)"/>
+  <accessory value="chs_f_l.pal_3_15" group="Chs F L" name="Pallet Box (pal_3_15)"/>
+  <accessory value="chs_f_l.palp_3_13" group="Chs F L" name="Painted Pallet Box (palp_3_13)"/>
+  <accessory value="chs_f_l.palp_3_15" group="Chs F L" name="Painted Pallet Box (palp_3_15)"/>
+  <accessory value="chs_f_l.sk_2_13" group="Chs F L" name="Full Protection Sideskirts (sk_2_13)"/>
+  <accessory value="chs_f_l.sk_3_13" group="Chs F L" name="Full Protection Sideskirts (sk_3_13)"/>
+  <accessory value="chs_f_l.sk_3_15" group="Chs F L" name="Full Protection Sideskirts (sk_3_15)"/>
+  <accessory value="chs_f_l.sk_bch_2_13" group="Chs F L" name="Full Protection Sideskirts + Chromed Box (sk_bch_2_13)"/>
+  <accessory value="chs_f_l.sk_bch_3_13" group="Chs F L" name="Full Protection Sideskirts + Chromed Box (sk_bch_3_13)"/>
+  <accessory value="chs_f_l.sk_bch_3_15" group="Chs F L" name="Full Protection Sideskirts + Chromed Box (sk_bch_3_15)"/>
+  <accessory value="chs_f_l.sk_bp_2_13" group="Chs F L" name="Full Protection Sideskirts + Painted Box (sk_bp_2_13)"/>
+  <accessory value="chs_f_l.sk_bp_3_13" group="Chs F L" name="Full Protection Sideskirts + Painted Box (sk_bp_3_13)"/>
+  <accessory value="chs_f_l.sk_bp_3_15" group="Chs F L" name="Full Protection Sideskirts + Painted Box (sk_bp_3_15)"/>
+  <accessory value="chs_f_l.sk_bpl_2_13" group="Chs F L" name="Full Protection Sideskirts + Plastic Box (sk_bpl_2_13)"/>
+  <accessory value="chs_f_l.sk_bpl_3_13" group="Chs F L" name="Full Protection Sideskirts + Plastic Box (sk_bpl_3_13)"/>
+  <accessory value="chs_f_l.sk_bpl_3_15" group="Chs F L" name="Full Protection Sideskirts + Plastic Box (sk_bpl_3_15)"/>
+  <accessory value="chs_f_l.sk_st_2_13" group="Chs F L" name="Full Protection Sideskirts + Spare Tire (sk_st_2_13)"/>
+  <accessory value="chs_f_l.sk_st_3_13" group="Chs F L" name="Full Protection Sideskirts + Spare Tire (sk_st_3_13)"/>
+  <accessory value="chs_f_l.sk_st_3_15" group="Chs F L" name="Full Protection Sideskirts + Spare Tire (sk_st_3_15)"/>
+  <accessory value="chs_f_l.skp_2_13" group="Chs F L" name="Painted Protection Sideskirts (skp_2_13)"/>
+  <accessory value="chs_f_l.skp_3_13" group="Chs F L" name="Painted Protection Sideskirts (skp_3_13)"/>
+  <accessory value="chs_f_l.skp_3_15" group="Chs F L" name="Painted Protection Sideskirts (skp_3_15)"/>
+  <accessory value="chs_f_l.skp_bch_2_13" group="Chs F L" name="Painted Protection Sideskirts + Chromed Box (skp_bch_2_13)"/>
+  <accessory value="chs_f_l.skp_bch_3_13" group="Chs F L" name="Painted Protection Sideskirts + Chromed Box (skp_bch_3_13)"/>
+  <accessory value="chs_f_l.skp_bch_3_15" group="Chs F L" name="Painted Protection Sideskirts + Chromed Box (skp_bch_3_15)"/>
+  <accessory value="chs_f_l.skp_bp_2_13" group="Chs F L" name="Painted Protection Sideskirts + Painted Box (skp_bp_2_13)"/>
+  <accessory value="chs_f_l.skp_bp_3_13" group="Chs F L" name="Painted Protection Sideskirts + Painted Box (skp_bp_3_13)"/>
+  <accessory value="chs_f_l.skp_bp_3_15" group="Chs F L" name="Painted Protection Sideskirts + Painted Box (skp_bp_3_15)"/>
+  <accessory value="chs_f_l.skp_bpl_2_13" group="Chs F L" name="Painted Protection Sideskirts + Plastic Box (skp_bpl_2_13)"/>
+  <accessory value="chs_f_l.skp_bpl_3_13" group="Chs F L" name="Painted Protection Sideskirts + Plastic Box (skp_bpl_3_13)"/>
+  <accessory value="chs_f_l.skp_bpl_3_15" group="Chs F L" name="Painted Protection Sideskirts + Plastic Box (skp_bpl_3_15)"/>
+  <accessory value="chs_f_l.skp_st_2_13" group="Chs F L" name="Painted Protection Sideskirts + Spare Tire (skp_st_2_13)"/>
+  <accessory value="chs_f_l.skp_st_3_13" group="Chs F L" name="Painted Protection Sideskirts + Spare Tire (skp_st_3_13)"/>
+  <accessory value="chs_f_l.skp_st_3_15" group="Chs F L" name="Painted Protection Sideskirts + Spare Tire (skp_st_3_15)"/>
+  <accessory value="chs_f_r.cg_2_13" group="Chs F R" name="Simple Side Protection (cg_2_13)"/>
+  <accessory value="chs_f_r.cg_3_13" group="Chs F R" name="Simple Side Protection (cg_3_13)"/>
+  <accessory value="chs_f_r.cg_3_15" group="Chs F R" name="Simple Side Protection (cg_3_15)"/>
+  <accessory value="chs_f_r.cg_bch_2_13" group="Chs F R" name="Simple Side Protection + Chromed Box (cg_bch_2_13)"/>
+  <accessory value="chs_f_r.cg_bch_3_13" group="Chs F R" name="Simple Side Protection + Chromed Box (cg_bch_3_13)"/>
+  <accessory value="chs_f_r.cg_bch_3_15" group="Chs F R" name="Simple Side Protection + Chromed Box (cg_bch_3_15)"/>
+  <accessory value="chs_f_r.cg_bp_2_13" group="Chs F R" name="Simple Side Protection + Painted Box (cg_bp_2_13)"/>
+  <accessory value="chs_f_r.cg_bp_3_13" group="Chs F R" name="Simple Side Protection + Painted Box (cg_bp_3_13)"/>
+  <accessory value="chs_f_r.cg_bp_3_15" group="Chs F R" name="Simple Side Protection + Painted Box (cg_bp_3_15)"/>
+  <accessory value="chs_f_r.cg_bpl_2_13" group="Chs F R" name="Simple Side Protection + Plastic Box (cg_bpl_2_13)"/>
+  <accessory value="chs_f_r.cg_bpl_3_13" group="Chs F R" name="Simple Side Protection + Plastic Box (cg_bpl_3_13)"/>
+  <accessory value="chs_f_r.cg_bpl_3_15" group="Chs F R" name="Simple Side Protection + Plastic Box (cg_bpl_3_15)"/>
+  <accessory value="chs_f_r.cg_st_2_13" group="Chs F R" name="Simple Side Protection + Spare Tire (cg_st_2_13)"/>
+  <accessory value="chs_f_r.cg_st_3_13" group="Chs F R" name="Simple Side Protection + Spare Tire (cg_st_3_13)"/>
+  <accessory value="chs_f_r.cg_st_3_15" group="Chs F R" name="Simple Side Protection + Spare Tire (cg_st_3_15)"/>
+  <accessory value="chs_f_r.cgp_2_13" group="Chs F R" name="Painted Side Protection (cgp_2_13)"/>
+  <accessory value="chs_f_r.cgp_3_13" group="Chs F R" name="Painted Side Protection (cgp_3_13)"/>
+  <accessory value="chs_f_r.cgp_3_15" group="Chs F R" name="Painted Side Protection (cgp_3_15)"/>
+  <accessory value="chs_f_r.cgp_bch_2_13" group="Chs F R" name="Painted Side Protection + Chromed Box (cgp_bch_2_13)"/>
+  <accessory value="chs_f_r.cgp_bch_3_13" group="Chs F R" name="Painted Side Protection + Chromed Box (cgp_bch_3_13)"/>
+  <accessory value="chs_f_r.cgp_bch_3_15" group="Chs F R" name="Painted Side Protection + Chromed Box (cgp_bch_3_15)"/>
+  <accessory value="chs_f_r.cgp_bp_2_13" group="Chs F R" name="Painted Side Protection + Painted Box (cgp_bp_2_13)"/>
+  <accessory value="chs_f_r.cgp_bp_3_13" group="Chs F R" name="Painted Side Protection + Painted Box (cgp_bp_3_13)"/>
+  <accessory value="chs_f_r.cgp_bp_3_15" group="Chs F R" name="Painted Side Protection + Painted Box (cgp_bp_3_15)"/>
+  <accessory value="chs_f_r.cgp_bpl_2_13" group="Chs F R" name="Painted Side Protection + Plastic Box (cgp_bpl_2_13)"/>
+  <accessory value="chs_f_r.cgp_bpl_3_13" group="Chs F R" name="Painted Side Protection + Plastic Box (cgp_bpl_3_13)"/>
+  <accessory value="chs_f_r.cgp_bpl_3_15" group="Chs F R" name="Painted Side Protection + Plastic Box (cgp_bpl_3_15)"/>
+  <accessory value="chs_f_r.cgp_st_2_13" group="Chs F R" name="Painted Side Protection + Spare Tire (cgp_st_2_13)"/>
+  <accessory value="chs_f_r.cgp_st_3_13" group="Chs F R" name="Painted Side Protection + Spare Tire (cgp_st_3_13)"/>
+  <accessory value="chs_f_r.cgp_st_3_15" group="Chs F R" name="Painted Side Protection + Spare Tire (cgp_st_3_15)"/>
+  <accessory value="chs_f_r.pal_3_13" group="Chs F R" name="Pallet Box (pal_3_13)"/>
+  <accessory value="chs_f_r.pal_3_15" group="Chs F R" name="Pallet Box (pal_3_15)"/>
+  <accessory value="chs_f_r.palp_3_13" group="Chs F R" name="Painted Pallet Box (palp_3_13)"/>
+  <accessory value="chs_f_r.palp_3_15" group="Chs F R" name="Painted Pallet Box (palp_3_15)"/>
+  <accessory value="chs_f_r.sk_2_13" group="Chs F R" name="Full Protection Sideskirts (sk_2_13)"/>
+  <accessory value="chs_f_r.sk_3_13" group="Chs F R" name="Full Protection Sideskirts (sk_3_13)"/>
+  <accessory value="chs_f_r.sk_3_15" group="Chs F R" name="Full Protection Sideskirts (sk_3_15)"/>
+  <accessory value="chs_f_r.sk_bch_2_13" group="Chs F R" name="Full Protection Sideskirts + Chromed Box (sk_bch_2_13)"/>
+  <accessory value="chs_f_r.sk_bch_3_13" group="Chs F R" name="Full Protection Sideskirts + Chromed Box (sk_bch_3_13)"/>
+  <accessory value="chs_f_r.sk_bch_3_15" group="Chs F R" name="Full Protection Sideskirts + Chromed Box (sk_bch_3_15)"/>
+  <accessory value="chs_f_r.sk_bp_2_13" group="Chs F R" name="Full Protection Sideskirts + Painted Box (sk_bp_2_13)"/>
+  <accessory value="chs_f_r.sk_bp_3_13" group="Chs F R" name="Full Protection Sideskirts + Painted Box (sk_bp_3_13)"/>
+  <accessory value="chs_f_r.sk_bp_3_15" group="Chs F R" name="Full Protection Sideskirts + Painted Box (sk_bp_3_15)"/>
+  <accessory value="chs_f_r.sk_bpl_2_13" group="Chs F R" name="Full Protection Sideskirts + Plastic Box (sk_bpl_2_13)"/>
+  <accessory value="chs_f_r.sk_bpl_3_13" group="Chs F R" name="Full Protection Sideskirts + Plastic Box (sk_bpl_3_13)"/>
+  <accessory value="chs_f_r.sk_bpl_3_15" group="Chs F R" name="Full Protection Sideskirts + Plastic Box (sk_bpl_3_15)"/>
+  <accessory value="chs_f_r.sk_st_2_13" group="Chs F R" name="Full Protection Sideskirts + Spare Tire (sk_st_2_13)"/>
+  <accessory value="chs_f_r.sk_st_3_13" group="Chs F R" name="Full Protection Sideskirts + Spare Tire (sk_st_3_13)"/>
+  <accessory value="chs_f_r.sk_st_3_15" group="Chs F R" name="Full Protection Sideskirts + Spare Tire (sk_st_3_15)"/>
+  <accessory value="chs_f_r.skp_2_13" group="Chs F R" name="Painted Protection Sideskirts (skp_2_13)"/>
+  <accessory value="chs_f_r.skp_3_13" group="Chs F R" name="Painted Protection Sideskirts (skp_3_13)"/>
+  <accessory value="chs_f_r.skp_3_15" group="Chs F R" name="Painted Protection Sideskirts (skp_3_15)"/>
+  <accessory value="chs_f_r.skp_bch_2_13" group="Chs F R" name="Painted Protection Sideskirts + Chromed Box (skp_bch_2_13)"/>
+  <accessory value="chs_f_r.skp_bch_3_13" group="Chs F R" name="Painted Protection Sideskirts + Chromed Box (skp_bch_3_13)"/>
+  <accessory value="chs_f_r.skp_bch_3_15" group="Chs F R" name="Painted Protection Sideskirts + Chromed Box (skp_bch_3_15)"/>
+  <accessory value="chs_f_r.skp_bp_2_13" group="Chs F R" name="Painted Protection Sideskirts + Painted Box (skp_bp_2_13)"/>
+  <accessory value="chs_f_r.skp_bp_3_13" group="Chs F R" name="Painted Protection Sideskirts + Painted Box (skp_bp_3_13)"/>
+  <accessory value="chs_f_r.skp_bp_3_15" group="Chs F R" name="Painted Protection Sideskirts + Painted Box (skp_bp_3_15)"/>
+  <accessory value="chs_f_r.skp_bpl_2_13" group="Chs F R" name="Painted Protection Sideskirts + Plastic Box (skp_bpl_2_13)"/>
+  <accessory value="chs_f_r.skp_bpl_3_13" group="Chs F R" name="Painted Protection Sideskirts + Plastic Box (skp_bpl_3_13)"/>
+  <accessory value="chs_f_r.skp_bpl_3_15" group="Chs F R" name="Painted Protection Sideskirts + Plastic Box (skp_bpl_3_15)"/>
+  <accessory value="chs_f_r.skp_st_2_13" group="Chs F R" name="Painted Protection Sideskirts + Spare Tire (skp_st_2_13)"/>
+  <accessory value="chs_f_r.skp_st_3_13" group="Chs F R" name="Painted Protection Sideskirts + Spare Tire (skp_st_3_13)"/>
+  <accessory value="chs_f_r.skp_st_3_15" group="Chs F R" name="Painted Protection Sideskirts + Spare Tire (skp_st_3_15)"/>
+  <accessory value="chs_m_l.bch" group="Chs M L" name="Chromed Box"/>
+  <accessory value="chs_m_l.bp" group="Chs M L" name="Painted Box"/>
+  <accessory value="chs_m_l.bpl" group="Chs M L" name="Plastic Box"/>
+  <accessory value="chs_m_r.bch" group="Chs M R" name="Chromed Box"/>
+  <accessory value="chs_m_r.bp" group="Chs M R" name="Painted Box"/>
+  <accessory value="chs_m_r.bpl" group="Chs M R" name="Plastic Box"/>
+  <accessory value="chs_r_l.bch" group="Chs R L" name="Chromed Box"/>
+  <accessory value="chs_r_l.bp" group="Chs R L" name="Painted Box"/>
+  <accessory value="chs_r_l.bpl" group="Chs R L" name="Plastic Box"/>
+  <accessory value="chs_r_l.bpl_st" group="Chs R L" name="Plastic Box + Spare Tire"/>
+  <accessory value="chs_r_l.st" group="Chs R L" name="Spare Tire"/>
+  <accessory value="chs_r_l.wt" group="Chs R L" name="Water Tank"/>
+  <accessory value="chs_r_l.wt_st" group="Chs R L" name="Water Tank + Spare Tire"/>
+  <accessory value="chs_r_r.bch" group="Chs R R" name="Chromed Box"/>
+  <accessory value="chs_r_r.bp" group="Chs R R" name="Painted Box"/>
+  <accessory value="chs_r_r.bpl" group="Chs R R" name="Plastic Box"/>
+  <accessory value="chs_r_r.bpl_st" group="Chs R R" name="Plastic Box + Spare Tire"/>
+  <accessory value="chs_r_r.st" group="Chs R R" name="Spare Tire"/>
+  <accessory value="chs_r_r.wt" group="Chs R R" name="Water Tank"/>
+  <accessory value="chs_r_r.wt_st" group="Chs R R" name="Water Tank + Spare Tire"/>
+  <accessory value="f_body.box" group="F Body" name="Store Box"/>
+  <accessory value="f_body.doc" group="F Body" name="Plastic Box"/>
+  <accessory value="f_body.ext" group="F Body" name="Extinguisher, 2x"/>
+  <accessory value="l_body.ext" group="L Body" name="Extinguisher"/>
+  <accessory value="markers.simple_13" group="Markers" name="Standard (simple_13)"/>
+  <accessory value="markers.simple_15" group="Markers" name="Standard (simple_15)"/>
+  <accessory value="r_banner.long" group="R Banner" name="Long Vehicle (long)"/>
+  <accessory value="r_banner.long_de" group="R Banner" name="Long Vehicle (long_de)"/>
+  <accessory value="r_banner.long_fin" group="R Banner" name="Long Vehicle (long_fin)"/>
+  <accessory value="r_banner.long_ned" group="R Banner" name="Long Vehicle (long_ned)"/>
+  <accessory value="r_bumper.paint" group="R Bumper" name="Painted"/>
+  <accessory value="r_bumper.simple" group="R Bumper" name="Standard"/>
+  <accessory value="r_bumper.simple_black" group="R Bumper" name="Standard II"/>
+  <accessory value="r_fender.pl1_2" group="R Fender" name="Standard (pl1_2)"/>
+  <accessory value="r_fender.pl1_3" group="R Fender" name="Standard (pl1_3)"/>
+  <accessory value="r_fender.pl1_3_sp" group="R Fender" name="Standard (pl1_3_sp)"/>
+  <accessory value="r_fender.pl2_2" group="R Fender" name="Standard II (pl2_2)"/>
+  <accessory value="r_fender.pl2_3" group="R Fender" name="Standard II (pl2_3)"/>
+  <accessory value="r_fender.pl2_3_sp" group="R Fender" name="Standard II (pl2_3_sp)"/>
+  <accessory value="r_fender.pl3_2" group="R Fender" name="Standard III (pl3_2)"/>
+  <accessory value="r_fender.pl3_3" group="R Fender" name="Standard III (pl3_3)"/>
+  <accessory value="r_fender.pl3_3_sp" group="R Fender" name="Standard III (pl3_3_sp)"/>
+  <accessory value="r_mudflap.logo" group="R Mudflap" name="Kögel"/>
+  <accessory value="r_mudflap.logo_uk" group="R Mudflap" name="Kögel UK"/>
+  <accessory value="rear_body.bmp_rub" group="Rear Body" name="Rubber Bumper"/>
+  <accessory value="rear_body.bmp_stl" group="Rear Body" name="Steel Bumper"/>
+  <accessory value="rear_body.rol_rub" group="Rear Body" name="Rubber Roller"/>
+  <accessory value="rear_body.rol_stl" group="Rear Body" name="Steel Roller"/>
+</vehicle>

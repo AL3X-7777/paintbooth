@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="iveco.stralis" game="ets2" brand="Iveco" name="Stralis" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="as_higher.iveco.stralis.cabin" name="Active Space Super"/>
+  <variant id="at.iveco.stralis.cabin" name="Active Space"/>
+  <variant id="at_higher.iveco.stralis.cabin" name="Active Super"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+</vehicle>

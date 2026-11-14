@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="volvo.fh16_2012" game="ets2" brand="Volvo" name="FH" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="l2h1.volvo.fh16_2012.cabin" name="Sleeper"/>
+  <variant id="l2h2.volvo.fh16_2012.cabin" name="Globetrotter"/>
+  <variant id="l2h3.volvo.fh16_2012.cabin" name="Globetrotter XL (l2h3)"/>
+  <variant id="l2h3_8x4.volvo.fh16_2012.cabin" name="Globetrotter XL (l2h3_8x4)" model="/vehicle/truck/volvo_fh16_2012/cabin/globe_xl_8x4.pmd"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="chassis.8x4" group="Chassis" name="8x4/4 Midlift"/>
+  <accessory value="exhaust_m.shape1" group="Exhaust M" name="Diva"/>
+  <accessory value="exhaust_m.shape2" group="Exhaust M" name="Centurion"/>
+  <accessory value="f_fender_chs.paint" group="F Fender Chs" name="Paint"/>
+  <accessory value="f_grill.net" group="F Grill" name="Painted Net"/>
+  <accessory value="f_mirror.painted" group="F Mirror" name="Painted"/>
+  <accessory value="f_mirror.paintedl" group="F Mirror" name="Painted Long"/>
+  <accessory value="filter.paint_gl" group="Filter" name="Painted (paint_gl)"/>
+  <accessory value="filter.paint_glxl" group="Filter" name="Painted (paint_glxl)"/>
+  <accessory value="filter.paint_slep" group="Filter" name="Painted (paint_slep)"/>
+  <accessory value="mirror.chrom_spec" group="Mirror" name="Chromed Luxury"/>
+  <accessory value="mirror.chrome_led" group="Mirror" name="Painted, LED"/>
+  <accessory value="mirror.chrome_logo" group="Mirror" name="Painted &amp; Chromed"/>
+  <accessory value="mirror.shape3" group="Mirror" name="Painted"/>
+  <accessory value="r_bumper.bend" group="R Bumper" name="Thor"/>
+  <accessory value="r_bumper.painted" group="R Bumper" name="Chariot"/>
+  <accessory value="r_bumper.smoth" group="R Bumper" name="Diva"/>
+  <accessory value="r_chs_cover.mix_4x" group="R Chs Cover" name="Centurion (mix_4x)"/>
+  <accessory value="r_chs_cover.mix_6x" group="R Chs Cover" name="Centurion (mix_6x)"/>
+  <accessory value="r_chs_cover.painted_4x" group="R Chs Cover" name="Diva (painted_4x)"/>
+  <accessory value="r_chs_cover.painted_6x" group="R Chs Cover" name="Diva (painted_6x)"/>
+  <accessory value="r_fender.paint_4x" group="R Fender" name="Painted (paint_4x)"/>
+  <accessory value="r_fender.paint_6x" group="R Fender" name="Painted (paint_6x)"/>
+  <accessory value="r_fender.paint_8x" group="R Fender" name="Painted (paint_8x)"/>
+  <accessory value="r_fendr_top.chrome_p_4x" group="R Fendr Top" name="Painted &amp; Chromed (chrome_p_4x)"/>
+  <accessory value="r_fendr_top.chrome_p_6x" group="R Fendr Top" name="Painted &amp; Chromed (chrome_p_6x)"/>
+  <accessory value="r_fendr_top.chrome_p_8x" group="R Fendr Top" name="Painted &amp; Chromed (chrome_p_8x)"/>
+  <accessory value="r_fendr_top.paint_4x" group="R Fendr Top" name="Painted (paint_4x)"/>
+  <accessory value="r_fendr_top.paint_6x" group="R Fendr Top" name="Painted (paint_6x)"/>
+  <accessory value="r_fendr_top.paint_8x" group="R Fendr Top" name="Painted (paint_8x)"/>
+  <accessory value="s_mirror.paint" group="S Mirror" name="Painted"/>
+  <accessory value="sideskirt.chrome_4x" group="Sideskirt" name="Painted &amp; Chromed II (chrome_4x)"/>
+  <accessory value="sideskirt.chrome_6x" group="Sideskirt" name="Painted &amp; Chromed II (chrome_6x)"/>
+  <accessory value="sideskirt.chrome_s4x" group="Sideskirt" name="Painted &amp; Chromed (chrome_s4x)"/>
+  <accessory value="sideskirt.chrome_s6x" group="Sideskirt" name="Painted &amp; Chromed (chrome_s6x)"/>
+  <accessory value="sideskirt.shape2" group="Sideskirt" name="Full Protection Sideskirts (shape2)"/>
+  <accessory value="sideskirt.stock_6x" group="Sideskirt" name="Full Protection Sideskirts (stock_6x)"/>
+  <accessory value="sunshld.dual" group="Sunshld" name="Painted"/>
+  <accessory value="sunshld.quatro" group="Sunshld" name="Exclusive Painted"/>
+  <accessory value="sunshld.shape1" group="Sunshld" name="Stock"/>
+  <accessory value="sunshld.shape2" group="Sunshld" name="Samurai"/>
+  <accessory value="sunshld.triangle" group="Sunshld" name="Painted, Luxury"/>
+</vehicle>

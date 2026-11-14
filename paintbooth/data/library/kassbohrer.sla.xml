@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="kassbohrer.sla" game="ets2" brand="Kassbohrer" name="Sla" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.short" name="K.SLA 3 / 1N - 18 / 30"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="chs_f_l.sd1" group="Chs F L" name="Side Skirt"/>
+  <accessory value="chs_f_r.sd1_bst1" group="Chs F R" name="Side Skirt + Big Box"/>
+  <accessory value="chs_f_r.sd1_bst2" group="Chs F R" name="Side Skirt + Big Box II"/>
+  <accessory value="f_body.ext" group="F Body" name="Extinguisher"/>
+  <accessory value="r_bumper.exclusive" group="R Bumper" name="Exclusive"/>
+  <accessory value="r_bumper.simple" group="R Bumper" name="Standard"/>
+  <accessory value="r_mudflap.logo" group="R Mudflap" name="Kässbohrer"/>
+  <accessory value="r_mudflap.logo_uk" group="R Mudflap" name="Kässbohrer UK"/>
+  <accessory value="rear_body.fliptoeramps" group="Rear Body" name="Flip Toe Ramps"/>
+  <accessory value="rear_body.noramps" group="Rear Body" name="Standard"/>
+</vehicle>

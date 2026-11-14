@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="scs.log" game="ets2" brand="SCS" name="Log" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.steel_136" name="Steel Floor Logger (steel_136)"/>
+  <variant id="body.steel_78" name="Steel Floor Logger (steel_78)"/>
+  <variant id="body.wood_136" name="Wooden Floor Logger (wood_136)"/>
+  <variant id="body.wood_78" name="Wooden Floor Logger (wood_78)"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="chs_f_l.cage_136" group="Chs F L" name="Simple Side Protection (cage_136)"/>
+  <accessory value="chs_f_l.cage_short" group="Chs F L" name="Simple Side Protection (cage_short)"/>
+  <accessory value="chs_f_l.ch_box_cage" group="Chs F L" name="Simple Side Protection + Chromed Box"/>
+  <accessory value="chs_f_l.ch_box_doubl" group="Chs F L" name="Chromed Box, 2x"/>
+  <accessory value="chs_f_l.chrome_box" group="Chs F L" name="Chromed Box"/>
+  <accessory value="chs_f_l.p_box_cage" group="Chs F L" name="Simple Side Protection + Painted Box"/>
+  <accessory value="chs_f_l.p_box_doubl" group="Chs F L" name="Painted Box, 2x"/>
+  <accessory value="chs_f_l.paint_box" group="Chs F L" name="Painted Box"/>
+  <accessory value="chs_f_l.palletbox" group="Chs F L" name="Pallet Box"/>
+  <accessory value="chs_f_l.sideskirt_01" group="Chs F L" name="Full Protection Sideskirts (sideskirt_01)"/>
+  <accessory value="chs_f_l.sideskirt_02" group="Chs F L" name="Full Protection Sideskirts (sideskirt_02)"/>
+  <accessory value="chs_f_r.cage_136" group="Chs F R" name="Simple Side Protection (cage_136)"/>
+  <accessory value="chs_f_r.cage_short" group="Chs F R" name="Simple Side Protection (cage_short)"/>
+  <accessory value="chs_f_r.ch_box_cage" group="Chs F R" name="Simple Side Protection + Chromed Box"/>
+  <accessory value="chs_f_r.ch_box_doubl" group="Chs F R" name="Chromed Box, 2x"/>
+  <accessory value="chs_f_r.chrome_box" group="Chs F R" name="Chromed Box"/>
+  <accessory value="chs_f_r.p_box_cage" group="Chs F R" name="Simple Side Protection + Painted Box"/>
+  <accessory value="chs_f_r.p_box_doubl" group="Chs F R" name="Painted Box, 2x"/>
+  <accessory value="chs_f_r.paint_box" group="Chs F R" name="Painted Box"/>
+  <accessory value="chs_f_r.palletbox" group="Chs F R" name="Pallet Box"/>
+  <accessory value="chs_f_r.sideskirt_01" group="Chs F R" name="Full Protection Sideskirts (sideskirt_01)"/>
+  <accessory value="chs_f_r.sideskirt_02" group="Chs F R" name="Full Protection Sideskirts (sideskirt_02)"/>
+  <accessory value="chs_m_l.cage_bd" group="Chs M L" name="Simple Side Protection"/>
+  <accessory value="chs_m_l.chrome_boxbd" group="Chs M L" name="Chromed Box"/>
+  <accessory value="chs_m_l.paint_box_bd" group="Chs M L" name="Painted Box"/>
+  <accessory value="chs_m_l.sideskirt_bd" group="Chs M L" name="Full Protection Sideskirts"/>
+  <accessory value="chs_m_r.cage_bd" group="Chs M R" name="Simple Side Protection"/>
+  <accessory value="chs_m_r.chrome_boxbd" group="Chs M R" name="Chromed Box"/>
+  <accessory value="chs_m_r.paint_box_bd" group="Chs M R" name="Painted Box"/>
+  <accessory value="chs_m_r.sideskirt_bd" group="Chs M R" name="Full Protection Sideskirts"/>
+  <accessory value="chs_r_l.chrome_box" group="Chs R L" name="Chromed Box"/>
+  <accessory value="chs_r_l.paint_box" group="Chs R L" name="Painted Box"/>
+  <accessory value="chs_r_l.pl_box_ext" group="Chs R L" name="Plastic Box + Extinguisher"/>
+  <accessory value="chs_r_l.pl_box_water" group="Chs R L" name="Plastic Box + Water Tank"/>
+  <accessory value="chs_r_l.spare_tire" group="Chs R L" name="Spare Tire"/>
+  <accessory value="chs_r_r.chrome_box" group="Chs R R" name="Chromed Box"/>
+  <accessory value="chs_r_r.paint_box" group="Chs R R" name="Painted Box"/>
+  <accessory value="chs_r_r.pl_box_ext" group="Chs R R" name="Plastic Box + Extinguisher"/>
+  <accessory value="chs_r_r.pl_box_water" group="Chs R R" name="Plastic Box + Water Tank"/>
+  <accessory value="chs_r_r.spare_tire" group="Chs R R" name="Spare Tire"/>
+  <accessory value="f_body.cage" group="F Body" name="Front Cage"/>
+  <accessory value="f_body.wall" group="F Body" name="Front Wall"/>
+  <accessory value="markers.simple" group="Markers" name="Standard (simple)"/>
+  <accessory value="markers.simple_78" group="Markers" name="Standard (simple_78)"/>
+  <accessory value="markers.us_style" group="Markers" name="Exclusive (us_style)"/>
+  <accessory value="markers.us_style_78" group="Markers" name="Exclusive (us_style_78)"/>
+  <accessory value="r_banner.dog" group="R Banner" name="Long Vehicle Dog"/>
+  <accessory value="r_banner.long" group="R Banner" name="Long Vehicle (long)"/>
+  <accessory value="r_banner.long_de" group="R Banner" name="Long Vehicle (long_de)"/>
+  <accessory value="r_banner.long_ned" group="R Banner" name="Long Vehicle (long_ned)"/>
+  <accessory value="r_banner.pitka_kul" group="R Banner" name="Long Vehicle (pitka_kul)"/>
+  <accessory value="r_bumper.eco_2" group="R Bumper" name="Standard Eco (eco_2)"/>
+  <accessory value="r_bumper.eco_2_bd" group="R Bumper" name="Standard Eco (eco_2_bd)"/>
+  <accessory value="r_bumper.eco_2_d" group="R Bumper" name="Standard Eco (eco_2_d)"/>
+  <accessory value="r_bumper.euro_3" group="R Bumper" name="Standard (euro_3)"/>
+  <accessory value="r_bumper.euro_3_bd" group="R Bumper" name="Standard (euro_3_bd)"/>
+  <accessory value="r_bumper.euro_3_d" group="R Bumper" name="Standard (euro_3_d)"/>
+  <accessory value="r_mudflap.simple" group="R Mudflap" name="Standard"/>
+  <accessory value="r_mudflap.w_lead" group="R Mudflap" name="Exclusive"/>
+  <accessory value="rear_body.beacon" group="Rear Body" name="Beacon"/>
+  <accessory value="rear_body.strobe" group="Rear Body" name="Strobe"/>
+  <accessory value="trlr_cables.bd_log" group="Trlr Cables" name="Bd Log"/>
+  <accessory value="trlr_cables.d_cables" group="Trlr Cables" name="D Cables"/>
+  <accessory value="trlr_cables.dolly_cables" group="Trlr Cables" name="Dolly Cables"/>
+</vehicle>

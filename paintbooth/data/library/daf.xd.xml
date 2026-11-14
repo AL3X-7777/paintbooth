@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="daf.xd" game="ets2" brand="DAF" name="XD" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="day.daf.xd.cabin" name="Day Cab" model="/vehicle/truck/daf_xd/cabin/cab_day.pmd"/>
+  <variant id="sl.daf.xd.cabin" name="Sleeper" model="/vehicle/truck/daf_xd/cabin/cab_sl.pmd"/>
+  <variant id="slh.daf.xd.cabin" name="Sleeper High" model="/vehicle/truck/daf_xd/cabin/cab_slh.pmd"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="mirror.cam_semi" group="Mirror" name="DAF Digital Vision (cam_semi)"/>
+  <accessory value="mirror.cam_semi_h" group="Mirror" name="DAF Digital Vision (cam_semi_h)"/>
+  <accessory value="mirror.plast" group="Mirror" name="Plastic"/>
+  <accessory value="mirror.semi" group="Mirror" name="Painted &amp; Plastic"/>
+  <accessory value="sideskirt.pnt_4x2s" group="Sideskirt" name="Painted"/>
+  <accessory value="sunshield.paint_slh" group="Sunshield" name="Painted"/>
+</vehicle>

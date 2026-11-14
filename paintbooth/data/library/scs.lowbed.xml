@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="scs.lowbed" game="ets2" brand="SCS" name="Lowbed" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.long" name="Low Bed (long)"/>
+  <variant id="body.short" name="Low Bed (short)"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="chs_f_l.cage_78" group="Chs F L" name="Simple Side Protection (cage_78)"/>
+  <accessory value="chs_f_l.cage_short" group="Chs F L" name="Simple Side Protection (cage_short)"/>
+  <accessory value="chs_f_l.chrome_box" group="Chs F L" name="Chromed Box"/>
+  <accessory value="chs_f_l.paint_box" group="Chs F L" name="Painted Box"/>
+  <accessory value="chs_f_l.plastic_box" group="Chs F L" name="Plastic Box"/>
+  <accessory value="chs_f_r.cage_78" group="Chs F R" name="Simple Side Protection (cage_78)"/>
+  <accessory value="chs_f_r.cage_short" group="Chs F R" name="Simple Side Protection (cage_short)"/>
+  <accessory value="chs_f_r.chrome_box" group="Chs F R" name="Chromed Box"/>
+  <accessory value="chs_f_r.paint_box" group="Chs F R" name="Painted Box"/>
+  <accessory value="chs_f_r.plastic_box" group="Chs F R" name="Plastic Box"/>
+  <accessory value="chs_m_l.cage" group="Chs M L" name="Simple Side Protection"/>
+  <accessory value="chs_m_l.chrome_box_m" group="Chs M L" name="Chromed Box"/>
+  <accessory value="chs_m_l.paint_box_m" group="Chs M L" name="Painted Box"/>
+  <accessory value="chs_m_l.plastic_box" group="Chs M L" name="Plastic Box"/>
+  <accessory value="chs_m_r.cage" group="Chs M R" name="Simple Side Protection"/>
+  <accessory value="chs_m_r.chrome_box_m" group="Chs M R" name="Chromed Box"/>
+  <accessory value="chs_m_r.paint_box_m" group="Chs M R" name="Painted Box"/>
+  <accessory value="chs_m_r.plastic_box" group="Chs M R" name="Plastic Box"/>
+  <accessory value="chs_r_l.beacon" group="Chs R L" name="Beacon"/>
+  <accessory value="chs_r_l.strobe" group="Chs R L" name="Strobe"/>
+  <accessory value="f_body.paint" group="F Body" name="Painted"/>
+  <accessory value="f_body.std" group="F Body" name="Standard"/>
+  <accessory value="markers.simple" group="Markers" name="Standard (simple)"/>
+  <accessory value="markers.simple_sp" group="Markers" name="Standard (simple_sp)"/>
+  <accessory value="markers.us_style" group="Markers" name="Exclusive (us_style)"/>
+  <accessory value="markers.us_style_sp" group="Markers" name="Exclusive (us_style_sp)"/>
+  <accessory value="markers.us_style_sp3" group="Markers" name="Exclusive (us_style_sp3)"/>
+  <accessory value="r_banner.dog" group="R Banner" name="Long Vehicle Dog"/>
+  <accessory value="r_banner.long" group="R Banner" name="Long Vehicle"/>
+  <accessory value="r_banner.wide" group="R Banner" name="Wide Vehicle"/>
+  <accessory value="r_bumper.eco_2" group="R Bumper" name="Standard Eco"/>
+  <accessory value="r_bumper.euro_3" group="R Bumper" name="Standard"/>
+  <accessory value="r_bumper.paint" group="R Bumper" name="Exclusive"/>
+  <accessory value="r_mudflap.simple" group="R Mudflap" name="Standard"/>
+  <accessory value="r_mudflap.w_lead" group="R Mudflap" name="Exclusive"/>
+  <accessory value="rear_body.fliptoeramps" group="Rear Body" name="Flip Toe Ramps"/>
+  <accessory value="rear_body.ramps" group="Rear Body" name="Ramps"/>
+  <accessory value="rear_body.simple" group="Rear Body" name="Standard"/>
+</vehicle>

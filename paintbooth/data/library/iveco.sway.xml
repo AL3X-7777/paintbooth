@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="iveco.sway" game="ets2" brand="Iveco" name="S-Way" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="as.iveco.sway.cabin" name="Active Space" model="/vehicle/truck/iveco_sway/cabin/cab_as.pmd"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="sideskirt.pnt_4x2" group="Sideskirt" name="Painted"/>
+  <accessory value="sideskirt.pnt_4x2_a" group="Sideskirt" name="Painted, Aero"/>
+</vehicle>

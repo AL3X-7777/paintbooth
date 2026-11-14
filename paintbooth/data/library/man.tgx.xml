@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="man.tgx" game="ets2" brand="MAN" name="TGX Euro 5" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="xl_cab.man.tgx.cabin" name="XL"/>
+  <variant id="xlx_cab.man.tgx.cabin" name="XLX"/>
+  <variant id="xxl_cab.man.tgx.cabin" name="XXL"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+</vehicle>

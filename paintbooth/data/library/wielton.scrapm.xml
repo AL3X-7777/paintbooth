@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="wielton.scrapm" game="ets2" brand="Wielton" name="Scrapm" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.dumper_52" name="Scrap Master (dumper_52)"/>
+  <variant id="body.dumper_62" name="Scrap Master (dumper_62)"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="body.dumper_52" group="Body" name="Dumper 52"/>
+  <accessory value="body.dumper_62" group="Body" name="Dumper 62"/>
+  <accessory value="chassis.ch_3_10" group="Chassis" name="Ch 3 10"/>
+  <accessory value="chassis.ch_3_12" group="Chassis" name="Ch 3 12"/>
+  <accessory value="chs_f_l.cg_3_10" group="Chs F L" name="Simple Side Protection (cg_3_10)"/>
+  <accessory value="chs_f_l.cg_3_12" group="Chs F L" name="Simple Side Protection (cg_3_12)"/>
+  <accessory value="chs_f_l.cg_bpl_3_10" group="Chs F L" name="Simple Side Protection + Plastic Box (cg_bpl_3_10)"/>
+  <accessory value="chs_f_l.cg_bpl_3_12" group="Chs F L" name="Simple Side Protection + Plastic Box (cg_bpl_3_12)"/>
+  <accessory value="chs_f_l.cg_bpstwt10" group="Chs F L" name="Simple Side Protection + Plastic Box + Spare Tire + Water Tank (cg_bpstwt10)"/>
+  <accessory value="chs_f_l.cg_bpstwt12" group="Chs F L" name="Simple Side Protection + Plastic Box + Spare Tire + Water Tank (cg_bpstwt12)"/>
+  <accessory value="chs_f_l.cg_ext_3_10" group="Chs F L" name="Simple Side Protection + Extinguisher (cg_ext_3_10)"/>
+  <accessory value="chs_f_l.cg_ext_3_12" group="Chs F L" name="Simple Side Protection + Extinguisher (cg_ext_3_12)"/>
+  <accessory value="chs_f_l.cg_st_3_10" group="Chs F L" name="Simple Side Protection + Spare Tire (cg_st_3_10)"/>
+  <accessory value="chs_f_l.cg_st_3_12" group="Chs F L" name="Simple Side Protection + Spare Tire (cg_st_3_12)"/>
+  <accessory value="chs_f_l.cg_wt_3_10" group="Chs F L" name="Simple Side Protection + Water Tank (cg_wt_3_10)"/>
+  <accessory value="chs_f_l.cg_wt_3_12" group="Chs F L" name="Simple Side Protection + Water Tank (cg_wt_3_12)"/>
+  <accessory value="chs_f_l.cgp_3_10" group="Chs F L" name="Painted Side Protection (cgp_3_10)"/>
+  <accessory value="chs_f_l.cgp_3_12" group="Chs F L" name="Painted Side Protection (cgp_3_12)"/>
+  <accessory value="chs_f_l.cgp_bpl_3_10" group="Chs F L" name="Painted Side Protection + Plastic Box (cgp_bpl_3_10)"/>
+  <accessory value="chs_f_l.cgp_bpl_3_12" group="Chs F L" name="Painted Side Protection + Plastic Box (cgp_bpl_3_12)"/>
+  <accessory value="chs_f_l.cgp_bpstwt10" group="Chs F L" name="Painted Side Protection + Plastic Box + Spare Tire + Water Tank (cgp_bpstwt10)"/>
+  <accessory value="chs_f_l.cgp_bpstwt12" group="Chs F L" name="Painted Side Protection + Plastic Box + Spare Tire + Water Tank (cgp_bpstwt12)"/>
+  <accessory value="chs_f_l.cgp_ext_3_10" group="Chs F L" name="Painted Side Protection + Extinguisher (cgp_ext_3_10)"/>
+  <accessory value="chs_f_l.cgp_ext_3_12" group="Chs F L" name="Painted Side Protection + Extinguisher (cgp_ext_3_12)"/>
+  <accessory value="chs_f_l.cgp_st_3_10" group="Chs F L" name="Painted Side Protection + Spare Tire (cgp_st_3_10)"/>
+  <accessory value="chs_f_l.cgp_st_3_12" group="Chs F L" name="Painted Side Protection + Spare Tire (cgp_st_3_12)"/>
+  <accessory value="chs_f_l.cgp_wt_3_10" group="Chs F L" name="Painted Side Protection + Water Tank (cgp_wt_3_10)"/>
+  <accessory value="chs_f_l.cgp_wt_3_12" group="Chs F L" name="Painted Side Protection + Water Tank (cgp_wt_3_12)"/>
+  <accessory value="chs_f_r.cg_3_10" group="Chs F R" name="Simple Side Protection (cg_3_10)"/>
+  <accessory value="chs_f_r.cg_3_12" group="Chs F R" name="Simple Side Protection (cg_3_12)"/>
+  <accessory value="chs_f_r.cg_bpl_3_10" group="Chs F R" name="Simple Side Protection + Plastic Box (cg_bpl_3_10)"/>
+  <accessory value="chs_f_r.cg_bpl_3_12" group="Chs F R" name="Simple Side Protection + Plastic Box (cg_bpl_3_12)"/>
+  <accessory value="chs_f_r.cg_bpstwt10" group="Chs F R" name="Simple Side Protection + Plastic Box + Spare Tire + Water Tank (cg_bpstwt10)"/>
+  <accessory value="chs_f_r.cg_bpstwt12" group="Chs F R" name="Simple Side Protection + Plastic Box + Spare Tire + Water Tank (cg_bpstwt12)"/>
+  <accessory value="chs_f_r.cg_ext_3_10" group="Chs F R" name="Simple Side Protection + Extinguisher (cg_ext_3_10)"/>
+  <accessory value="chs_f_r.cg_ext_3_12" group="Chs F R" name="Simple Side Protection + Extinguisher (cg_ext_3_12)"/>
+  <accessory value="chs_f_r.cg_st_3_10" group="Chs F R" name="Simple Side Protection + Spare Tire (cg_st_3_10)"/>
+  <accessory value="chs_f_r.cg_st_3_12" group="Chs F R" name="Simple Side Protection + Spare Tire (cg_st_3_12)"/>
+  <accessory value="chs_f_r.cg_wt_3_10" group="Chs F R" name="Simple Side Protection + Water Tank (cg_wt_3_10)"/>
+  <accessory value="chs_f_r.cg_wt_3_12" group="Chs F R" name="Simple Side Protection + Water Tank (cg_wt_3_12)"/>
+  <accessory value="chs_f_r.cgp_3_10" group="Chs F R" name="Painted Side Protection (cgp_3_10)"/>
+  <accessory value="chs_f_r.cgp_3_12" group="Chs F R" name="Painted Side Protection (cgp_3_12)"/>
+  <accessory value="chs_f_r.cgp_bpl_3_10" group="Chs F R" name="Painted Side Protection + Plastic Box (cgp_bpl_3_10)"/>
+  <accessory value="chs_f_r.cgp_bpl_3_12" group="Chs F R" name="Painted Side Protection + Plastic Box (cgp_bpl_3_12)"/>
+  <accessory value="chs_f_r.cgp_bpstwt10" group="Chs F R" name="Painted Side Protection + Plastic Box + Spare Tire + Water Tank (cgp_bpstwt10)"/>
+  <accessory value="chs_f_r.cgp_bpstwt12" group="Chs F R" name="Painted Side Protection + Plastic Box + Spare Tire + Water Tank (cgp_bpstwt12)"/>
+  <accessory value="chs_f_r.cgp_ext_3_10" group="Chs F R" name="Painted Side Protection + Extinguisher (cgp_ext_3_10)"/>
+  <accessory value="chs_f_r.cgp_ext_3_12" group="Chs F R" name="Painted Side Protection + Extinguisher (cgp_ext_3_12)"/>
+  <accessory value="chs_f_r.cgp_st_3_10" group="Chs F R" name="Painted Side Protection + Spare Tire (cgp_st_3_10)"/>
+  <accessory value="chs_f_r.cgp_st_3_12" group="Chs F R" name="Painted Side Protection + Spare Tire (cgp_st_3_12)"/>
+  <accessory value="chs_f_r.cgp_wt_3_10" group="Chs F R" name="Painted Side Protection + Water Tank (cgp_wt_3_10)"/>
+  <accessory value="chs_f_r.cgp_wt_3_12" group="Chs F R" name="Painted Side Protection + Water Tank (cgp_wt_3_12)"/>
+  <accessory value="f_body.box_pl_1" group="F Body" name="Plastic Box"/>
+  <accessory value="f_body.box_pl_2" group="F Body" name="Plastic Box, 2x"/>
+  <accessory value="l_body.ladder" group="L Body" name="Ladder"/>
+  <accessory value="l_body.tools" group="L Body" name="Tools"/>
+  <accessory value="m_mudflap.logo1" group="M Mudflap" name="Wielton (logo1)"/>
+  <accessory value="m_mudflap.logo2" group="M Mudflap" name="Wielton (logo2)"/>
+  <accessory value="markers.simple_3_10" group="Markers" name="Standard (simple_3_10)"/>
+  <accessory value="markers.simple_3_12" group="Markers" name="Standard (simple_3_12)"/>
+  <accessory value="r_body.ladder" group="R Body" name="Ladder"/>
+  <accessory value="r_body.tools" group="R Body" name="Tools"/>
+  <accessory value="r_bumper.alu" group="R Bumper" name="Standard"/>
+  <accessory value="r_bumper.paint" group="R Bumper" name="Painted"/>
+  <accessory value="r_fender.plastic" group="R Fender" name="Standard"/>
+  <accessory value="r_mudflap.logo" group="R Mudflap" name="Wielton"/>
+  <accessory value="r_mudflap.logo_uk" group="R Mudflap" name="Wielton UK"/>
+  <accessory value="rear_body.door_52" group="Rear Body" name="Rear Door (door_52)"/>
+  <accessory value="rear_body.door_62" group="Rear Body" name="Rear Door (door_62)"/>
+</vehicle>

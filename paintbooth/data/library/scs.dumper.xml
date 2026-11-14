@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="scs.dumper" game="ets2" brand="SCS" name="Dumper" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.al10" name="Aluminum Dumper (al10)"/>
+  <variant id="body.al9" name="Aluminum Dumper (al9)"/>
+  <variant id="body.steel10" name="Steel Dumper (steel10)"/>
+  <variant id="body.steel9" name="Steel Dumper (steel9)"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="body.al10" group="Body" name="Al10"/>
+  <accessory value="body.al9" group="Body" name="Al9"/>
+  <accessory value="body.steel10" group="Body" name="Steel10"/>
+  <accessory value="body.steel9" group="Body" name="Steel9"/>
+  <accessory value="chassis.ch_2" group="Chassis" name="Ch 2"/>
+  <accessory value="chassis.ch_3" group="Chassis" name="Ch 3"/>
+  <accessory value="chassis.ch_3_10" group="Chassis" name="Ch 3 10"/>
+  <accessory value="chs_f_l.cage_136" group="Chs F L" name="Simple Side Protection (cage_136)"/>
+  <accessory value="chs_f_l.cage_78" group="Chs F L" name="Simple Side Protection (cage_78)"/>
+  <accessory value="chs_f_l.cage_short_t" group="Chs F L" name="Simple Side Protection + Spare Tire"/>
+  <accessory value="chs_f_l.ch_box_cage" group="Chs F L" name="Simple Side Protection + Chromed Box"/>
+  <accessory value="chs_f_l.ch_box_sidsk" group="Chs F L" name="Full Protection Sideskirts + Chromed Box"/>
+  <accessory value="chs_f_l.chrome_box" group="Chs F L" name="Chromed Box"/>
+  <accessory value="chs_f_l.extinguisher" group="Chs F L" name="Extinguisher"/>
+  <accessory value="chs_f_l.p_box_cage" group="Chs F L" name="Simple Side Protection + Painted Box"/>
+  <accessory value="chs_f_l.p_box_sidsk" group="Chs F L" name="Full Protection Sideskirts + Painted Box"/>
+  <accessory value="chs_f_l.paint_box" group="Chs F L" name="Painted Box"/>
+  <accessory value="chs_f_l.pl_box_cage" group="Chs F L" name="Simple Side Protection + Plastic Box"/>
+  <accessory value="chs_f_l.pl_box_sidsk" group="Chs F L" name="Full Protection Sideskirts + Plastic Box"/>
+  <accessory value="chs_f_l.side01_sh_t" group="Chs F L" name="Full Protection Sideskirts + Spare Tire"/>
+  <accessory value="chs_f_l.sideskirt_01" group="Chs F L" name="Full Protection Sideskirts"/>
+  <accessory value="chs_f_l.water_tank" group="Chs F L" name="Water Tank"/>
+  <accessory value="chs_f_r.cage_136" group="Chs F R" name="Simple Side Protection (cage_136)"/>
+  <accessory value="chs_f_r.cage_78" group="Chs F R" name="Simple Side Protection (cage_78)"/>
+  <accessory value="chs_f_r.cage_short_t" group="Chs F R" name="Simple Side Protection + Spare Tire"/>
+  <accessory value="chs_f_r.ch_box_cage" group="Chs F R" name="Simple Side Protection + Chromed Box"/>
+  <accessory value="chs_f_r.ch_box_sidsk" group="Chs F R" name="Full Protection Sideskirts + Chromed Box"/>
+  <accessory value="chs_f_r.chrome_box" group="Chs F R" name="Chromed Box"/>
+  <accessory value="chs_f_r.extinguisher" group="Chs F R" name="Extinguisher"/>
+  <accessory value="chs_f_r.p_box_cage" group="Chs F R" name="Simple Side Protection + Painted Box"/>
+  <accessory value="chs_f_r.p_box_sidsk" group="Chs F R" name="Full Protection Sideskirts + Painted Box"/>
+  <accessory value="chs_f_r.paint_box" group="Chs F R" name="Painted Box"/>
+  <accessory value="chs_f_r.pl_box_cage" group="Chs F R" name="Simple Side Protection + Plastic Box"/>
+  <accessory value="chs_f_r.pl_box_sidsk" group="Chs F R" name="Full Protection Sideskirts + Plastic Box"/>
+  <accessory value="chs_f_r.side01_sh_t" group="Chs F R" name="Full Protection Sideskirts + Spare Tire"/>
+  <accessory value="chs_f_r.sideskirt_01" group="Chs F R" name="Full Protection Sideskirts"/>
+  <accessory value="chs_f_r.water_tank" group="Chs F R" name="Water Tank"/>
+  <accessory value="f_body.ladderalu" group="F Body" name="Ladder Aluminum"/>
+  <accessory value="f_body.ladderpaint" group="F Body" name="Ladder Painted"/>
+  <accessory value="markers.exclusive" group="Markers" name="Exclusive"/>
+  <accessory value="markers.simple" group="Markers" name="Standard"/>
+  <accessory value="r_banner.dog" group="R Banner" name="Long Vehicle Dog"/>
+  <accessory value="r_banner.long" group="R Banner" name="Long Vehicle"/>
+  <accessory value="r_bumper.eco_2" group="R Bumper" name="Standard Eco"/>
+  <accessory value="r_bumper.euro_3" group="R Bumper" name="Standard"/>
+  <accessory value="r_bumper.paint" group="R Bumper" name="Exclusive"/>
+  <accessory value="r_fender.paint_2" group="R Fender" name="Exclusive (paint_2)"/>
+  <accessory value="r_fender.paint_3" group="R Fender" name="Exclusive (paint_3)"/>
+  <accessory value="r_fender.plastic_2" group="R Fender" name="Standard (plastic_2)"/>
+  <accessory value="r_fender.plastic_3" group="R Fender" name="Standard (plastic_3)"/>
+  <accessory value="r_fender.steel_2" group="R Fender" name="Aluminum (steel_2)"/>
+  <accessory value="r_fender.steel_3" group="R Fender" name="Aluminum (steel_3)"/>
+  <accessory value="r_mudflap.simple" group="R Mudflap" name="Standard"/>
+  <accessory value="r_mudflap.w_lead" group="R Mudflap" name="Exclusive"/>
+</vehicle>

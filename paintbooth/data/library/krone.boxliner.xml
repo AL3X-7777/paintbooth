@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="krone.boxliner" game="ets2" brand="Krone" name="Box Liner" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.cont" name="Box Liner (cont)"/>
+  <variant id="body.cont_220" name="Box Liner (cont_220)"/>
+  <variant id="body.cont_40" name="Box Liner (cont_40)"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="body.cont" group="Body" name="Cont"/>
+  <accessory value="chs_f_l.side01" group="Chs F L" name="Simple Side Skirt"/>
+  <accessory value="chs_f_l.side01p" group="Chs F L" name="Simple Painted Side Skirt"/>
+  <accessory value="chs_f_l.side01s" group="Chs F L" name="Simple Side Skirt + Store Box"/>
+  <accessory value="chs_f_l.side01sp" group="Chs F L" name="Simple Painted Side Skirt + Store Box"/>
+  <accessory value="chs_f_l.side01t" group="Chs F L" name="Simple Side Skirt + Spare Tire"/>
+  <accessory value="chs_f_l.side01tp" group="Chs F L" name="Simple Painted Side Skirt + Spare Tire"/>
+  <accessory value="chs_f_l.side01ts" group="Chs F L" name="Simple Side Skirt + Spare Tire + Store Box"/>
+  <accessory value="chs_f_l.side01tsp" group="Chs F L" name="Simple Painted Side Skirt + Spare Tire + Store Box"/>
+  <accessory value="chs_f_r.side01" group="Chs F R" name="Simple Side Skirt"/>
+  <accessory value="chs_f_r.side01p" group="Chs F R" name="Simple Painted Side Skirt"/>
+  <accessory value="chs_f_r.side01t" group="Chs F R" name="Simple Side Skirt + Spare Tire"/>
+  <accessory value="chs_f_r.side01tp" group="Chs F R" name="Simple Painted Side Skirt + Spare Tire"/>
+  <accessory value="r_bumper.bumper01" group="R Bumper" name="Standard"/>
+  <accessory value="r_bumper.bumper01p" group="R Bumper" name="Painted"/>
+  <accessory value="r_bumper.bumper02" group="R Bumper" name="Standard II"/>
+  <accessory value="r_bumper.bumper02p" group="R Bumper" name="Painted II"/>
+  <accessory value="r_mudflap.mud02" group="R Mudflap" name="Krone Profi"/>
+  <accessory value="r_mudflap.mud03" group="R Mudflap" name="Krone Special"/>
+</vehicle>

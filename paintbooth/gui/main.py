@@ -123,6 +123,7 @@ class App:
             self.root.after(500, lambda: messagebox.showwarning("Settings", settings_problem))
         root.after(POLL_MS, self._poll)
         root.after(3000, self._check_updates)
+        root.after(1000, self.vehicles.auto_library)
         root.after(1500, self.vehicles.auto_coaches)
         root.after(150, self._restore_sash)
         self.pane.bind("<ButtonRelease-1>", lambda e: self.root.after(10, self._guard_sash), add="+")
@@ -400,6 +401,10 @@ class App:
     def catalog_key(self, v: vehlib.Vehicle | None) -> str | None:
         """Catalogue key of an embedded vehicle definition."""
         return self.vehicles.catalog_key(v)
+
+    def install_library(self) -> None:
+        """Install the vehicle library (button in the Vehicles window)."""
+        self.vehicles.install_library()
 
     def scan_dialog(self, folder: bool = True) -> None:
         """Scan the game (or a mod) for trucks."""

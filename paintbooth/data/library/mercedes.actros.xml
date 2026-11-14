@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="mercedes.actros" game="ets2" brand="Mercedes-Benz" name="Actros" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="cabin_l.mercedes.actros.cabin" name="High Roof Sleeper" model="/vehicle/truck/mercedes_actros_2009/cabin_b.pmd"/>
+  <variant id="cabin_l_lw.mercedes.actros.cabin" name="Low Roof Sleeper" model="/vehicle/truck/mercedes_actros_2009/cabin_c.pmd"/>
+  <variant id="megaspace.mercedes.actros.cabin" name="MegaSpace" model="/vehicle/truck/mercedes_actros_2009/cabin_a.pmd"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="exhaust_m.exhaust1a" group="Exhaust M" name="Thor (exhaust1a)"/>
+  <accessory value="exhaust_m.exhaust1b" group="Exhaust M" name="Thor (exhaust1b)"/>
+  <accessory value="exhaust_m.exhaust1c" group="Exhaust M" name="Thor (exhaust1c)"/>
+  <accessory value="r_bumper.4x2paint" group="R Bumper" name="Painted (4x2paint)"/>
+  <accessory value="r_bumper.4x2v1chrome" group="R Bumper" name="Centurion, Chromed (4x2v1chrome)"/>
+  <accessory value="r_bumper.4x2v1paint" group="R Bumper" name="Centurion, Painted (4x2v1paint)"/>
+  <accessory value="r_bumper.4x2v1plate" group="R Bumper" name="Centurion (4x2v1plate)"/>
+  <accessory value="r_bumper.4x2v2paint" group="R Bumper" name="Thor, Painted (4x2v2paint)"/>
+  <accessory value="r_bumper.4x2v3paint" group="R Bumper" name="Diva, Painted (4x2v3paint)"/>
+  <accessory value="r_bumper.6x24paint" group="R Bumper" name="Painted (6x24paint)"/>
+  <accessory value="r_bumper.6x24v1chrome" group="R Bumper" name="Centurion, Chromed (6x24v1chrome)"/>
+  <accessory value="r_bumper.6x24v1paint" group="R Bumper" name="Centurion, Painted (6x24v1paint)"/>
+  <accessory value="r_bumper.6x24v1plate" group="R Bumper" name="Centurion (6x24v1plate)"/>
+  <accessory value="r_bumper.6x24v2paint" group="R Bumper" name="Thor, Painted (6x24v2paint)"/>
+  <accessory value="r_bumper.6x24v3paint" group="R Bumper" name="Diva, Painted (6x24v3paint)"/>
+  <accessory value="r_bumper.6x2paint" group="R Bumper" name="Painted (6x2paint)"/>
+  <accessory value="r_bumper.6x2v1chrome" group="R Bumper" name="Centurion, Chromed (6x2v1chrome)"/>
+  <accessory value="r_bumper.6x2v1paint" group="R Bumper" name="Centurion, Painted (6x2v1paint)"/>
+  <accessory value="r_bumper.6x2v1plate" group="R Bumper" name="Centurion (6x2v1plate)"/>
+  <accessory value="r_bumper.6x2v2paint" group="R Bumper" name="Thor, Painted (6x2v2paint)"/>
+  <accessory value="r_bumper.6x2v3paint" group="R Bumper" name="Diva, Painted (6x2v3paint)"/>
+  <accessory value="r_chs_cover.paint4x2" group="R Chs Cover" name="Diva (paint4x2)"/>
+  <accessory value="r_chs_cover.paint6x24" group="R Chs Cover" name="Diva (paint6x24)"/>
+  <accessory value="r_chs_cover.paint6x4" group="R Chs Cover" name="Diva (paint6x4)"/>
+  <accessory value="r_fender.4x2paint" group="R Fender" name="Painted (4x2paint)"/>
+  <accessory value="r_fender.6x24paint" group="R Fender" name="Painted (6x24paint)"/>
+  <accessory value="r_fender.6x2paint" group="R Fender" name="Painted (6x2paint)"/>
+  <accessory value="r_fendr_top.4x2paint" group="R Fendr Top" name="Painted (4x2paint)"/>
+  <accessory value="r_fendr_top.6x24paint" group="R Fendr Top" name="Painted (6x24paint)"/>
+  <accessory value="r_fendr_top.6x2paint" group="R Fendr Top" name="Painted (6x2paint)"/>
+  <accessory value="sunshld.shape14" group="Sunshld" name="Painted"/>
+  <accessory value="sunshld.shape15" group="Sunshld" name="Painted, Luxury"/>
+  <accessory value="sunshld.shape2" group="Sunshld" name="Samurai"/>
+</vehicle>

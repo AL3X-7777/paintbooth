@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="renault.t" game="ets2" brand="Renault" name="T" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="high_sleeper.renault.t.cabin" name="High Sleeper" model="/vehicle/truck/renault_t/cabin/cabin_a.pmd"/>
+  <variant id="sleeper.renault.t.cabin" name="Sleeper" model="/vehicle/truck/renault_t/cabin/cabin_b.pmd"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="b_grill.paint_mirage" group="B Grill" name="Painted Mirage"/>
+  <accessory value="b_grill.paint_pride" group="B Grill" name="Painted Pride"/>
+  <accessory value="f_grill.hawk_paint" group="F Grill" name="Hawk Painted"/>
+  <accessory value="f_grill.joker_paint" group="F Grill" name="Joker Painted"/>
+  <accessory value="f_grill.racing_paint" group="F Grill" name="Racing Painted"/>
+  <accessory value="hl_guard.paint" group="Hl Guard" name="Painted (paint)"/>
+  <accessory value="hl_guard.paint_evo" group="Hl Guard" name="Painted (paint_evo)"/>
+  <accessory value="r_bumper.4x2_racing" group="R Bumper" name="Racing (4x2_racing)"/>
+  <accessory value="r_bumper.6x24_racing" group="R Bumper" name="Racing (6x24_racing)"/>
+  <accessory value="r_bumper.6x2_racing" group="R Bumper" name="Racing (6x2_racing)"/>
+  <accessory value="r_chs_cover.4x2_diva" group="R Chs Cover" name="Diva (4x2_diva)"/>
+  <accessory value="r_chs_cover.4x2_satin" group="R Chs Cover" name="Satin (4x2_satin)"/>
+  <accessory value="r_chs_cover.4x2_thor_pn" group="R Chs Cover" name="Thor Painted (4x2_thor_pn)"/>
+  <accessory value="r_chs_cover.4x2t_diva" group="R Chs Cover" name="Diva (4x2t_diva)"/>
+  <accessory value="r_chs_cover.4x2t_satin" group="R Chs Cover" name="Satin (4x2t_satin)"/>
+  <accessory value="r_chs_cover.4x2t_thor_pn" group="R Chs Cover" name="Thor Painted (4x2t_thor_pn)"/>
+  <accessory value="r_chs_cover.6x24_diva" group="R Chs Cover" name="Diva (6x24_diva)"/>
+  <accessory value="r_chs_cover.6x24_satin" group="R Chs Cover" name="Satin (6x24_satin)"/>
+  <accessory value="r_chs_cover.6x24_thor_pn" group="R Chs Cover" name="Thor Painted (6x24_thor_pn)"/>
+  <accessory value="r_chs_cover.6x2_diva" group="R Chs Cover" name="Diva (6x2_diva)"/>
+  <accessory value="r_chs_cover.6x2_satin" group="R Chs Cover" name="Satin (6x2_satin)"/>
+  <accessory value="r_chs_cover.6x2_thor_pn" group="R Chs Cover" name="Thor Painted (6x2_thor_pn)"/>
+  <accessory value="r_fender.4x2_pn" group="R Fender" name="Painted (4x2_pn)"/>
+  <accessory value="r_fender.4x2_pn_ch" group="R Fender" name="Painted &amp; Chromed (4x2_pn_ch)"/>
+  <accessory value="r_fender.4x2paintn" group="R Fender" name="4X2Paintn"/>
+  <accessory value="r_fender.4x2painto" group="R Fender" name="4X2Painto"/>
+  <accessory value="r_fender.6x24_pn" group="R Fender" name="Painted (6x24_pn)"/>
+  <accessory value="r_fender.6x24_pn_ch" group="R Fender" name="Painted &amp; Chromed (6x24_pn_ch)"/>
+  <accessory value="r_fender.6x24paintn" group="R Fender" name="6X24Paintn"/>
+  <accessory value="r_fender.6x24painto" group="R Fender" name="6X24Painto"/>
+  <accessory value="r_fender.6x2_pn" group="R Fender" name="Painted (6x2_pn)"/>
+  <accessory value="r_fender.6x2_pn_ch" group="R Fender" name="Painted &amp; Chromed (6x2_pn_ch)"/>
+  <accessory value="r_fender.6x2paintn" group="R Fender" name="6X2Paintn"/>
+  <accessory value="r_fender.6x2painto" group="R Fender" name="6X2Painto"/>
+  <accessory value="r_fendr_top.4x2_pn" group="R Fendr Top" name="Painted (4x2_pn)"/>
+  <accessory value="r_fendr_top.4x2_pn_ch" group="R Fendr Top" name="Painted &amp; Chromed (4x2_pn_ch)"/>
+  <accessory value="r_fendr_top.4x2paintn" group="R Fendr Top" name="4X2Paintn"/>
+  <accessory value="r_fendr_top.6x24_pn" group="R Fendr Top" name="Painted (6x24_pn)"/>
+  <accessory value="r_fendr_top.6x24_pn_ch" group="R Fendr Top" name="Painted &amp; Chromed (6x24_pn_ch)"/>
+  <accessory value="r_fendr_top.6x24paintn" group="R Fendr Top" name="6X24Paintn"/>
+  <accessory value="r_fendr_top.6x2_pn" group="R Fendr Top" name="Painted (6x2_pn)"/>
+  <accessory value="r_fendr_top.6x2_pn_ch" group="R Fendr Top" name="Painted &amp; Chromed (6x2_pn_ch)"/>
+  <accessory value="r_fendr_top.6x2paintn" group="R Fendr Top" name="6X2Paintn"/>
+  <accessory value="r_mudflap.4x2pnt" group="R Mudflap" name="Painted (4x2pnt)"/>
+  <accessory value="r_mudflap.4x2pntw" group="R Mudflap" name="Painted (4x2pntw)"/>
+  <accessory value="r_mudflap.6x24pnt" group="R Mudflap" name="Painted (6x24pnt)"/>
+  <accessory value="r_mudflap.6x24pntw" group="R Mudflap" name="Painted (6x24pntw)"/>
+  <accessory value="r_mudflap.6x2pnt" group="R Mudflap" name="Painted (6x2pnt)"/>
+  <accessory value="r_mudflap.6x2pntw" group="R Mudflap" name="Painted (6x2pntw)"/>
+  <accessory value="s_guard.renault_pa" group="S Guard" name="Renault Painted"/>
+  <accessory value="sideskirt.4x2plain" group="Sideskirt" name="Basic Painted (4x2plain)"/>
+  <accessory value="sideskirt.4x2satin" group="Sideskirt" name="Satin (4x2satin)"/>
+  <accessory value="sideskirt.4x2shp" group="Sideskirt" name="Painted Cover (4x2shp)"/>
+  <accessory value="sideskirt.4x2side1p" group="Sideskirt" name="Painted (4x2side1p)"/>
+  <accessory value="sideskirt.4x2side1p24" group="Sideskirt" name="Painted, 2024 (4x2side1p24)"/>
+  <accessory value="sideskirt.4x2side2pg" group="Sideskirt" name="Painted &amp; Plastic Gray Cover (4x2side2pg)"/>
+  <accessory value="sideskirt.4x2side3" group="Sideskirt" name="Painted &amp; Plastic Cover (4x2side3)"/>
+  <accessory value="sideskirt.6x24plain" group="Sideskirt" name="Basic Painted (6x24plain)"/>
+  <accessory value="sideskirt.6x24satin" group="Sideskirt" name="Satin (6x24satin)"/>
+  <accessory value="sideskirt.6x24shp" group="Sideskirt" name="Painted Cover (6x24shp)"/>
+  <accessory value="sideskirt.6x24side1p" group="Sideskirt" name="Painted (6x24side1p)"/>
+  <accessory value="sideskirt.6x24side1p24" group="Sideskirt" name="Painted, 2024 (6x24side1p24)"/>
+  <accessory value="sideskirt.6x24side2pg" group="Sideskirt" name="Painted &amp; Plastic Gray Cover (6x24side2pg)"/>
+  <accessory value="sideskirt.6x24side3" group="Sideskirt" name="Painted &amp; Plastic Cover (6x24side3)"/>
+  <accessory value="sideskirt.6x2plain" group="Sideskirt" name="Basic Painted (6x2plain)"/>
+  <accessory value="sideskirt.6x2satin" group="Sideskirt" name="Satin (6x2satin)"/>
+  <accessory value="sideskirt.6x2shp" group="Sideskirt" name="Painted Cover (6x2shp)"/>
+  <accessory value="sideskirt.6x2side1p" group="Sideskirt" name="Painted (6x2side1p)"/>
+  <accessory value="sideskirt.6x2side1p24" group="Sideskirt" name="Painted, 2024 (6x2side1p24)"/>
+  <accessory value="sideskirt.6x2side2pg" group="Sideskirt" name="Painted &amp; Plastic Gray Cover (6x2side2pg)"/>
+  <accessory value="sideskirt.6x2side3" group="Sideskirt" name="Painted &amp; Plastic Cover (6x2side3)"/>
+  <accessory value="sideskrt_bar.4x2_paint" group="Sideskrt Bar" name="Painted (4x2_paint)"/>
+  <accessory value="sideskrt_bar.6x24_paint" group="Sideskrt Bar" name="Painted (6x24_paint)"/>
+  <accessory value="sideskrt_bar.6x2_paint" group="Sideskrt Bar" name="Painted (6x2_paint)"/>
+</vehicle>

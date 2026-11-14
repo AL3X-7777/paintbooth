@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="scs.fueltank" game="ets2" brand="SCS" name="Fuel Tank" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.tank_ch2" name="Fuel Tank (tank_ch2)"/>
+  <variant id="body.tank_ch3" name="Fuel Tank (tank_ch3)"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="body.tank_ch2" group="Body" name="Tank Ch2"/>
+  <accessory value="body.tank_ch3" group="Body" name="Tank Ch3"/>
+  <accessory value="chassis.ch_2" group="Chassis" name="Ch 2"/>
+  <accessory value="chassis.ch_3" group="Chassis" name="Ch 3"/>
+  <accessory value="chs_f_l.al_box" group="Chs F L" name="Aluminum Box"/>
+  <accessory value="chs_f_l.paint_box" group="Chs F L" name="Painted Box"/>
+  <accessory value="chs_f_r.al_box" group="Chs F R" name="Aluminum Box"/>
+  <accessory value="chs_f_r.paint_box" group="Chs F R" name="Painted Box"/>
+  <accessory value="chs_r_l.chrome_box" group="Chs R L" name="Chromed Box"/>
+  <accessory value="chs_r_l.extinguisher" group="Chs R L" name="Extinguisher"/>
+  <accessory value="chs_r_l.paint_box" group="Chs R L" name="Painted Box"/>
+  <accessory value="chs_r_l.pl_box" group="Chs R L" name="Plastic Box"/>
+  <accessory value="chs_r_l.water_tank" group="Chs R L" name="Water Tank"/>
+  <accessory value="chs_r_r.chrome_box" group="Chs R R" name="Chromed Box"/>
+  <accessory value="chs_r_r.extinguisher" group="Chs R R" name="Extinguisher"/>
+  <accessory value="chs_r_r.paint_box" group="Chs R R" name="Painted Box"/>
+  <accessory value="chs_r_r.pl_box" group="Chs R R" name="Plastic Box"/>
+  <accessory value="chs_r_r.water_tank" group="Chs R R" name="Water Tank"/>
+  <accessory value="f_body.ladder" group="F Body" name="Ladder"/>
+  <accessory value="l_body.hose12" group="L Body" name="Hose (hose12)"/>
+  <accessory value="l_body.hose13" group="L Body" name="Hose (hose13)"/>
+  <accessory value="l_body.hose22" group="L Body" name="Hose, 2x (hose22)"/>
+  <accessory value="l_body.hose23" group="L Body" name="Hose, 2x (hose23)"/>
+  <accessory value="markers.exclusive2" group="Markers" name="Exclusive (exclusive2)"/>
+  <accessory value="markers.exclusive3" group="Markers" name="Exclusive (exclusive3)"/>
+  <accessory value="markers.simple2" group="Markers" name="Standard (simple2)"/>
+  <accessory value="markers.simple3" group="Markers" name="Standard (simple3)"/>
+  <accessory value="r_body.hose12" group="R Body" name="Hose (hose12)"/>
+  <accessory value="r_body.hose13" group="R Body" name="Hose (hose13)"/>
+  <accessory value="r_body.hose22" group="R Body" name="Hose, 2x (hose22)"/>
+  <accessory value="r_body.hose23" group="R Body" name="Hose, 2x (hose23)"/>
+  <accessory value="r_bumper.eco_2" group="R Bumper" name="Standard Eco"/>
+  <accessory value="r_bumper.euro_3" group="R Bumper" name="Standard"/>
+  <accessory value="r_bumper.paint" group="R Bumper" name="Exclusive"/>
+  <accessory value="r_fender.plastic_2" group="R Fender" name="Standard (plastic_2)"/>
+  <accessory value="r_fender.plastic_3" group="R Fender" name="Standard (plastic_3)"/>
+  <accessory value="r_fender.steel_2" group="R Fender" name="Aluminum (steel_2)"/>
+  <accessory value="r_fender.steel_3" group="R Fender" name="Aluminum (steel_3)"/>
+  <accessory value="r_mudflap.simple" group="R Mudflap" name="Standard"/>
+  <accessory value="r_mudflap.w_lead" group="R Mudflap" name="Exclusive"/>
+  <accessory value="rear_body.beacon" group="Rear Body" name="Beacon"/>
+  <accessory value="rear_body.lights" group="Rear Body" name="Light Bar"/>
+</vehicle>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="wielton.weightm" game="ets2" brand="Wielton" name="Weight Master" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.dumper" name="Weight Master"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="body.dumper" group="Body" name="Dumper"/>
+  <accessory value="chassis.ch_3_dal" group="Chassis" name="Ch 3 Dal"/>
+  <accessory value="chassis.ch_3_dsl" group="Chassis" name="Ch 3 Dsl"/>
+  <accessory value="chassis.ch_3_sl" group="Chassis" name="Ch 3 Sl"/>
+  <accessory value="chassis.ch_3_sw" group="Chassis" name="Ch 3 Sw"/>
+  <accessory value="chs_f_l.cg" group="Chs F L" name="Simple Side Protection"/>
+  <accessory value="chs_f_l.cg_bpl" group="Chs F L" name="Simple Side Protection + Plastic Box"/>
+  <accessory value="chs_f_l.cg_ext" group="Chs F L" name="Simple Side Protection + Extinguisher"/>
+  <accessory value="chs_f_l.cg_wt" group="Chs F L" name="Simple Side Protection + Water Tank"/>
+  <accessory value="chs_f_l.cgp" group="Chs F L" name="Painted Side Protection"/>
+  <accessory value="chs_f_l.cgp_box_pl" group="Chs F L" name="Cgp Box Pl"/>
+  <accessory value="chs_f_l.cgp_bpl" group="Chs F L" name="Painted Side Protection + Plastic Box"/>
+  <accessory value="chs_f_l.cgp_ext" group="Chs F L" name="Painted Side Protection + Extinguisher"/>
+  <accessory value="chs_f_l.cgp_wt" group="Chs F L" name="Painted Side Protection + Water Tank"/>
+  <accessory value="chs_f_r.cg" group="Chs F R" name="Simple Side Protection"/>
+  <accessory value="chs_f_r.cg_box_pl_sp" group="Chs F R" name="Cg Box Pl Sp"/>
+  <accessory value="chs_f_r.cg_bpl" group="Chs F R" name="Simple Side Protection + Plastic Box"/>
+  <accessory value="chs_f_r.cg_bpl_st" group="Chs F R" name="Simple Side Protection + Plastic Box + Spare Tire"/>
+  <accessory value="chs_f_r.cg_st" group="Chs F R" name="Simple Side Protection + Spare Tire"/>
+  <accessory value="chs_f_r.cgp" group="Chs F R" name="Painted Side Protection"/>
+  <accessory value="chs_f_r.cgp_box_pl" group="Chs F R" name="Cgp Box Pl"/>
+  <accessory value="chs_f_r.cgp_bpl" group="Chs F R" name="Painted Side Protection + Plastic Box"/>
+  <accessory value="chs_f_r.cgp_bpl_st" group="Chs F R" name="Painted Side Protection + Plastic Box + Spare Tire"/>
+  <accessory value="chs_f_r.cgp_st" group="Chs F R" name="Painted Side Protection + Spare Tire"/>
+  <accessory value="f_body.box_pl_1" group="F Body" name="Plastic Box"/>
+  <accessory value="f_body.box_pl_2" group="F Body" name="Plastic Box, 2x"/>
+  <accessory value="l_body.ladder" group="L Body" name="Ladder"/>
+  <accessory value="l_body.tools" group="L Body" name="Tools"/>
+  <accessory value="m_mudflap.logo1" group="M Mudflap" name="Wielton (logo1)"/>
+  <accessory value="m_mudflap.logo2" group="M Mudflap" name="Wielton (logo2)"/>
+  <accessory value="markers.simple" group="Markers" name="Standard"/>
+  <accessory value="r_body.ladder" group="R Body" name="Ladder"/>
+  <accessory value="r_body.tools" group="R Body" name="Tools"/>
+  <accessory value="r_bumper.exclusive" group="R Bumper" name="Exclusive"/>
+  <accessory value="r_bumper.simple" group="R Bumper" name="Standard"/>
+  <accessory value="r_fender.plastic" group="R Fender" name="Standard"/>
+  <accessory value="r_mudflap.logo" group="R Mudflap" name="Wielton"/>
+  <accessory value="r_mudflap.logo_uk" group="R Mudflap" name="Wielton UK"/>
+  <accessory value="rear_body.door_1" group="Rear Body" name="Flap Door"/>
+  <accessory value="rear_body.door_2" group="Rear Body" name="Flap Door With Chute"/>
+</vehicle>

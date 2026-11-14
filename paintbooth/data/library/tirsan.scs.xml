@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="tirsan.scs" game="ets2" brand="Tirsan" name="Scs" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.curtain_sbal" name="T.SCS MR / 90 - 12 / 27 (curtain_sbal)"/>
+  <variant id="body.curtain_sbp" name="T.SCS MR / 90 - 12 / 27 (curtain_sbp)"/>
+  <variant id="body.curtain_sbp2" name="T.SCS MR / 90 - 12 / 27 (curtain_sbp2)"/>
+  <variant id="body.curtain_sbp3" name="T.SCS MR / 90 - 12 / 27 (curtain_sbp3)"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="body.curtain_sbal" group="Body" name="Curtain Sbal"/>
+  <accessory value="body.curtain_sbp" group="Body" name="Curtain Sbp"/>
+  <accessory value="body.curtain_sbp2" group="Body" name="Curtain Sbp2"/>
+  <accessory value="body.curtain_sbp3" group="Body" name="Curtain Sbp3"/>
+  <accessory value="chassis.ch_3_13" group="Chassis" name="Ch 3 13"/>
+  <accessory value="chs_f_l.cg_3_13" group="Chs F L" name="Simple Side Protection"/>
+  <accessory value="chs_f_l.cg_bp_3_13" group="Chs F L" name="Simple Side Protection + Painted Box"/>
+  <accessory value="chs_f_l.cg_bpl_3_13" group="Chs F L" name="Simple Side Protection + Plastic Box"/>
+  <accessory value="chs_f_l.cg_bst_3_13" group="Chs F L" name="Simple Side Protection + Big Box"/>
+  <accessory value="chs_f_l.cg_fb_3_13" group="Chs F L" name="Simple Side Protection + Food Box"/>
+  <accessory value="chs_f_l.cg_st_3_13" group="Chs F L" name="Simple Side Protection + Spare Tire"/>
+  <accessory value="chs_f_l.cg_wt_3_13" group="Chs F L" name="Simple Side Protection + Water Tank"/>
+  <accessory value="chs_f_l.palletb_3_13" group="Chs F L" name="Pallet Box"/>
+  <accessory value="chs_f_l.sd1_3_13" group="Chs F L" name="Side Skirt"/>
+  <accessory value="chs_f_l.sd1_bp_3_13" group="Chs F L" name="Side Skirt + Painted Box"/>
+  <accessory value="chs_f_l.sd1_bpl_3_13" group="Chs F L" name="Side Skirt + Plastic Box"/>
+  <accessory value="chs_f_l.sd1_bst_3_13" group="Chs F L" name="Side Skirt + Big Box"/>
+  <accessory value="chs_f_l.sd1_fb_3_13" group="Chs F L" name="Side Skirt + Food Box"/>
+  <accessory value="chs_f_l.sd1_st_3_13" group="Chs F L" name="Side Skirt + Spare Tire"/>
+  <accessory value="chs_f_l.sd1_wt_3_13" group="Chs F L" name="Side Skirt + Water Tank"/>
+  <accessory value="chs_f_l.sd1p_3_13" group="Chs F L" name="Painted Side Skirt"/>
+  <accessory value="chs_f_l.sd2_3_13" group="Chs F L" name="Side Skirt II"/>
+  <accessory value="chs_f_l.sd2_bp_3_13" group="Chs F L" name="Side Skirt II + Painted Box"/>
+  <accessory value="chs_f_l.sd2_bpl_3_13" group="Chs F L" name="Side Skirt II + Plastic Box"/>
+  <accessory value="chs_f_l.sd2_bst_3_13" group="Chs F L" name="Side Skirt II + Big Box"/>
+  <accessory value="chs_f_l.sd2_fb_3_13" group="Chs F L" name="Side Skirt II + Food Box"/>
+  <accessory value="chs_f_l.sd2_st_3_13" group="Chs F L" name="Side Skirt II + Spare Tire"/>
+  <accessory value="chs_f_l.sd2_wt_3_13" group="Chs F L" name="Side Skirt II + Water Tank"/>
+  <accessory value="chs_f_l.sd2p_3_13" group="Chs F L" name="Painted Side Skirt II"/>
+  <accessory value="chs_f_l.sd3_3_13" group="Chs F L" name="Side Skirt III"/>
+  <accessory value="chs_f_l.sd3_bp_3_13" group="Chs F L" name="Side Skirt III + Painted Box"/>
+  <accessory value="chs_f_l.sd3_bpl_3_13" group="Chs F L" name="Side Skirt III + Plastic Box"/>
+  <accessory value="chs_f_l.sd3_bst_3_13" group="Chs F L" name="Side Skirt III + Big Box"/>
+  <accessory value="chs_f_l.sd3_fb_3_13" group="Chs F L" name="Side Skirt III + Food Box"/>
+  <accessory value="chs_f_l.sd3_st_3_13" group="Chs F L" name="Side Skirt III + Spare Tire"/>
+  <accessory value="chs_f_l.sd3_wt_3_13" group="Chs F L" name="Side Skirt III + Water Tank"/>
+  <accessory value="chs_f_l.sd3p_3_13" group="Chs F L" name="Painted Side Skirt III"/>
+  <accessory value="chs_f_l.sd4_3_13" group="Chs F L" name="Side Skirt IV"/>
+  <accessory value="chs_f_l.sd4_bp_3_13" group="Chs F L" name="Side Skirt IV + Painted Box"/>
+  <accessory value="chs_f_l.sd4_bpl_3_13" group="Chs F L" name="Side Skirt IV + Plastic Box"/>
+  <accessory value="chs_f_l.sd4_bst_3_13" group="Chs F L" name="Side Skirt IV + Big Box"/>
+  <accessory value="chs_f_l.sd4_fb_3_13" group="Chs F L" name="Side Skirt IV + Food Box"/>
+  <accessory value="chs_f_l.sd4_st_3_13" group="Chs F L" name="Side Skirt IV + Spare Tire"/>
+  <accessory value="chs_f_l.sd4_wt_3_13" group="Chs F L" name="Side Skirt IV + Water Tank"/>
+  <accessory value="chs_f_l.sd4p_3_13" group="Chs F L" name="Painted Side Skirt IV"/>
+  <accessory value="chs_f_l.sd5_3_13" group="Chs F L" name="Side Skirt V"/>
+  <accessory value="chs_f_l.sd5_bp_3_13" group="Chs F L" name="Side Skirt V + Painted Box"/>
+  <accessory value="chs_f_l.sd5_bpl_3_13" group="Chs F L" name="Side Skirt V + Plastic Box"/>
+  <accessory value="chs_f_l.sd5_bst_3_13" group="Chs F L" name="Side Skirt V + Big Box"/>
+  <accessory value="chs_f_l.sd5_fb_3_13" group="Chs F L" name="Side Skirt V + Food Box"/>
+  <accessory value="chs_f_l.sd5_st_3_13" group="Chs F L" name="Side Skirt V + Spare Tire"/>
+  <accessory value="chs_f_l.sd5_wt_3_13" group="Chs F L" name="Side Skirt V + Water Tank"/>
+  <accessory value="chs_f_l.sd5p_3_13" group="Chs F L" name="Painted Side Skirt V"/>
+  <accessory value="chs_f_l.sd6_3_13" group="Chs F L" name="Side Skirt VI"/>
+  <accessory value="chs_f_l.sd6_bp_3_13" group="Chs F L" name="Side Skirt VI + Painted Box"/>
+  <accessory value="chs_f_l.sd6_bpl_3_13" group="Chs F L" name="Side Skirt VI + Plastic Box"/>
+  <accessory value="chs_f_l.sd6_bst_3_13" group="Chs F L" name="Side Skirt VI + Big Box"/>
+  <accessory value="chs_f_l.sd6_fb_3_13" group="Chs F L" name="Side Skirt VI + Food Box"/>
+  <accessory value="chs_f_l.sd6_st_3_13" group="Chs F L" name="Side Skirt VI + Spare Tire"/>
+  <accessory value="chs_f_l.sd6_wt_3_13" group="Chs F L" name="Side Skirt VI + Water Tank"/>
+  <accessory value="chs_f_l.sd6p_3_13" group="Chs F L" name="Painted Side Skirt VI"/>
+  <accessory value="chs_f_l.sd7_3_13" group="Chs F L" name="Side Skirt VII"/>
+  <accessory value="chs_f_l.sd7_bp_3_13" group="Chs F L" name="Side Skirt VII + Painted Box"/>
+  <accessory value="chs_f_l.sd7_bpl_3_13" group="Chs F L" name="Side Skirt VII + Plastic Box"/>
+  <accessory value="chs_f_l.sd7_bst_3_13" group="Chs F L" name="Side Skirt VII + Big Box"/>
+  <accessory value="chs_f_l.sd7_fb_3_13" group="Chs F L" name="Side Skirt VII + Food Box"/>
+  <accessory value="chs_f_l.sd7_st_3_13" group="Chs F L" name="Side Skirt VII + Spare Tire"/>
+  <accessory value="chs_f_l.sd7_wt_3_13" group="Chs F L" name="Side Skirt VII + Water Tank"/>
+  <accessory value="chs_f_l.sd7p_3_13" group="Chs F L" name="Painted Side Skirt VII"/>
+  <accessory value="chs_f_l.sd8_3_13" group="Chs F L" name="Side Skirt VIII"/>
+  <accessory value="chs_f_l.sd8_bp_3_13" group="Chs F L" name="Side Skirt VIII + Painted Box"/>
+  <accessory value="chs_f_l.sd8_bpl_3_13" group="Chs F L" name="Side Skirt VIII + Plastic Box"/>
+  <accessory value="chs_f_l.sd8_bst_3_13" group="Chs F L" name="Side Skirt VIII + Big Box"/>
+  <accessory value="chs_f_l.sd8_fb_3_13" group="Chs F L" name="Side Skirt VIII + Food Box"/>
+  <accessory value="chs_f_l.sd8_st_3_13" group="Chs F L" name="Side Skirt VIII + Spare Tire"/>
+  <accessory value="chs_f_l.sd8_wt_3_13" group="Chs F L" name="Side Skirt VIII + Water Tank"/>
+  <accessory value="chs_f_l.sd8p_3_13" group="Chs F L" name="Painted Side Skirt VIII"/>
+  <accessory value="chs_f_l.sd9_3_13" group="Chs F L" name="Side Skirt IX"/>
+  <accessory value="chs_f_l.sd9_bp_3_13" group="Chs F L" name="Side Skirt IX + Painted Box"/>
+  <accessory value="chs_f_l.sd9_bpl_3_13" group="Chs F L" name="Side Skirt IX + Plastic Box"/>
+  <accessory value="chs_f_l.sd9_bst_3_13" group="Chs F L" name="Side Skirt IX + Big Box"/>
+  <accessory value="chs_f_l.sd9_fb_3_13" group="Chs F L" name="Side Skirt IX + Food Box"/>
+  <accessory value="chs_f_l.sd9_st_3_13" group="Chs F L" name="Side Skirt IX + Spare Tire"/>
+  <accessory value="chs_f_l.sd9_wt_3_13" group="Chs F L" name="Side Skirt IX + Water Tank"/>
+  <accessory value="chs_f_l.sd9p_3_13" group="Chs F L" name="Painted Side Skirt IX"/>
+  <accessory value="chs_f_r.cg_3_13" group="Chs F R" name="Simple Side Protection"/>
+  <accessory value="chs_f_r.cg_bp_3_13" group="Chs F R" name="Simple Side Protection + Painted Box"/>
+  <accessory value="chs_f_r.cg_bpl_3_13" group="Chs F R" name="Simple Side Protection + Plastic Box"/>
+  <accessory value="chs_f_r.cg_bst_3_13" group="Chs F R" name="Simple Side Protection + Big Box"/>
+  <accessory value="chs_f_r.cg_fb_3_13" group="Chs F R" name="Simple Side Protection + Food Box"/>
+  <accessory value="chs_f_r.cg_st_3_13" group="Chs F R" name="Simple Side Protection + Spare Tire"/>
+  <accessory value="chs_f_r.cg_wt_3_13" group="Chs F R" name="Simple Side Protection + Water Tank"/>
+  <accessory value="chs_f_r.palletb_3_13" group="Chs F R" name="Pallet Box"/>
+  <accessory value="chs_f_r.sd1_3_13" group="Chs F R" name="Side Skirt"/>
+  <accessory value="chs_f_r.sd1_bp_3_13" group="Chs F R" name="Side Skirt + Painted Box"/>
+  <accessory value="chs_f_r.sd1_bpl_3_13" group="Chs F R" name="Side Skirt + Plastic Box"/>
+  <accessory value="chs_f_r.sd1_bst_3_13" group="Chs F R" name="Side Skirt + Big Box"/>
+  <accessory value="chs_f_r.sd1_fb_3_13" group="Chs F R" name="Side Skirt + Food Box"/>
+  <accessory value="chs_f_r.sd1_st_3_13" group="Chs F R" name="Side Skirt + Spare Tire"/>
+  <accessory value="chs_f_r.sd1_wt_3_13" group="Chs F R" name="Side Skirt + Water Tank"/>
+  <accessory value="chs_f_r.sd1p_3_13" group="Chs F R" name="Painted Side Skirt"/>
+  <accessory value="chs_f_r.sd2_3_13" group="Chs F R" name="Side Skirt II"/>
+  <accessory value="chs_f_r.sd2_bp_3_13" group="Chs F R" name="Side Skirt II + Painted Box"/>
+  <accessory value="chs_f_r.sd2_bpl_3_13" group="Chs F R" name="Side Skirt II + Plastic Box"/>
+  <accessory value="chs_f_r.sd2_bst_3_13" group="Chs F R" name="Side Skirt II + Big Box"/>
+  <accessory value="chs_f_r.sd2_fb_3_13" group="Chs F R" name="Side Skirt II + Food Box"/>
+  <accessory value="chs_f_r.sd2_st_3_13" group="Chs F R" name="Side Skirt II + Spare Tire"/>
+  <accessory value="chs_f_r.sd2_wt_3_13" group="Chs F R" name="Side Skirt II + Water Tank"/>
+  <accessory value="chs_f_r.sd2p_3_13" group="Chs F R" name="Painted Side Skirt II"/>
+  <accessory value="chs_f_r.sd3_3_13" group="Chs F R" name="Side Skirt III"/>
+  <accessory value="chs_f_r.sd3_bp_3_13" group="Chs F R" name="Side Skirt III + Painted Box"/>
+  <accessory value="chs_f_r.sd3_bpl_3_13" group="Chs F R" name="Side Skirt III + Plastic Box"/>
+  <accessory value="chs_f_r.sd3_bst_3_13" group="Chs F R" name="Side Skirt III + Big Box"/>
+  <accessory value="chs_f_r.sd3_fb_3_13" group="Chs F R" name="Side Skirt III + Food Box"/>
+  <accessory value="chs_f_r.sd3_st_3_13" group="Chs F R" name="Side Skirt III + Spare Tire"/>
+  <accessory value="chs_f_r.sd3_wt_3_13" group="Chs F R" name="Side Skirt III + Water Tank"/>
+  <accessory value="chs_f_r.sd3p_3_13" group="Chs F R" name="Painted Side Skirt III"/>
+  <accessory value="chs_f_r.sd4_3_13" group="Chs F R" name="Side Skirt IV"/>
+  <accessory value="chs_f_r.sd4_bp_3_13" group="Chs F R" name="Side Skirt IV + Painted Box"/>
+  <accessory value="chs_f_r.sd4_bpl_3_13" group="Chs F R" name="Side Skirt IV + Plastic Box"/>
+  <accessory value="chs_f_r.sd4_bst_3_13" group="Chs F R" name="Side Skirt IV + Big Box"/>
+  <accessory value="chs_f_r.sd4_fb_3_13" group="Chs F R" name="Side Skirt IV + Food Box"/>
+  <accessory value="chs_f_r.sd4_st_3_13" group="Chs F R" name="Side Skirt IV + Spare Tire"/>
+  <accessory value="chs_f_r.sd4_wt_3_13" group="Chs F R" name="Side Skirt IV + Water Tank"/>
+  <accessory value="chs_f_r.sd4p_3_13" group="Chs F R" name="Painted Side Skirt IV"/>
+  <accessory value="chs_f_r.sd5_3_13" group="Chs F R" name="Side Skirt V"/>
+  <accessory value="chs_f_r.sd5_bp_3_13" group="Chs F R" name="Side Skirt V + Painted Box"/>
+  <accessory value="chs_f_r.sd5_bpl_3_13" group="Chs F R" name="Side Skirt V + Plastic Box"/>
+  <accessory value="chs_f_r.sd5_bst_3_13" group="Chs F R" name="Side Skirt V + Big Box"/>
+  <accessory value="chs_f_r.sd5_fb_3_13" group="Chs F R" name="Side Skirt V + Food Box"/>
+  <accessory value="chs_f_r.sd5_st_3_13" group="Chs F R" name="Side Skirt V + Spare Tire"/>
+  <accessory value="chs_f_r.sd5_wt_3_13" group="Chs F R" name="Side Skirt V + Water Tank"/>
+  <accessory value="chs_f_r.sd5p_3_13" group="Chs F R" name="Painted Side Skirt V"/>
+  <accessory value="chs_f_r.sd6_3_13" group="Chs F R" name="Side Skirt VI"/>
+  <accessory value="chs_f_r.sd6_bp_3_13" group="Chs F R" name="Side Skirt VI + Painted Box"/>
+  <accessory value="chs_f_r.sd6_bpl_3_13" group="Chs F R" name="Side Skirt VI + Plastic Box"/>
+  <accessory value="chs_f_r.sd6_bst_3_13" group="Chs F R" name="Side Skirt VI + Big Box"/>
+  <accessory value="chs_f_r.sd6_fb_3_13" group="Chs F R" name="Side Skirt VI + Food Box"/>
+  <accessory value="chs_f_r.sd6_st_3_13" group="Chs F R" name="Side Skirt VI + Spare Tire"/>
+  <accessory value="chs_f_r.sd6_wt_3_13" group="Chs F R" name="Side Skirt VI + Water Tank"/>
+  <accessory value="chs_f_r.sd6p_3_13" group="Chs F R" name="Painted Side Skirt VI"/>
+  <accessory value="chs_f_r.sd7_3_13" group="Chs F R" name="Side Skirt VII"/>
+  <accessory value="chs_f_r.sd7_bp_3_13" group="Chs F R" name="Side Skirt VII + Painted Box"/>
+  <accessory value="chs_f_r.sd7_bpl_3_13" group="Chs F R" name="Side Skirt VII + Plastic Box"/>
+  <accessory value="chs_f_r.sd7_bst_3_13" group="Chs F R" name="Side Skirt VII + Big Box"/>
+  <accessory value="chs_f_r.sd7_fb_3_13" group="Chs F R" name="Side Skirt VII + Food Box"/>
+  <accessory value="chs_f_r.sd7_st_3_13" group="Chs F R" name="Side Skirt VII + Spare Tire"/>
+  <accessory value="chs_f_r.sd7_wt_3_13" group="Chs F R" name="Side Skirt VII + Water Tank"/>
+  <accessory value="chs_f_r.sd7p_3_13" group="Chs F R" name="Painted Side Skirt VII"/>
+  <accessory value="chs_f_r.sd8_3_13" group="Chs F R" name="Side Skirt VIII"/>
+  <accessory value="chs_f_r.sd8_bp_3_13" group="Chs F R" name="Side Skirt VIII + Painted Box"/>
+  <accessory value="chs_f_r.sd8_bpl_3_13" group="Chs F R" name="Side Skirt VIII + Plastic Box"/>
+  <accessory value="chs_f_r.sd8_bst_3_13" group="Chs F R" name="Side Skirt VIII + Big Box"/>
+  <accessory value="chs_f_r.sd8_fb_3_13" group="Chs F R" name="Side Skirt VIII + Food Box"/>
+  <accessory value="chs_f_r.sd8_st_3_13" group="Chs F R" name="Side Skirt VIII + Spare Tire"/>
+  <accessory value="chs_f_r.sd8_wt_3_13" group="Chs F R" name="Side Skirt VIII + Water Tank"/>
+  <accessory value="chs_f_r.sd8p_3_13" group="Chs F R" name="Painted Side Skirt VIII"/>
+  <accessory value="chs_f_r.sd9_3_13" group="Chs F R" name="Side Skirt IX"/>
+  <accessory value="chs_f_r.sd9_bp_3_13" group="Chs F R" name="Side Skirt IX + Painted Box"/>
+  <accessory value="chs_f_r.sd9_bpl_3_13" group="Chs F R" name="Side Skirt IX + Plastic Box"/>
+  <accessory value="chs_f_r.sd9_bst_3_13" group="Chs F R" name="Side Skirt IX + Big Box"/>
+  <accessory value="chs_f_r.sd9_fb_3_13" group="Chs F R" name="Side Skirt IX + Food Box"/>
+  <accessory value="chs_f_r.sd9_st_3_13" group="Chs F R" name="Side Skirt IX + Spare Tire"/>
+  <accessory value="chs_f_r.sd9_wt_3_13" group="Chs F R" name="Side Skirt IX + Water Tank"/>
+  <accessory value="chs_f_r.sd9p_3_13" group="Chs F R" name="Painted Side Skirt IX"/>
+  <accessory value="chs_r_l.bp" group="Chs R L" name="Painted Box"/>
+  <accessory value="chs_r_l.bpl100" group="Chs R L" name="Plastic Box (bpl100)"/>
+  <accessory value="chs_r_l.bpl60" group="Chs R L" name="Plastic Box (bpl60)"/>
+  <accessory value="chs_r_l.bpl_st" group="Chs R L" name="Spare Tire + Plastic Box"/>
+  <accessory value="chs_r_l.bst" group="Chs R L" name="Chromed Box"/>
+  <accessory value="chs_r_l.st" group="Chs R L" name="Spare Tire"/>
+  <accessory value="chs_r_r.bp" group="Chs R R" name="Painted Box"/>
+  <accessory value="chs_r_r.bpl100" group="Chs R R" name="Plastic Box (bpl100)"/>
+  <accessory value="chs_r_r.bpl60" group="Chs R R" name="Plastic Box (bpl60)"/>
+  <accessory value="chs_r_r.bpl_st" group="Chs R R" name="Spare Tire + Plastic Box"/>
+  <accessory value="chs_r_r.bst" group="Chs R R" name="Chromed Box"/>
+  <accessory value="chs_r_r.st" group="Chs R R" name="Spare Tire"/>
+  <accessory value="f_banner.tir" group="F Banner" name="TIR"/>
+  <accessory value="f_body.box" group="F Body" name="Store Box"/>
+  <accessory value="f_body.doc" group="F Body" name="Plastic Box"/>
+  <accessory value="f_body.ext" group="F Body" name="Extinguisher"/>
+  <accessory value="l_body.ext" group="L Body" name="Extinguisher"/>
+  <accessory value="markers.simple" group="Markers" name="Standard"/>
+  <accessory value="r_banner.tir" group="R Banner" name="TIR"/>
+  <accessory value="r_body.ext" group="R Body" name="Extinguisher"/>
+  <accessory value="r_bumper.exclusive" group="R Bumper" name="Exclusive"/>
+  <accessory value="r_bumper.paint" group="R Bumper" name="Painted"/>
+  <accessory value="r_bumper.simple" group="R Bumper" name="Standard"/>
+  <accessory value="r_bumper.simple2" group="R Bumper" name="Standard II"/>
+  <accessory value="r_bumper.simple3" group="R Bumper" name="Standard III"/>
+  <accessory value="r_fender.pl1_3" group="R Fender" name="Standard"/>
+  <accessory value="r_fender.pl2_3" group="R Fender" name="Standard II"/>
+  <accessory value="r_fender.pl3_3" group="R Fender" name="Standard III"/>
+  <accessory value="r_mudflap.logo" group="R Mudflap" name="Tırsan"/>
+  <accessory value="r_mudflap.logo_uk" group="R Mudflap" name="Tırsan UK"/>
+  <accessory value="rear_body.bumperr" group="Rear Body" name="Rubber Roller"/>
+  <accessory value="rear_body.bumpers" group="Rear Body" name="Steel Bumper"/>
+</vehicle>

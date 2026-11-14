@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="scania.touring_23" game="ets2" brand="Scania" name="Touring" author="SCS Software" definition_by="Paintbooth library" type="Buses">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="129h4.scania.touring_23.cabin" name="HD 12.9m, 4x2" mask="pjm_at_0x0_size_4096x2048" model="/vehicle/bus/scania_touring_23/cabin/cab_129h4.pmd"/>
+  <variant id="137h6.scania.touring_23.cabin" name="HD 13.7m, 6x2*4" mask="pjm_at_0x0_size_4096x2048" model="/vehicle/bus/scania_touring_23/cabin/cab_137h6.pmd"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+</vehicle>

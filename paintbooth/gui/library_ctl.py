@@ -98,6 +98,50 @@ class LibraryController:
                 return key
         return None
 
+    def install_library(self, online: bool = True, mods: bool = True, quiet: bool = False) -> None:
+        """Install the vehicle library (see :func:`paintbooth.library.install`) on a worker thread.
+
+        Args:
+            online: Look for a newer pack on GitHub.
+            mods: Also add the truck mods from the ETS2 mod folder.
+            quiet: First-start install: report only in the status bar, no message box.
+        """
+        app = self.app
+        mod_dir = app.mod_folder("ets2") if mods else None
+        app.status("Installing the vehicle library…")
+
+        def work() -> None:
+            from .. import library
+
+            try:
+                res = library.install(self.library_dir, mod_dir, online=online)
+            except Exception as e:  # shown to the user; the old library stays (install is atomic)
+                log.exception("library install failed")
+                msg = f"The vehicle library could not be installed: {e}"
+                app.ui.call(lambda: messagebox.showerror("Vehicle library", msg))
+                return
+
+            def done() -> None:
+                self.reload()
+                where = "downloaded from GitHub" if res.downloaded else "built into Paintbooth"
+                text = f"Vehicle library {res.version} installed ({where}): {res.vehicles} SCS vehicles"
+                text += f", {res.mods} from your mods" if mods else ""
+                app.status(text)
+                if not quiet:
+                    extra = (
+                        f"\n\nSkipped {len(res.mod_errors)} unreadable mod file(s)." if res.mod_errors else ""
+                    )
+                    messagebox.showinfo("Vehicle library", text + "." + extra)
+
+            app.ui.call(done)
+
+        threading.Thread(target=work, daemon=True).start()
+
+    def auto_library(self) -> None:
+        """First start: install the built-in library (offline, without mods) if none is installed."""
+        if not (self.library_dir / "Library").is_dir():
+            self.install_library(online=False, mods=False, quiet=True)
+
     def auto_coaches(self) -> None:
         """Add the Coaches DLC's coaches to the library without a manual scan, once.
 

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="kogel.kipper" game="ets2" brand="Kogel" name="Kipper" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.dumper_24" name="Kipper (dumper_24)"/>
+  <variant id="body.dumper_24_sc" name="Kipper (dumper_24_sc)"/>
+  <variant id="body.dumper_27" name="Kipper (dumper_27)"/>
+  <variant id="body.dumper_27_sc" name="Kipper (dumper_27_sc)"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="body.dumper_24" group="Body" name="Dumper 24"/>
+  <accessory value="body.dumper_24_sc" group="Body" name="Dumper 24 Sc"/>
+  <accessory value="body.dumper_27" group="Body" name="Dumper 27"/>
+  <accessory value="body.dumper_27_sc" group="Body" name="Dumper 27 Sc"/>
+  <accessory value="chassis.ch_2" group="Chassis" name="Ch 2"/>
+  <accessory value="chassis.ch_3" group="Chassis" name="Ch 3"/>
+  <accessory value="chs_f_l.cg" group="Chs F L" name="Simple Side Protection"/>
+  <accessory value="chs_f_l.cg_ext" group="Chs F L" name="Simple Side Protection + Extinguisher"/>
+  <accessory value="chs_f_l.cgp" group="Chs F L" name="Painted Side Protection"/>
+  <accessory value="chs_f_l.cgp_ext" group="Chs F L" name="Painted Side Protection + Extinguisher"/>
+  <accessory value="chs_f_l.ext" group="Chs F L" name="Extinguisher"/>
+  <accessory value="chs_f_r.cg" group="Chs F R" name="Simple Side Protection"/>
+  <accessory value="chs_f_r.cg_st" group="Chs F R" name="Simple Side Protection + Spare Tire"/>
+  <accessory value="chs_f_r.cgp" group="Chs F R" name="Painted Side Protection"/>
+  <accessory value="chs_f_r.cgp_st" group="Chs F R" name="Painted Side Protection + Spare Tire"/>
+  <accessory value="chs_f_r.st_2" group="Chs F R" name="Spare Tire (st_2)"/>
+  <accessory value="chs_f_r.st_3" group="Chs F R" name="Spare Tire (st_3)"/>
+  <accessory value="f_body.bpl" group="F Body" name="Plastic Box"/>
+  <accessory value="f_body.bpl_wt" group="F Body" name="Plastic Box + Water Tank"/>
+  <accessory value="f_body.wt" group="F Body" name="Water Tank"/>
+  <accessory value="l_body.ladder" group="L Body" name="Ladder"/>
+  <accessory value="l_body.tools" group="L Body" name="Tools"/>
+  <accessory value="markers.simple_2" group="Markers" name="Standard (simple_2)"/>
+  <accessory value="markers.simple_3" group="Markers" name="Standard (simple_3)"/>
+  <accessory value="r_body.ladder" group="R Body" name="Ladder"/>
+  <accessory value="r_body.tools" group="R Body" name="Tools"/>
+  <accessory value="r_bumper.exclusive" group="R Bumper" name="Exclusive"/>
+  <accessory value="r_bumper.simple" group="R Bumper" name="Standard"/>
+  <accessory value="r_mudflap.logo" group="R Mudflap" name="Kögel"/>
+  <accessory value="r_mudflap.logo_uk" group="R Mudflap" name="Kögel UK"/>
+  <accessory value="rear_body.door_24" group="Rear Body" name="Flap Door (door_24)"/>
+  <accessory value="rear_body.door_24_gd" group="Rear Body" name="Flap Door With Chute (door_24_gd)"/>
+  <accessory value="rear_body.door_27" group="Rear Body" name="Flap Door (door_27)"/>
+  <accessory value="rear_body.door_27_gd" group="Rear Body" name="Flap Door With Chute (door_27_gd)"/>
+</vehicle>

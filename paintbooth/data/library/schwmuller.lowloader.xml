@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="schwmuller.lowloader" game="ets2" brand="Schwmuller" name="Low Loader" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.lowloader" name="Low Loader"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="chs_f_l.sp2p" group="Chs F L" name="Painted Side Skirt"/>
+  <accessory value="chs_f_l.sp2p_b1" group="Chs F L" name="Painted Side Skirt + Chromed Box"/>
+  <accessory value="chs_f_l.sp2p_b1p" group="Chs F L" name="Painted Side Skirt + Painted Box"/>
+  <accessory value="chs_f_l.sp2p_b2" group="Chs F L" name="Painted Side Skirt + Store Box"/>
+  <accessory value="chs_f_r.sp2p" group="Chs F R" name="Painted Side Skirt"/>
+  <accessory value="chs_f_r.sp2p_b1" group="Chs F R" name="Painted Side Skirt + Chromed Box"/>
+  <accessory value="chs_f_r.sp2p_b1p" group="Chs F R" name="Painted Side Skirt + Painted Box"/>
+  <accessory value="chs_f_r.sp2p_b2" group="Chs F R" name="Painted Side Skirt + Store Box"/>
+  <accessory value="markers.markers1" group="Markers" name="Standard"/>
+  <accessory value="r_bumper.rbumper1" group="R Bumper" name="Exclusive"/>
+  <accessory value="r_fender.exclusive_p" group="R Fender" name="Exclusive Painted"/>
+  <accessory value="r_fender.simple" group="R Fender" name="Standard"/>
+  <accessory value="r_mudflap.empty" group="R Mudflap" name="Standard"/>
+  <accessory value="r_mudflap.logo" group="R Mudflap" name="Exclusive"/>
+  <accessory value="rear_body.beacon" group="Rear Body" name="Beacon"/>
+</vehicle>

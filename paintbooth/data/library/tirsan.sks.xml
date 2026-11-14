@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="tirsan.sks" game="ets2" brand="Tirsan" name="Sks" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.dumper" name="T.SKS BS / 22 - 12 / 27 (dumper)"/>
+  <variant id="body.dumper_sc" name="T.SKS BS / 22 - 12 / 27 (dumper_sc)"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="body.dumper" group="Body" name="Dumper"/>
+  <accessory value="body.dumper_sc" group="Body" name="Dumper Sc"/>
+  <accessory value="chs_f_l.cg" group="Chs F L" name="Simple Side Protection"/>
+  <accessory value="chs_f_l.cg_b_pl" group="Chs F L" name="Simple Side Protection + Plastic Box"/>
+  <accessory value="chs_f_l.cg_ext" group="Chs F L" name="Simple Side Protection + Extinguisher"/>
+  <accessory value="chs_f_l.cg_wt" group="Chs F L" name="Simple Side Protection + Water Tank"/>
+  <accessory value="chs_f_r.cg" group="Chs F R" name="Simple Side Protection"/>
+  <accessory value="chs_f_r.cg_b_pl" group="Chs F R" name="Simple Side Protection + Plastic Box"/>
+  <accessory value="chs_f_r.cg_st" group="Chs F R" name="Simple Side Protection + Spare Tire"/>
+  <accessory value="chs_f_r.cg_wt" group="Chs F R" name="Simple Side Protection + Water Tank"/>
+  <accessory value="f_body.lad" group="F Body" name="Ladder (lad)"/>
+  <accessory value="f_body.lad2" group="F Body" name="Ladder (lad2)"/>
+  <accessory value="l_body.ladder" group="L Body" name="Ladder"/>
+  <accessory value="l_body.tools" group="L Body" name="Tools"/>
+  <accessory value="markers.simple" group="Markers" name="Standard"/>
+  <accessory value="r_body.ladder" group="R Body" name="Ladder"/>
+  <accessory value="r_body.tools" group="R Body" name="Tools"/>
+  <accessory value="r_bumper.exclusive" group="R Bumper" name="Exclusive"/>
+  <accessory value="r_bumper.paint" group="R Bumper" name="Painted"/>
+  <accessory value="r_bumper.simple" group="R Bumper" name="Standard"/>
+  <accessory value="r_bumper.simple2" group="R Bumper" name="Standard II"/>
+  <accessory value="r_fender.fcover" group="R Fender" name="Fender Cover"/>
+  <accessory value="r_mudflap.logo" group="R Mudflap" name="Tırsan"/>
+  <accessory value="r_mudflap.logo_uk" group="R Mudflap" name="Tırsan UK"/>
+  <accessory value="rear_body.ext1" group="Rear Body" name="Extended"/>
+  <accessory value="rear_body.ext2" group="Rear Body" name="Extended II"/>
+</vehicle>

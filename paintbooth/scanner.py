@@ -321,7 +321,10 @@ class _Layered:
         path = Path(path)
         try:
             if path.is_dir() and (path / "def.scs").is_file():
-                for a in [path / "def.scs", *sorted(path.glob("dlc_*.scs"))]:
+                # locale.scs: the language files, so names can be resolved (paintbooth.library)
+                for a in [path / "def.scs", path / "locale.scs", *sorted(path.glob("dlc_*.scs"))]:
+                    if not a.is_file():
+                        continue
                     try:
                         self._add_hashfs(HashFs(a))
                     except (OSError, ValueError) as e:  # a damaged or foreign DLC must not stop the scan
@@ -470,43 +473,20 @@ def _to_vehicle(tid: str, t: _TruckInfo, game: str, source: Path, kind: str = "t
 
 
 def scan_vehicles(source: Path, game: str = "", log: Log = print) -> list[Vehicle]:
-    """Return vehicle library entries for every truck with cabins found in ``source``.
+    """Return vehicle library entries for every truck, coach and ownable trailer in ``source``.
+
+    A thin wrapper around :func:`paintbooth.library.build`, which also resolves the in-game
+    names from the language files.
 
     Args:
-        source: The game folder (reads ``def.scs`` + ``dlc_*.scs`` directly), one
-            HashFS or ZIP ``.scs``, or an extracted folder containing ``def/``.
+        source: The game folder (reads ``def.scs``, ``locale.scs`` and ``dlc_*.scs`` directly),
+            one HashFS or ZIP ``.scs``, or an extracted folder containing ``def/``.
         game: ``"ets2"``/``"ats"`` to record in the entries.
-        log: Receives one summary line per truck.
+        log: Receives one summary line per vehicle.
     """
-    with _Layered(Path(source)) as src:
-        trucks: dict[tuple[str, str], _TruckInfo] = {}
-        files = {**src.files("def/vehicle/truck"), **src.files("def/vehicle/bus")}
-        for path, reader in files.items():
-            m = re.match(r"def/vehicle/(truck|bus)/([^/]+)/(.+)\.sii$", path)
-            if not m:
-                continue
-            kind, tid, rel = m.groups()
-            t = trucks.setdefault((kind, tid), _TruckInfo())
-            try:
-                text = reader(path)
-            except (OSError, KeyError, ValueError, zipfile.BadZipFile):
-                t.unread += 1
-                continue
-            t.add(tid, rel, text)
+    from .library import build
 
-    out = []
-    for (kind, tid), t in sorted(trucks.items()):
-        if not t.cabins:
-            continue
-        v = _to_vehicle(tid, t, game, source, kind)
-        if kind == "bus":
-            _add_bus_regions(v, source)
-        out.append(v)
-        log(
-            f"{tid:32} cabins: {len(v.variants):2}  paintable accessories: {len(v.accessories):3}"
-            + (f"  ({t.unread} unreadable files)" if t.unread else "")
-        )
-    return out
+    return build(Path(source), game, log)
 
 
 def _add_bus_regions(v: Vehicle, source: Path) -> None:

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="man.lions_24" game="ets2" brand="MAN" name="Lion's Coach" author="SCS Software" definition_by="Paintbooth library" type="Buses">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="121h4.man.lions_24.cabin" name="12.1m" mask="pjm_at_0x2048_size_4096x2048" model="/vehicle/bus/man_lions_24/cabin/cab_121h4.pmd"/>
+  <variant id="139h6.man.lions_24.cabin" name="L 13.9m" mask="pjm_at_0x2048_size_4096x2048" model="/vehicle/bus/man_lions_24/cabin/cab_139h6.pmd"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+</vehicle>

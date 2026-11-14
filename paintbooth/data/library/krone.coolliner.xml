@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="krone.coolliner" game="ets2" brand="Krone" name="Cool Liner" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.reef_13ct" name="Cool Liner City"/>
+  <variant id="body.reefer" name="Cool Liner"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="body.reef_13ct" group="Body" name="Reef 13Ct"/>
+  <accessory value="body.reefer" group="Body" name="Reefer"/>
+  <accessory value="chassis.ch_3_13ct" group="Chassis" name="Ch 3 13Ct"/>
+  <accessory value="chassis.chassis" group="Chassis" name="Chassis"/>
+  <accessory value="chs_f_l.pallet01" group="Chs F L" name="Pallet Box"/>
+  <accessory value="chs_f_l.pallet01p" group="Chs F L" name="Painted Pallet Box"/>
+  <accessory value="chs_f_l.side01" group="Chs F L" name="Simple Side Skirt"/>
+  <accessory value="chs_f_l.side01p" group="Chs F L" name="Simple Painted Side Skirt"/>
+  <accessory value="chs_f_l.side02" group="Chs F L" name="Side Skirt"/>
+  <accessory value="chs_f_l.side02p" group="Chs F L" name="Painted Side Skirt"/>
+  <accessory value="chs_f_l.side02s" group="Chs F L" name="Side Skirt + Store Box"/>
+  <accessory value="chs_f_l.side02sp" group="Chs F L" name="Painted Side Skirt + Store Box"/>
+  <accessory value="chs_f_l.side02t" group="Chs F L" name="Side Skirt + Spare Tire"/>
+  <accessory value="chs_f_l.side02tp" group="Chs F L" name="Painted Side Skirt + Spare Tire"/>
+  <accessory value="chs_f_l.side02ts" group="Chs F L" name="Side Skirt + Spare Tire + Store Box"/>
+  <accessory value="chs_f_l.side02tsp" group="Chs F L" name="Painted Side Skirt + Spare Tire + Store Box"/>
+  <accessory value="chs_f_r.pallet01" group="Chs F R" name="Pallet Box"/>
+  <accessory value="chs_f_r.pallet01p" group="Chs F R" name="Painted Pallet Box"/>
+  <accessory value="chs_f_r.side01" group="Chs F R" name="Simple Side Skirt"/>
+  <accessory value="chs_f_r.side01p" group="Chs F R" name="Simple Painted Side Skirt"/>
+  <accessory value="chs_f_r.side02" group="Chs F R" name="Side Skirt"/>
+  <accessory value="chs_f_r.side02p" group="Chs F R" name="Painted Side Skirt"/>
+  <accessory value="chs_f_r.side02s" group="Chs F R" name="Side Skirt + Store Box"/>
+  <accessory value="chs_f_r.side02sp" group="Chs F R" name="Painted Side Skirt + Store Box"/>
+  <accessory value="chs_f_r.side02t" group="Chs F R" name="Side Skirt + Spare Tire"/>
+  <accessory value="chs_f_r.side02tp" group="Chs F R" name="Painted Side Skirt + Spare Tire"/>
+  <accessory value="chs_f_r.side02ts" group="Chs F R" name="Side Skirt + Spare Tire + Store Box"/>
+  <accessory value="chs_f_r.side02tsp" group="Chs F R" name="Painted Side Skirt + Spare Tire + Store Box"/>
+  <accessory value="chs_m_l.side01" group="Chs M L" name="Side Skirt"/>
+  <accessory value="chs_m_l.side01p" group="Chs M L" name="Painted Side Skirt"/>
+  <accessory value="chs_m_r.side01" group="Chs M R" name="Side Skirt"/>
+  <accessory value="chs_m_r.side01p" group="Chs M R" name="Painted Side Skirt"/>
+  <accessory value="chs_r_l.pallet01" group="Chs R L" name="Pallet Box"/>
+  <accessory value="chs_r_l.pallet01p" group="Chs R L" name="Painted Pallet Box"/>
+  <accessory value="chs_r_l.pallet01s" group="Chs R L" name="Pallet Box + Store Box"/>
+  <accessory value="chs_r_l.pallet01sp" group="Chs R L" name="Painted Pallet Box + Store Box"/>
+  <accessory value="chs_r_l.store01" group="Chs R L" name="Store Box"/>
+  <accessory value="chs_r_l.stow01" group="Chs R L" name="Stow Box"/>
+  <accessory value="chs_r_l.stowstore01" group="Chs R L" name="Stow Box + Store Box"/>
+  <accessory value="chs_r_l.tire01" group="Chs R L" name="Spare Tire"/>
+  <accessory value="chs_r_l.tirestore01" group="Chs R L" name="Spare Tire + Store Box"/>
+  <accessory value="chs_r_r.pallet01" group="Chs R R" name="Pallet Box"/>
+  <accessory value="chs_r_r.pallet01p" group="Chs R R" name="Painted Pallet Box"/>
+  <accessory value="chs_r_r.pallet01s" group="Chs R R" name="Pallet Box + Store Box"/>
+  <accessory value="chs_r_r.pallet01sp" group="Chs R R" name="Painted Pallet Box + Store Box"/>
+  <accessory value="chs_r_r.store01" group="Chs R R" name="Store Box"/>
+  <accessory value="chs_r_r.stow01" group="Chs R R" name="Stow Box"/>
+  <accessory value="chs_r_r.stowstore01" group="Chs R R" name="Stow Box + Store Box"/>
+  <accessory value="chs_r_r.tire01" group="Chs R R" name="Spare Tire"/>
+  <accessory value="chs_r_r.tirestore01" group="Chs R R" name="Spare Tire + Store Box"/>
+  <accessory value="f_body.reefer01p" group="F Body" name="Reefer01P"/>
+  <accessory value="f_body.reefer02" group="F Body" name="Celsineo"/>
+  <accessory value="f_body.tka360" group="F Body" name="Thermo King A 360"/>
+  <accessory value="f_body.tka400" group="F Body" name="Thermo King A 400"/>
+  <accessory value="f_body.tka500" group="F Body" name="Thermo King A 500"/>
+  <accessory value="f_body.tks300" group="F Body" name="Thermo King SLXi 300"/>
+  <accessory value="f_body.tks400" group="F Body" name="Thermo King SLXi 400"/>
+  <accessory value="markers.markers01" group="Markers" name="Standard (markers01)"/>
+  <accessory value="markers.markers02" group="Markers" name="Standard (markers02)"/>
+  <accessory value="r_bumper.bumper01" group="R Bumper" name="Standard"/>
+  <accessory value="r_bumper.bumper01p" group="R Bumper" name="Painted"/>
+  <accessory value="r_bumper.bumper02" group="R Bumper" name="Standard II"/>
+  <accessory value="r_bumper.bumper02p" group="R Bumper" name="Painted II"/>
+  <accessory value="r_bumper.bumper03" group="R Bumper" name="Standard III"/>
+  <accessory value="r_bumper.bumper03p" group="R Bumper" name="Painted III"/>
+  <accessory value="r_mudflap.mud01" group="R Mudflap" name="Standard"/>
+  <accessory value="r_mudflap.mud02" group="R Mudflap" name="Krone Profi"/>
+  <accessory value="r_mudflap.mud03" group="R Mudflap" name="Krone Special"/>
+</vehicle>

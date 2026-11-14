@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="kassbohrer.sll" game="ets2" brand="Kassbohrer" name="Sll" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.cont_2_lng" name="K.SLL Container Carrier 2 / 2H - 18 / 20 (cont_2_lng)"/>
+  <variant id="body.cont_2_shr" name="K.SLL Container Carrier 2 / 2H - 18 / 20 (cont_2_shr)"/>
+  <variant id="body.cont_3_lng" name="K.SLL Container Carrier 3 / 3H - 24 / 30 (cont_3_lng)"/>
+  <variant id="body.cont_3_shr" name="K.SLL Container Carrier 3 / 3H - 24 / 30 (cont_3_shr)"/>
+  <variant id="body.low_2_lng" name="K.SLL 2 / 2H - 18 / 20 (low_2_lng)"/>
+  <variant id="body.low_2_shr" name="K.SLL 2 / 2H - 18 / 20 (low_2_shr)"/>
+  <variant id="body.low_3_lng" name="K.SLL 3 / 3H - 24 / 30 (low_3_lng)"/>
+  <variant id="body.low_3_shr" name="K.SLL 3 / 3H - 24 / 30 (low_3_shr)"/>
+  <variant id="body.low_wd_2_lng" name="K.SLL Wood 2 / 2H - 18 / 20 (low_wd_2_lng)"/>
+  <variant id="body.low_wd_2_shr" name="K.SLL Wood 2 / 2H - 18 / 20 (low_wd_2_shr)"/>
+  <variant id="body.low_wd_3_lng" name="K.SLL Wood 3 / 3H - 24 / 30 (low_wd_3_lng)"/>
+  <variant id="body.low_wd_3_shr" name="K.SLL Wood 3 / 3H - 24 / 30 (low_wd_3_shr)"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="r_mudflap.logo" group="R Mudflap" name="Kässbohrer"/>
+  <accessory value="r_mudflap.logo_uk" group="R Mudflap" name="Kässbohrer UK"/>
+</vehicle>

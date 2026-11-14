@@ -82,6 +82,15 @@ class VehicleManager:
         app = self.app
         bar = ttk.Frame(self.win, padding=8)
         bar.pack(fill="x")
+        b = ttk.Button(
+            bar, text="Install vehicle library", command=app.install_library, style="Accent.TButton"
+        )
+        b.pack(side="left", padx=(0, 6))
+        Tooltip(
+            b,
+            "Installs Paintbooth's library of every ETS2 truck, coach and trailer (newest version from "
+            "GitHub when online, else the one built in), plus the truck mods in your mod folder.",
+        )
         ttk.Button(bar, text="Scan game folder…", command=lambda: app.scan_dialog(folder=True)).pack(
             side="left"
         )

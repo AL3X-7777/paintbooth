@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="scania.r_2016" game="ets2" brand="Scania" name="R" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="highline.scania.r_2016.cabin" name="High Roof (highline)" model="/vehicle/truck/scania_2016/cabin/cab_r_high.pmd"/>
+  <variant id="highline_8x4.scania.r_2016.cabin" name="High Roof (highline_8x4)" model="/vehicle/truck/scania_2016/cabin/cab_r_high_8x4.pmd"/>
+  <variant id="normal.scania.r_2016.cabin" name="Normal Roof" model="/vehicle/truck/scania_2016/cabin/cab_r_low.pmd"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="exhaust_m.mg01" group="Exhaust M" name="Mg01"/>
+  <accessory value="f_equip.super_lo_pnt" group="F Equip" name="Super Lo Pnt"/>
+  <accessory value="f_equip.super_md_pnt" group="F Equip" name="Super Md Pnt"/>
+  <accessory value="f_logo.painted" group="F Logo" name="Painted"/>
+  <accessory value="f_mirror.painted" group="F Mirror" name="Painted"/>
+  <accessory value="f_mudflap.kotr" group="F Mudflap" name="Kotr"/>
+  <accessory value="f_mudflap.kotrh" group="F Mudflap" name="Kotrh"/>
+  <accessory value="f_mudflap.kotrl" group="F Mudflap" name="Kotrl"/>
+  <accessory value="f_mudflap.scania" group="F Mudflap" name="Scania"/>
+  <accessory value="f_mudflap.scaniah" group="F Mudflap" name="Scaniah"/>
+  <accessory value="f_mudflap.scanial" group="F Mudflap" name="Scanial"/>
+  <accessory value="f_mudflap.scaniamg" group="F Mudflap" name="Scaniamg"/>
+  <accessory value="f_mudflap.scaniamgh" group="F Mudflap" name="Scaniamgh"/>
+  <accessory value="f_mudflap.scaniamgl" group="F Mudflap" name="Scaniamgl"/>
+  <accessory value="f_mudflap.v8" group="F Mudflap" name="V8"/>
+  <accessory value="f_mudflap.v8h" group="F Mudflap" name="V8H"/>
+  <accessory value="f_mudflap.v8l" group="F Mudflap" name="V8L"/>
+  <accessory value="mirror.painted" group="Mirror" name="Painted"/>
+  <accessory value="mirror.painted_f" group="Mirror" name="Painted F"/>
+  <accessory value="r_bumper.duty_p" group="R Bumper" name="Duty Painted"/>
+  <accessory value="r_bumper.mg01" group="R Bumper" name="Mg01"/>
+  <accessory value="r_bumper.mg03" group="R Bumper" name="Mg03"/>
+  <accessory value="r_bumper.mg04" group="R Bumper" name="Mg04"/>
+  <accessory value="r_bumper.stock_p" group="R Bumper" name="Painted"/>
+  <accessory value="r_chs_cover.4x2_p" group="R Chs Cover" name="4X2 P"/>
+  <accessory value="r_chs_cover.6xn_p" group="R Chs Cover" name="6Xn P"/>
+  <accessory value="r_chs_cover.6xnl_p" group="R Chs Cover" name="6Xnl P"/>
+  <accessory value="r_fender.4x2_blk_p" group="R Fender" name="4X2 Blk P"/>
+  <accessory value="r_fender.4x2_p" group="R Fender" name="Painted (4x2_p)"/>
+  <accessory value="r_fender.4x2_spcgr_p" group="R Fender" name="4X2 Spcgr P"/>
+  <accessory value="r_fender.6x2_blk_p" group="R Fender" name="6X2 Blk P"/>
+  <accessory value="r_fender.6x2_p" group="R Fender" name="Painted (6x2_p)"/>
+  <accessory value="r_fender.6x2_spcgr_p" group="R Fender" name="6X2 Spcgr P"/>
+  <accessory value="r_fender.6x2l_blk_p" group="R Fender" name="6X2L Blk P"/>
+  <accessory value="r_fender.6x2l_p" group="R Fender" name="Painted (6x2l_p)"/>
+  <accessory value="r_fender.6x2l_spcgr_p" group="R Fender" name="6X2L Spcgr P"/>
+  <accessory value="r_fender.8x4_p" group="R Fender" name="Painted (8x4_p)"/>
+  <accessory value="r_fendr_top.4x2_p" group="R Fendr Top" name="Painted (4x2_p)"/>
+  <accessory value="r_fendr_top.6x2_p" group="R Fendr Top" name="Painted (6x2_p)"/>
+  <accessory value="r_fendr_top.6x2l_p" group="R Fendr Top" name="Painted (6x2l_p)"/>
+  <accessory value="r_fendr_top.8x4_p" group="R Fendr Top" name="Painted (8x4_p)"/>
+  <accessory value="r_fendr_top.low_4x2_p" group="R Fendr Top" name="Low, Painted (low_4x2_p)"/>
+  <accessory value="r_fendr_top.low_6x2_p" group="R Fendr Top" name="Low, Painted (low_6x2_p)"/>
+  <accessory value="r_fendr_top.low_6x2l_p" group="R Fendr Top" name="Low, Painted (low_6x2l_p)"/>
+  <accessory value="r_fendr_top.low_8x4_p" group="R Fendr Top" name="Low, Painted (low_8x4_p)"/>
+  <accessory value="s_mirror.painted" group="S Mirror" name="Painted"/>
+  <accessory value="sideskirt.4x2_p" group="Sideskirt" name="Painted (4x2_p)"/>
+  <accessory value="sideskirt.4x2_p_1" group="Sideskirt" name="Painted &amp; Stock I (4x2_p_1)"/>
+  <accessory value="sideskirt.4x2_p_2" group="Sideskirt" name="Painted &amp; Stock II (4x2_p_2)"/>
+  <accessory value="sideskirt.4x2_p_v8" group="Sideskirt" name="Painted V8 (4x2_p_v8)"/>
+  <accessory value="sideskirt.4x2_p_v8_1" group="Sideskirt" name="Painted V8 &amp; Stock I (4x2_p_v8_1)"/>
+  <accessory value="sideskirt.4x2_p_v8_2" group="Sideskirt" name="Painted V8 &amp; Stock II (4x2_p_v8_2)"/>
+  <accessory value="sideskirt.6x2_p" group="Sideskirt" name="Painted (6x2_p)"/>
+  <accessory value="sideskirt.6x2_p_1" group="Sideskirt" name="Painted &amp; Stock I (6x2_p_1)"/>
+  <accessory value="sideskirt.6x2_p_2" group="Sideskirt" name="Painted &amp; Stock II (6x2_p_2)"/>
+  <accessory value="sideskirt.6x2_p_v8" group="Sideskirt" name="Painted V8 (6x2_p_v8)"/>
+  <accessory value="sideskirt.6x2_p_v8_1" group="Sideskirt" name="Painted V8 &amp; Stock I (6x2_p_v8_1)"/>
+  <accessory value="sideskirt.6x2_p_v8_2" group="Sideskirt" name="Painted V8 &amp; Stock II (6x2_p_v8_2)"/>
+  <accessory value="sideskirt.6x2l_p" group="Sideskirt" name="Painted (6x2l_p)"/>
+  <accessory value="sideskirt.6x2l_p_1" group="Sideskirt" name="Painted &amp; Stock I (6x2l_p_1)"/>
+  <accessory value="sideskirt.6x2l_p_2" group="Sideskirt" name="Painted &amp; Stock II (6x2l_p_2)"/>
+  <accessory value="sideskirt.6x2l_p_v8" group="Sideskirt" name="Painted V8 (6x2l_p_v8)"/>
+  <accessory value="sideskirt.6x2l_p_v8_1" group="Sideskirt" name="Painted V8 &amp; Stock I (6x2l_p_v8_1)"/>
+  <accessory value="sideskirt.6x2l_p_v8_2" group="Sideskirt" name="Painted V8 &amp; Stock II (6x2l_p_v8_2)"/>
+  <accessory value="sideskirt.8x4_p" group="Sideskirt" name="Painted (8x4_p)"/>
+  <accessory value="sunshld.stock" group="Sunshld" name="Stock I"/>
+  <accessory value="sunshld.sunshld_01" group="Sunshld" name="Stock II"/>
+  <accessory value="sunshld.sunshld_04" group="Sunshld" name="Sunshld 04"/>
+  <accessory value="sunshld.sunshld_05" group="Sunshld" name="Sunshld 05"/>
+  <accessory value="sunshld.sunshld_06" group="Sunshld" name="Sunshld 06"/>
+</vehicle>

@@ -3,6 +3,18 @@
 Each release on GitHub shows the section for its version. Add a new section at the top before
 tagging a release (see RELEASING.md).
 
+## 0.15.0
+- **Vehicle library:** every ETS2 truck, coach and ownable trailer (87 vehicles, game 1.62),
+  with the names you see in the game's shop: cabins, trailer bodies and the parts that take the
+  paint job. Built by Paintbooth from the game's own files (no Mods Studio 2 data).
+  - It is installed automatically the first time Paintbooth starts, without internet.
+  - **Vehicles > Install vehicle library** installs it again: the newest version from GitHub
+    when online, else the built-in one, plus the truck, coach and trailer mods in your ETS2
+    mod folder.
+  - It goes to `Documents\Paintbooth\Vehicles\Library`; your own vehicle files are never
+    touched.
+- **Scan game folder** now also finds ownable trailers and uses the in-game names.
+
 ## 0.14.0
 - Coach blueprints now include the bumpers, panels and other parts the MAN and Scania get from
   the vehicle's own list (only the Volvo's were found before). The templates are rewritten at

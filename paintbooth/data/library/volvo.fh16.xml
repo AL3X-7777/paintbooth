@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="volvo.fh16" game="ets2" brand="Volvo" name="FH Classic" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="l2h1.volvo.fh16.cabin" name="Sleeper"/>
+  <variant id="l2h2.volvo.fh16.cabin" name="Globetrotter"/>
+  <variant id="l2h3.volvo.fh16.cabin" name="Globetrotter XL"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="exhaust_m.exh_m_02" group="Exhaust M" name="Diva (exh_m_02)"/>
+  <accessory value="exhaust_m.exh_m_02b" group="Exhaust M" name="Diva (exh_m_02b)"/>
+  <accessory value="f_grill.paint1" group="F Grill" name="Quarterback"/>
+  <accessory value="f_mirror.paint" group="F Mirror" name="Painted"/>
+  <accessory value="f_mirror.paintl" group="F Mirror" name="Painted Long"/>
+  <accessory value="mirror.led3" group="Mirror" name="Painted, 3 LED"/>
+  <accessory value="mirror.led4" group="Mirror" name="Painted, 4 LED"/>
+  <accessory value="mirror.shape3" group="Mirror" name="Painted"/>
+  <accessory value="r_bumper.shape1" group="R Bumper" name="Diva"/>
+  <accessory value="r_bumper.shape2" group="R Bumper" name="Chariot"/>
+  <accessory value="r_chs_cover.paint_4x" group="R Chs Cover" name="Diva (paint_4x)"/>
+  <accessory value="r_chs_cover.paint_6x" group="R Chs Cover" name="Diva (paint_6x)"/>
+  <accessory value="r_chs_cover.paint_dia_4x" group="R Chs Cover" name="Centurion (paint_dia_4x)"/>
+  <accessory value="r_chs_cover.paint_dia_6x" group="R Chs Cover" name="Centurion (paint_dia_6x)"/>
+  <accessory value="r_fender.paint_4x" group="R Fender" name="Painted (paint_4x)"/>
+  <accessory value="r_fender.paint_6x" group="R Fender" name="Painted (paint_6x)"/>
+  <accessory value="r_fendr_top.paint_4x" group="R Fendr Top" name="Painted (paint_4x)"/>
+  <accessory value="r_fendr_top.paint_6x" group="R Fendr Top" name="Painted (paint_6x)"/>
+  <accessory value="r_fendr_top.paint_chr_4x" group="R Fendr Top" name="Painted &amp; Chromed (paint_chr_4x)"/>
+  <accessory value="r_fendr_top.paint_chr_6x" group="R Fendr Top" name="Painted &amp; Chromed (paint_chr_6x)"/>
+  <accessory value="r_grill.paint1" group="R Grill" name="Painted (paint1)"/>
+  <accessory value="r_grill.paint1_h1" group="R Grill" name="Painted (paint1_h1)"/>
+  <accessory value="s_mirror.paint" group="S Mirror" name="Painted"/>
+  <accessory value="sunshld.shape2" group="Sunshld" name="Samurai"/>
+  <accessory value="sunshld.sunshield01" group="Sunshld" name="Exclusive Painted"/>
+  <accessory value="sunshld.sunshield02" group="Sunshld" name="Exclusive Painted &amp; Chromed"/>
+  <accessory value="sunshld.sunshield03" group="Sunshld" name="Painted"/>
+</vehicle>

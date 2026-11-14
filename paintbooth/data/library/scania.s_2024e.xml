@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="scania.s_2024e" game="ets2" brand="Scania" name="S BEV" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="highline.scania.s_2024e.cabin" name="High Roof" model="/vehicle/truck/scania_2016/cabin/cab_s_high.pmd"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="r_bumper.stock_p" group="R Bumper" name="Painted"/>
+  <accessory value="r_fender.4x2_p" group="R Fender" name="Painted"/>
+  <accessory value="sunshld.stock" group="Sunshld" name="Stock"/>
+</vehicle>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="daf.2021" game="ets2" brand="DAF" name="NGD" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="xf.daf.2021.cabin" name="XF" model="/vehicle/truck/daf_2021/cabin/cab_low.pmd"/>
+  <variant id="xg.daf.2021.cabin" name="XG" model="/vehicle/truck/daf_2021/cabin/cab_mid.pmd"/>
+  <variant id="xg_plus.daf.2021.cabin" name="XG+" model="/vehicle/truck/daf_2021/cabin/cab_hi.pmd"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="mirror.cam_semi" group="Mirror" name="DAF Digital Vision"/>
+  <accessory value="mirror.plast" group="Mirror" name="Plastic"/>
+  <accessory value="mirror.semi" group="Mirror" name="Painted &amp; Plastic"/>
+  <accessory value="sideskirt.pnt2_4x2" group="Sideskirt" name="Painted &amp; Glossy"/>
+  <accessory value="sideskirt.pnt_4x2" group="Sideskirt" name="Painted (pnt_4x2)"/>
+  <accessory value="sideskirt.pnt_4x2_xf" group="Sideskirt" name="Painted (pnt_4x2_xf)"/>
+  <accessory value="sideskirt.slv2_4x2" group="Sideskirt" name="Exclusive Painted II (slv2_4x2)"/>
+  <accessory value="sideskirt.slv2_4x2_xf" group="Sideskirt" name="Exclusive Painted II (slv2_4x2_xf)"/>
+  <accessory value="sideskirt.slv_4x2" group="Sideskirt" name="Exclusive Painted (slv_4x2)"/>
+  <accessory value="sideskirt.slv_4x2_xf" group="Sideskirt" name="Exclusive Painted (slv_4x2_xf)"/>
+  <accessory value="sunshield.paint_xf" group="Sunshield" name="Painted (paint_xf)"/>
+  <accessory value="sunshield.paint_xg" group="Sunshield" name="Painted (paint_xg)"/>
+  <accessory value="sunshield.paint_xgp" group="Sunshield" name="Painted (paint_xgp)"/>
+  <accessory value="sunshield.pnt_glo_xgp" group="Sunshield" name="Painted &amp; Glossy"/>
+</vehicle>

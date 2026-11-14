@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="scania.r" game="ets2" brand="Scania" name="R 2009" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="highline.scania.r.cabin" name="Highline"/>
+  <variant id="normal.scania.r.cabin" name="Normal"/>
+  <variant id="tl_8x4.scania.r.cabin" name="Topline (tl_8x4)"/>
+  <variant id="topline.scania.r.cabin" name="Topline (topline)"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="r_bumper.arbumpermg01" group="R Bumper" name="Arbumpermg01"/>
+  <accessory value="r_bumper.arbumpermg03" group="R Bumper" name="Arbumpermg03"/>
+  <accessory value="r_chs_cover.chscmg4x203" group="R Chs Cover" name="Chscmg4X203"/>
+  <accessory value="r_chs_cover.chscmg6x203" group="R Chs Cover" name="Chscmg6X203"/>
+  <accessory value="r_chs_cover.chscmg6x2403" group="R Chs Cover" name="Chscmg6X2403"/>
+</vehicle>

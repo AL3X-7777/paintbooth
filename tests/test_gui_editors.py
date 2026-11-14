@@ -151,6 +151,9 @@ class FakeApp:
     def scan_dialog(self, folder: bool = True) -> None:
         pass
 
+    def install_library(self) -> None:
+        pass
+
     def open_vehicle_manager(self, select: "str | None" = None) -> None:
         pass
 

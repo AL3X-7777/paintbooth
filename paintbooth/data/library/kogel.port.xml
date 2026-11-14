@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="kogel.port" game="ets2" brand="Kogel" name="Port" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.cont_20" name="Port (cont_20)"/>
+  <variant id="body.cont_220" name="Port (cont_220)"/>
+  <variant id="body.cont_40" name="Port (cont_40)"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="chs_f_l.bpl_tank" group="Chs F L" name="Plastic Box"/>
+  <accessory value="chs_f_l.cg_bpl_dup" group="Chs F L" name="Simple Side Protection + Plastic Box"/>
+  <accessory value="chs_f_l.cg_dup" group="Chs F L" name="Simple Side Protection (cg_dup)"/>
+  <accessory value="chs_f_l.cg_tank" group="Chs F L" name="Simple Side Protection (cg_tank)"/>
+  <accessory value="chs_f_l.cg_tri" group="Chs F L" name="Simple Side Protection (cg_tri)"/>
+  <accessory value="chs_f_l.cgp_bpl_dup" group="Chs F L" name="Painted Side Protection + Plastic Box"/>
+  <accessory value="chs_f_l.cgp_dup" group="Chs F L" name="Painted Side Protection (cgp_dup)"/>
+  <accessory value="chs_f_l.cgp_tank" group="Chs F L" name="Painted Side Protection (cgp_tank)"/>
+  <accessory value="chs_f_l.cgp_tri" group="Chs F L" name="Painted Side Protection (cgp_tri)"/>
+  <accessory value="chs_f_l.sk_bpl_dup" group="Chs F L" name="Full Protection Sideskirts + Plastic Box"/>
+  <accessory value="chs_f_l.sk_dup" group="Chs F L" name="Full Protection Sideskirts (sk_dup)"/>
+  <accessory value="chs_f_l.sk_tank" group="Chs F L" name="Full Protection Sideskirts (sk_tank)"/>
+  <accessory value="chs_f_l.sk_tri" group="Chs F L" name="Full Protection Sideskirts (sk_tri)"/>
+  <accessory value="chs_f_l.skp_bpl_dup" group="Chs F L" name="Painted Protection Sideskirts + Plastic Box"/>
+  <accessory value="chs_f_l.skp_dup" group="Chs F L" name="Painted Protection Sideskirts (skp_dup)"/>
+  <accessory value="chs_f_l.skp_tank" group="Chs F L" name="Painted Protection Sideskirts (skp_tank)"/>
+  <accessory value="chs_f_l.skp_tri" group="Chs F L" name="Painted Protection Sideskirts (skp_tri)"/>
+  <accessory value="chs_f_r.bpl_tank" group="Chs F R" name="Plastic Box"/>
+  <accessory value="chs_f_r.cg_bpl_dup" group="Chs F R" name="Simple Side Protection + Plastic Box"/>
+  <accessory value="chs_f_r.cg_dup" group="Chs F R" name="Simple Side Protection (cg_dup)"/>
+  <accessory value="chs_f_r.cg_tank" group="Chs F R" name="Simple Side Protection (cg_tank)"/>
+  <accessory value="chs_f_r.cg_tri" group="Chs F R" name="Simple Side Protection (cg_tri)"/>
+  <accessory value="chs_f_r.cgp_bpl_dup" group="Chs F R" name="Painted Side Protection + Plastic Box"/>
+  <accessory value="chs_f_r.cgp_dup" group="Chs F R" name="Painted Side Protection (cgp_dup)"/>
+  <accessory value="chs_f_r.cgp_tank" group="Chs F R" name="Painted Side Protection (cgp_tank)"/>
+  <accessory value="chs_f_r.cgp_tri" group="Chs F R" name="Painted Side Protection (cgp_tri)"/>
+  <accessory value="chs_f_r.sk_bpl_dup" group="Chs F R" name="Full Protection Sideskirts + Plastic Box"/>
+  <accessory value="chs_f_r.sk_dup" group="Chs F R" name="Full Protection Sideskirts (sk_dup)"/>
+  <accessory value="chs_f_r.sk_tank" group="Chs F R" name="Full Protection Sideskirts (sk_tank)"/>
+  <accessory value="chs_f_r.sk_tri" group="Chs F R" name="Full Protection Sideskirts (sk_tri)"/>
+  <accessory value="chs_f_r.skp_bpl_dup" group="Chs F R" name="Painted Protection Sideskirts + Plastic Box"/>
+  <accessory value="chs_f_r.skp_dup" group="Chs F R" name="Painted Protection Sideskirts (skp_dup)"/>
+  <accessory value="chs_f_r.skp_tank" group="Chs F R" name="Painted Protection Sideskirts (skp_tank)"/>
+  <accessory value="chs_f_r.skp_tri" group="Chs F R" name="Painted Protection Sideskirts (skp_tri)"/>
+  <accessory value="l_body.ext" group="L Body" name="Extinguisher"/>
+  <accessory value="markers.simple_dup" group="Markers" name="Simple Dup"/>
+  <accessory value="markers.simple_ltri" group="Markers" name="Simple Ltri"/>
+  <accessory value="markers.simple_tank" group="Markers" name="Simple Tank"/>
+  <accessory value="markers.simple_tri" group="Markers" name="Simple Tri"/>
+  <accessory value="r_bumper.exc_dup" group="R Bumper" name="Exclusive (exc_dup)"/>
+  <accessory value="r_bumper.exc_tank" group="R Bumper" name="Exclusive (exc_tank)"/>
+  <accessory value="r_bumper.exc_tri" group="R Bumper" name="Exclusive (exc_tri)"/>
+  <accessory value="r_bumper.pt_dup" group="R Bumper" name="Painted"/>
+  <accessory value="r_bumper.sim_dup" group="R Bumper" name="Standard (sim_dup)"/>
+  <accessory value="r_bumper.sim_tank" group="R Bumper" name="Standard (sim_tank)"/>
+  <accessory value="r_bumper.sim_tri" group="R Bumper" name="Standard (sim_tri)"/>
+  <accessory value="r_fender.sim_dup" group="R Fender" name="Standard (sim_dup)"/>
+  <accessory value="r_fender.sim_tank" group="R Fender" name="Standard (sim_tank)"/>
+  <accessory value="r_fender.sim_tri" group="R Fender" name="Standard (sim_tri)"/>
+  <accessory value="r_mudflap.logo" group="R Mudflap" name="Kögel"/>
+  <accessory value="r_mudflap.logo_uk" group="R Mudflap" name="Kögel UK"/>
+  <accessory value="rear_body.lad2_tank" group="Rear Body" name="Ladder, 2x"/>
+  <accessory value="rear_body.ladl_tank" group="Rear Body" name="Ladder, Right"/>
+  <accessory value="rear_body.ladr_tank" group="Rear Body" name="Ladder, Left"/>
+</vehicle>

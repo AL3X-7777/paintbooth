@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="man.tgx_euro6" game="ets2" brand="MAN" name="TGX Euro 6" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="xl_cab.man.tgx_euro6.cabin" name="XL" model="/vehicle/truck/man_tgx_euro6/cab_xl.pmd"/>
+  <variant id="xlx_cab.man.tgx_euro6.cabin" name="XLX" model="/vehicle/truck/man_tgx_euro6/cab_xlx.pmd"/>
+  <variant id="xxl_cab.man.tgx_euro6.cabin" name="XXL" model="/vehicle/truck/man_tgx_euro6/cab_xxl.pmd"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="mirror.paint" group="Mirror" name="Painted"/>
+  <accessory value="r_fender.paint_4x2" group="R Fender" name="Painted (paint_4x2)"/>
+  <accessory value="r_fender.paint_6x22" group="R Fender" name="Painted (paint_6x22)"/>
+  <accessory value="r_fender.paint_6x24" group="R Fender" name="Painted (paint_6x24)"/>
+  <accessory value="r_fender.paint_6x2_2" group="R Fender" name="Painted (paint_6x2_2)"/>
+  <accessory value="r_fender.paint_6x4" group="R Fender" name="Painted (paint_6x4)"/>
+  <accessory value="r_fender.paint_8x4" group="R Fender" name="Painted (paint_8x4)"/>
+  <accessory value="r_fendr_top.paint_4x2" group="R Fendr Top" name="Painted (paint_4x2)"/>
+  <accessory value="r_fendr_top.paint_6x22" group="R Fendr Top" name="Painted (paint_6x22)"/>
+  <accessory value="r_fendr_top.paint_6x24" group="R Fendr Top" name="Painted (paint_6x24)"/>
+  <accessory value="r_fendr_top.paint_6x2_2" group="R Fendr Top" name="Painted (paint_6x2_2)"/>
+  <accessory value="r_fendr_top.paint_6x4" group="R Fendr Top" name="Painted (paint_6x4)"/>
+  <accessory value="r_fendr_top.paint_8x4" group="R Fendr Top" name="Painted (paint_8x4)"/>
+  <accessory value="sideskirt.paint_4x2" group="Sideskirt" name="Painted (paint_4x2)"/>
+  <accessory value="sideskirt.paint_6x22" group="Sideskirt" name="Painted (paint_6x22)"/>
+  <accessory value="sideskirt.paint_6x24" group="Sideskirt" name="Painted (paint_6x24)"/>
+  <accessory value="sideskirt.paint_6x2_2" group="Sideskirt" name="Painted (paint_6x2_2)"/>
+  <accessory value="sideskirt.paint_6x4" group="Sideskirt" name="Painted (paint_6x4)"/>
+  <accessory value="sideskirt.paint_8x4" group="Sideskirt" name="Painted (paint_8x4)"/>
+  <accessory value="sideskirt.stock_4x2" group="Sideskirt" name="Stock (stock_4x2)"/>
+  <accessory value="sideskirt.stock_6x22" group="Sideskirt" name="Stock (stock_6x22)"/>
+  <accessory value="sideskirt.stock_6x24" group="Sideskirt" name="Stock (stock_6x24)"/>
+  <accessory value="sideskirt.stock_6x2_2" group="Sideskirt" name="Stock (stock_6x2_2)"/>
+  <accessory value="sideskirt.stock_6x4" group="Sideskirt" name="Stock (stock_6x4)"/>
+  <accessory value="sideskirt.stock_8x4" group="Sideskirt" name="Stock (stock_8x4)"/>
+</vehicle>

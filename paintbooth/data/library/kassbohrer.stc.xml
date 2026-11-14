@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="kassbohrer.stc" game="ets2" brand="Kassbohrer" name="Stc" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.tnk_30" name="K.STC 30 / 1 - 10 / 24"/>
+  <variant id="body.tnk_30_p" name="K.STC Painted 30 / 1 - 10 / 24"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="body.tnk_30" group="Body" name="Tnk 30"/>
+  <accessory value="body.tnk_30_p" group="Body" name="Tnk 30 P"/>
+  <accessory value="chs_f_l.cg_3_30" group="Chs F L" name="Simple Side Protection"/>
+  <accessory value="chs_f_l.cg_b_ch_3_30" group="Chs F L" name="Simple Side Protection + Chromed Box"/>
+  <accessory value="chs_f_l.cg_bp_3_30" group="Chs F L" name="Simple Side Protection + Painted Box"/>
+  <accessory value="chs_f_l.cg_bpl_3_30" group="Chs F L" name="Simple Side Protection + Plastic Box"/>
+  <accessory value="chs_f_l.cg_ext_3_30" group="Chs F L" name="Simple Side Protection + Extinguisher"/>
+  <accessory value="chs_f_l.cg_st_3_30" group="Chs F L" name="Simple Side Protection + Spare Tire"/>
+  <accessory value="chs_f_r.cg_3_30" group="Chs F R" name="Simple Side Protection"/>
+  <accessory value="chs_f_r.cg_b_ch_3_30" group="Chs F R" name="Simple Side Protection + Chromed Box"/>
+  <accessory value="chs_f_r.cg_bp_3_30" group="Chs F R" name="Simple Side Protection + Painted Box"/>
+  <accessory value="chs_f_r.cg_bpl_3_30" group="Chs F R" name="Simple Side Protection + Plastic Box"/>
+  <accessory value="chs_f_r.cg_ext_3_30" group="Chs F R" name="Simple Side Protection + Extinguisher"/>
+  <accessory value="chs_f_r.cg_st_3_30" group="Chs F R" name="Simple Side Protection + Spare Tire"/>
+  <accessory value="chs_r_l.bch" group="Chs R L" name="Chromed Box"/>
+  <accessory value="chs_r_l.bp" group="Chs R L" name="Painted Box"/>
+  <accessory value="chs_r_l.bpl" group="Chs R L" name="Plastic Box"/>
+  <accessory value="chs_r_l.ext" group="Chs R L" name="Extinguisher"/>
+  <accessory value="chs_r_l.wt" group="Chs R L" name="Water Tank"/>
+  <accessory value="chs_r_r.bch" group="Chs R R" name="Chromed Box"/>
+  <accessory value="chs_r_r.bp" group="Chs R R" name="Painted Box"/>
+  <accessory value="chs_r_r.ext" group="Chs R R" name="Extinguisher"/>
+  <accessory value="chs_r_r.wt" group="Chs R R" name="Water Tank"/>
+  <accessory value="l_body.t_1_ch_3_30" group="L Body" name="Hose, Chromed"/>
+  <accessory value="l_body.t_1_p_3_30" group="L Body" name="Hose, Painted"/>
+  <accessory value="l_body.t_1_pl_3_30" group="L Body" name="Hose, Plastic"/>
+  <accessory value="l_body.t_2_ch_3_30" group="L Body" name="Hose, Chromed, 2x"/>
+  <accessory value="l_body.t_2_p_3_30" group="L Body" name="Hose, Painted, 2x"/>
+  <accessory value="l_body.t_2_pl_3_30" group="L Body" name="Hose, Plastic, 2x"/>
+  <accessory value="markers.simple" group="Markers" name="Standard"/>
+  <accessory value="r_body.t_1_ch_3_30" group="R Body" name="Hose, Chromed"/>
+  <accessory value="r_body.t_1_p_3_30" group="R Body" name="Hose, Painted"/>
+  <accessory value="r_body.t_1_pl_3_30" group="R Body" name="Hose, Plastic"/>
+  <accessory value="r_body.t_2_ch_3_30" group="R Body" name="Hose, Chromed, 2x"/>
+  <accessory value="r_body.t_2_p_3_30" group="R Body" name="Hose, Painted, 2x"/>
+  <accessory value="r_body.t_2_pl_3_30" group="R Body" name="Hose, Plastic, 2x"/>
+  <accessory value="r_bumper.exclusive" group="R Bumper" name="Exclusive"/>
+  <accessory value="r_bumper.paint" group="R Bumper" name="Painted"/>
+  <accessory value="r_bumper.simple" group="R Bumper" name="Standard"/>
+  <accessory value="r_mudflap.logo" group="R Mudflap" name="Kässbohrer"/>
+  <accessory value="r_mudflap.logo_uk" group="R Mudflap" name="Kässbohrer UK"/>
+  <accessory value="rear_body.cwl_3_30" group="Rear Body" name="Left"/>
+  <accessory value="rear_body.cwlp_3_30" group="Rear Body" name="Left, Painted"/>
+</vehicle>

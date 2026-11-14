@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="mercedes.actros2014" game="ets2" brand="Mercedes-Benz" name="New Actros" author="SCS Software" definition_by="Paintbooth library">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="bigspace.mercedes.actros2014.cabin" name="BigSpace" model="/vehicle/truck/mercedes_actros_2014/cabin_b.pmd"/>
+  <variant id="gigaspace.mercedes.actros2014.cabin" name="GigaSpace (gigaspace)" model="/vehicle/truck/mercedes_actros_2014/cabin_a.pmd"/>
+  <variant id="gs_8x4.mercedes.actros2014.cabin" name="GigaSpace (gs_8x4)" model="/vehicle/truck/mercedes_actros_2014/cabin_8x4.pmd"/>
+  <variant id="streamspace.mercedes.actros2014.cabin" name="StreamSpace" model="/vehicle/truck/mercedes_actros_2014/cabin_c.pmd"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="r_bumper.4x2v1" group="R Bumper" name="Thor (4x2v1)"/>
+  <accessory value="r_bumper.4x2v2" group="R Bumper" name="Centurion (4x2v2)"/>
+  <accessory value="r_bumper.4x2v3" group="R Bumper" name="Diva (4x2v3)"/>
+  <accessory value="r_bumper.6x24v1" group="R Bumper" name="Thor (6x24v1)"/>
+  <accessory value="r_bumper.6x24v2" group="R Bumper" name="Centurion (6x24v2)"/>
+  <accessory value="r_bumper.6x24v3" group="R Bumper" name="Diva (6x24v3)"/>
+  <accessory value="r_bumper.6x2v1" group="R Bumper" name="Thor (6x2v1)"/>
+  <accessory value="r_bumper.6x2v2" group="R Bumper" name="Centurion (6x2v2)"/>
+  <accessory value="r_bumper.6x2v3" group="R Bumper" name="Diva (6x2v3)"/>
+  <accessory value="r_chs_cover.4x2p" group="R Chs Cover" name="Diva (4x2p)"/>
+  <accessory value="r_chs_cover.6x24p" group="R Chs Cover" name="Diva (6x24p)"/>
+  <accessory value="r_chs_cover.6x2p" group="R Chs Cover" name="Diva (6x2p)"/>
+  <accessory value="r_fender.4x2p" group="R Fender" name="Painted (4x2p)"/>
+  <accessory value="r_fender.6x24p" group="R Fender" name="Painted (6x24p)"/>
+  <accessory value="r_fender.6x2p" group="R Fender" name="Painted (6x2p)"/>
+  <accessory value="r_fender.8x4p" group="R Fender" name="Painted (8x4p)"/>
+  <accessory value="r_fendr_top.4x2p" group="R Fendr Top" name="Painted (4x2p)"/>
+  <accessory value="r_fendr_top.6x24p" group="R Fendr Top" name="Painted (6x24p)"/>
+  <accessory value="r_fendr_top.6x2p" group="R Fendr Top" name="Painted (6x2p)"/>
+  <accessory value="r_fendr_top.8x4p" group="R Fendr Top" name="Painted (8x4p)"/>
+  <accessory value="s_guard.type3" group="S Guard" name="Extra"/>
+  <accessory value="sunshld.paint01" group="Sunshld" name="Samurai"/>
+  <accessory value="sunshld.paint02" group="Sunshld" name="Titan"/>
+  <accessory value="sunshld.paint03" group="Sunshld" name="Viking"/>
+</vehicle>

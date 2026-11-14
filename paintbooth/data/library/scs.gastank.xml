@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="scs.gastank" game="ets2" brand="SCS" name="Gas Tank" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.tank_10" name="Gas Tank (tank_10)"/>
+  <variant id="body.tank_12" name="Gas Tank (tank_12)"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="body.tank_10" group="Body" name="Tank 10"/>
+  <accessory value="body.tank_12" group="Body" name="Tank 12"/>
+  <accessory value="chassis.ch_2a" group="Chassis" name="Ch 2A"/>
+  <accessory value="chassis.ch_3a" group="Chassis" name="Ch 3A"/>
+  <accessory value="chs_f_l.bb_pt_pan_pt" group="Chs F L" name="Bb Pt Pan Pt"/>
+  <accessory value="chs_f_l.bb_pt_ptbox" group="Chs F L" name="Bb Pt Ptbox"/>
+  <accessory value="chs_f_l.bigbox_pt" group="Chs F L" name="Bigbox Pt"/>
+  <accessory value="chs_f_l.ch_box_sidsk" group="Chs F L" name="Full Protection Sideskirts + Chromed Box"/>
+  <accessory value="chs_f_l.chrome_box" group="Chs F L" name="Chromed Box"/>
+  <accessory value="chs_f_l.chrome_box_2" group="Chs F L" name="Chromed Box, 2x"/>
+  <accessory value="chs_f_l.p_box_sidsk" group="Chs F L" name="Full Protection Sideskirts + Painted Box"/>
+  <accessory value="chs_f_l.paint_box" group="Chs F L" name="Painted Box"/>
+  <accessory value="chs_f_l.paint_box_2" group="Chs F L" name="Painted Box, 2x"/>
+  <accessory value="chs_f_r.cage_long" group="Chs F R" name="Simple Side Protection (cage_long)"/>
+  <accessory value="chs_f_r.cage_short" group="Chs F R" name="Simple Side Protection (cage_short)"/>
+  <accessory value="chs_f_r.ch_box_sidsk" group="Chs F R" name="Full Protection Sideskirts + Chromed Box"/>
+  <accessory value="chs_f_r.chrome_box" group="Chs F R" name="Chromed Box"/>
+  <accessory value="chs_f_r.p_box_sidsk" group="Chs F R" name="Full Protection Sideskirts + Painted Box"/>
+  <accessory value="chs_f_r.paint_box" group="Chs F R" name="Painted Box"/>
+  <accessory value="chs_f_r.paintbox" group="Chs F R" name="Paintbox"/>
+  <accessory value="chs_f_r.panel_pt_ln" group="Chs F R" name="Panel Pt Ln"/>
+  <accessory value="chs_f_r.panel_pt_sh" group="Chs F R" name="Panel Pt Sh"/>
+  <accessory value="chs_f_r.pl_box_01" group="Chs F R" name="Plastic Box (pl_box_01)"/>
+  <accessory value="chs_f_r.pl_box_02" group="Chs F R" name="Plastic Box (pl_box_02)"/>
+  <accessory value="chs_f_r.pl_box_03" group="Chs F R" name="Plastic Box (pl_box_03)"/>
+  <accessory value="chs_f_r.ptbox_ptpan" group="Chs F R" name="Ptbox Ptpan"/>
+  <accessory value="chs_f_r.side_ch_lng" group="Chs F R" name="Full Protection Sideskirts, Chromed (side_ch_lng)"/>
+  <accessory value="chs_f_r.side_ch_shr" group="Chs F R" name="Full Protection Sideskirts, Chromed (side_ch_shr)"/>
+  <accessory value="chs_f_r.side_long" group="Chs F R" name="Full Protection Sideskirts (side_long)"/>
+  <accessory value="chs_f_r.side_short" group="Chs F R" name="Full Protection Sideskirts (side_short)"/>
+  <accessory value="chs_r_l.chromebox" group="Chs R L" name="Chromed Box"/>
+  <accessory value="chs_r_l.paintbox" group="Chs R L" name="Painted Box"/>
+  <accessory value="chs_r_l.poly_box_01" group="Chs R L" name="Plastic Box (poly_box_01)"/>
+  <accessory value="chs_r_l.poly_box_02" group="Chs R L" name="Plastic Box (poly_box_02)"/>
+  <accessory value="chs_r_l.poly_box_03" group="Chs R L" name="Plastic Box (poly_box_03)"/>
+  <accessory value="chs_r_r.chromebox" group="Chs R R" name="Chromed Box"/>
+  <accessory value="chs_r_r.paintbox" group="Chs R R" name="Painted Box"/>
+  <accessory value="chs_r_r.poly_box_01" group="Chs R R" name="Plastic Box (poly_box_01)"/>
+  <accessory value="chs_r_r.poly_box_02" group="Chs R R" name="Plastic Box (poly_box_02)"/>
+  <accessory value="chs_r_r.poly_box_03" group="Chs R R" name="Plastic Box (poly_box_03)"/>
+  <accessory value="l_body.dpipe_chr_2a" group="L Body" name="Hose, Chromed, 2x (dpipe_chr_2a)"/>
+  <accessory value="l_body.dpipe_chr_3a" group="L Body" name="Hose, Chromed, 2x (dpipe_chr_3a)"/>
+  <accessory value="l_body.dpipe_pnt_2a" group="L Body" name="Hose, Painted, 2x (dpipe_pnt_2a)"/>
+  <accessory value="l_body.dpipe_pnt_3a" group="L Body" name="Hose, Painted, 2x (dpipe_pnt_3a)"/>
+  <accessory value="l_body.spipe_chr_2a" group="L Body" name="Hose, Chromed (spipe_chr_2a)"/>
+  <accessory value="l_body.spipe_chr_3a" group="L Body" name="Hose, Chromed (spipe_chr_3a)"/>
+  <accessory value="l_body.spipe_pnt_2a" group="L Body" name="Hose, Painted (spipe_pnt_2a)"/>
+  <accessory value="l_body.spipe_pnt_3a" group="L Body" name="Hose, Painted (spipe_pnt_3a)"/>
+  <accessory value="markers.exclusive2" group="Markers" name="Exclusive (exclusive2)"/>
+  <accessory value="markers.exclusive3" group="Markers" name="Exclusive (exclusive3)"/>
+  <accessory value="markers.simple2" group="Markers" name="Standard (simple2)"/>
+  <accessory value="markers.simple3" group="Markers" name="Standard (simple3)"/>
+  <accessory value="r_body.dpipe_chr_2a" group="R Body" name="Hose, Chromed, 2x (dpipe_chr_2a)"/>
+  <accessory value="r_body.dpipe_chr_3a" group="R Body" name="Hose, Chromed, 2x (dpipe_chr_3a)"/>
+  <accessory value="r_body.dpipe_pnt_2a" group="R Body" name="Hose, Painted, 2x (dpipe_pnt_2a)"/>
+  <accessory value="r_body.dpipe_pnt_3a" group="R Body" name="Hose, Painted, 2x (dpipe_pnt_3a)"/>
+  <accessory value="r_body.spipe_chr_2a" group="R Body" name="Hose, Chromed (spipe_chr_2a)"/>
+  <accessory value="r_body.spipe_chr_3a" group="R Body" name="Hose, Chromed (spipe_chr_3a)"/>
+  <accessory value="r_body.spipe_pnt_2a" group="R Body" name="Hose, Painted (spipe_pnt_2a)"/>
+  <accessory value="r_body.spipe_pnt_3a" group="R Body" name="Hose, Painted (spipe_pnt_3a)"/>
+  <accessory value="r_bumper.exc_black" group="R Bumper" name="Exclusive (exc_black)"/>
+  <accessory value="r_bumper.exc_white" group="R Bumper" name="Exclusive (exc_white)"/>
+  <accessory value="r_bumper.simple" group="R Bumper" name="Standard"/>
+  <accessory value="r_bumper.simple_led" group="R Bumper" name="Standard LED"/>
+  <accessory value="r_bumper.standard" group="R Bumper" name="Standard Eco"/>
+  <accessory value="r_fender.ch_mul_2a" group="R Fender" name="Exclusive (ch_mul_2a)"/>
+  <accessory value="r_fender.ch_mul_3a" group="R Fender" name="Exclusive (ch_mul_3a)"/>
+  <accessory value="r_fender.ch_sin_2a" group="R Fender" name="Exclusive (ch_sin_2a)"/>
+  <accessory value="r_fender.ch_sin_3a" group="R Fender" name="Exclusive (ch_sin_3a)"/>
+  <accessory value="r_fender.poly_mul_2a" group="R Fender" name="Standard (poly_mul_2a)"/>
+  <accessory value="r_fender.poly_mul_3a" group="R Fender" name="Standard (poly_mul_3a)"/>
+  <accessory value="r_fender.poly_sin_2a" group="R Fender" name="Standard (poly_sin_2a)"/>
+  <accessory value="r_fender.poly_sin_3a" group="R Fender" name="Standard (poly_sin_3a)"/>
+  <accessory value="r_fender.pt_mul_2a" group="R Fender" name="Painted (pt_mul_2a)"/>
+  <accessory value="r_fender.pt_mul_3a" group="R Fender" name="Painted (pt_mul_3a)"/>
+  <accessory value="r_fender.pt_sin_2a" group="R Fender" name="Painted (pt_sin_2a)"/>
+  <accessory value="r_fender.pt_sin_3a" group="R Fender" name="Painted (pt_sin_3a)"/>
+  <accessory value="r_mudflap.simple" group="R Mudflap" name="Standard"/>
+  <accessory value="r_mudflap.w_lead" group="R Mudflap" name="Exclusive"/>
+  <accessory value="rear_body.extinguisher" group="Rear Body" name="Extinguisher, 2x"/>
+</vehicle>

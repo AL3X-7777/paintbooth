@@ -37,6 +37,7 @@ The full API of each one is in the [HTML reference](../api/index.html).
 | `paintbooth.gui.widgets` | Reusable widgets for the Paintbooth window. |
 | `paintbooth.gui.winutil` | Tool windows that reopen where the user left them, with a title bar that matches the theme. |
 | `paintbooth.hashfs` | Read-only access to SCS HashFS archives (.scs, versions 1 and 2). |
+| `paintbooth.library` | The vehicle library: building it from the game, packing it, and installing it with one button. |
 | `paintbooth.model` | Project and vehicle definitions of the ``project.xml`` format, loaded from plain XML files. |
 | `paintbooth.ms2` | Project files: Paintbooth .pb and Mods Studio 2 .ms2 (same format): open, edit, save. |
 | `paintbooth.ms2build` | Export a Mods Studio 2 project (.ms2/.pb) to a game mod. |

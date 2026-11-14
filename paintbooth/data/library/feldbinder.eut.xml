@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="feldbinder.eut" game="ets2" brand="Feldbinder" name="EUT" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.silo_35_3_g" name="EUT 35.3-3/1 Standard"/>
+  <variant id="body.silo_35_3_g2" name="EUT 35.3-3/1 ADR Standard"/>
+  <variant id="body.silo_35_3_p" name="EUT 35.3-3/1 Painted"/>
+  <variant id="body.silo_52_3_g" name="EUT 52.3-4/1 Standard"/>
+  <variant id="body.silo_52_3_g2" name="EUT 52.3-4/1 ADR Standard"/>
+  <variant id="body.silo_52_3_p" name="EUT 52.3-4/1 Painted"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="body.silo_35_3_g" group="Body" name="Silo 35 3 G"/>
+  <accessory value="body.silo_35_3_g2" group="Body" name="Silo 35 3 G2"/>
+  <accessory value="body.silo_35_3_p" group="Body" name="Silo 35 3 P"/>
+  <accessory value="body.silo_52_3_g" group="Body" name="Silo 52 3 G"/>
+  <accessory value="body.silo_52_3_g2" group="Body" name="Silo 52 3 G2"/>
+  <accessory value="body.silo_52_3_p" group="Body" name="Silo 52 3 P"/>
+  <accessory value="chassis.ch_3_35" group="Chassis" name="Ch 3 35"/>
+  <accessory value="chassis.ch_3_35_hook" group="Chassis" name="Ch 3 35 Hook"/>
+  <accessory value="chassis.ch_3_52" group="Chassis" name="Ch 3 52"/>
+  <accessory value="chs_f_l.cage_35" group="Chs F L" name="Simple Side Protection (cage_35)"/>
+  <accessory value="chs_f_l.cage_52" group="Chs F L" name="Simple Side Protection (cage_52)"/>
+  <accessory value="chs_f_l.cage_bch_35" group="Chs F L" name="Simple Side Protection + Chromed Box (cage_bch_35)"/>
+  <accessory value="chs_f_l.cage_bch_52" group="Chs F L" name="Simple Side Protection + Chromed Box (cage_bch_52)"/>
+  <accessory value="chs_f_l.cage_bpl_35" group="Chs F L" name="Simple Side Protection + Plastic Box (cage_bpl_35)"/>
+  <accessory value="chs_f_l.cage_bpl_352" group="Chs F L" name="Simple Side Protection + Plastic Box (cage_bpl_352)"/>
+  <accessory value="chs_f_l.cage_bpl_52" group="Chs F L" name="Simple Side Protection + Plastic Box (cage_bpl_52)"/>
+  <accessory value="chs_f_l.cage_bpl_522" group="Chs F L" name="Simple Side Protection + Plastic Box (cage_bpl_522)"/>
+  <accessory value="chs_f_l.cage_ext_35" group="Chs F L" name="Simple Side Protection + Extinguisher"/>
+  <accessory value="chs_f_l.cage_p_35" group="Chs F L" name="Painted Side Protection (cage_p_35)"/>
+  <accessory value="chs_f_l.cage_p_52" group="Chs F L" name="Painted Side Protection (cage_p_52)"/>
+  <accessory value="chs_f_l.cage_st_35" group="Chs F L" name="Simple Side Protection + Spare Tire"/>
+  <accessory value="chs_f_l.cage_wt_35" group="Chs F L" name="Simple Side Protection + Water Tank"/>
+  <accessory value="chs_f_l.cagep_bp_35" group="Chs F L" name="Painted Side Protection + Painted Box (cagep_bp_35)"/>
+  <accessory value="chs_f_l.cagep_bp_52" group="Chs F L" name="Painted Side Protection + Painted Box (cagep_bp_52)"/>
+  <accessory value="chs_f_l.cagep_st_35" group="Chs F L" name="Painted Side Protection + Spare Tire"/>
+  <accessory value="chs_f_r.cage_35" group="Chs F R" name="Simple Side Protection (cage_35)"/>
+  <accessory value="chs_f_r.cage_52" group="Chs F R" name="Simple Side Protection (cage_52)"/>
+  <accessory value="chs_f_r.cage_bbpl_52" group="Chs F R" name="Simple Side Protection + Big Box"/>
+  <accessory value="chs_f_r.cage_bch_35" group="Chs F R" name="Simple Side Protection + Chromed Box (cage_bch_35)"/>
+  <accessory value="chs_f_r.cage_bch_52" group="Chs F R" name="Simple Side Protection + Chromed Box (cage_bch_52)"/>
+  <accessory value="chs_f_r.cage_bpl_35" group="Chs F R" name="Simple Side Protection + Plastic Box (cage_bpl_35)"/>
+  <accessory value="chs_f_r.cage_bpl_352" group="Chs F R" name="Simple Side Protection + Plastic Box (cage_bpl_352)"/>
+  <accessory value="chs_f_r.cage_bpl_52" group="Chs F R" name="Simple Side Protection + Plastic Box (cage_bpl_52)"/>
+  <accessory value="chs_f_r.cage_bpl_522" group="Chs F R" name="Simple Side Protection + Plastic Box (cage_bpl_522)"/>
+  <accessory value="chs_f_r.cage_ext_35" group="Chs F R" name="Simple Side Protection + Extinguisher (cage_ext_35)"/>
+  <accessory value="chs_f_r.cage_ext_52" group="Chs F R" name="Simple Side Protection + Extinguisher (cage_ext_52)"/>
+  <accessory value="chs_f_r.cage_p_35" group="Chs F R" name="Painted Side Protection (cage_p_35)"/>
+  <accessory value="chs_f_r.cage_p_52" group="Chs F R" name="Painted Side Protection (cage_p_52)"/>
+  <accessory value="chs_f_r.cage_st_35" group="Chs F R" name="Simple Side Protection + Spare Tire (cage_st_35)"/>
+  <accessory value="chs_f_r.cage_st_52" group="Chs F R" name="Simple Side Protection + Spare Tire (cage_st_52)"/>
+  <accessory value="chs_f_r.cage_wt_35" group="Chs F R" name="Simple Side Protection + Water Tank (cage_wt_35)"/>
+  <accessory value="chs_f_r.cage_wt_52" group="Chs F R" name="Simple Side Protection + Water Tank (cage_wt_52)"/>
+  <accessory value="chs_f_r.cagep_bp_35" group="Chs F R" name="Painted Side Protection + Painted Box (cagep_bp_35)"/>
+  <accessory value="chs_f_r.cagep_bp_52" group="Chs F R" name="Painted Side Protection + Painted Box (cagep_bp_52)"/>
+  <accessory value="chs_f_r.cagep_st_35" group="Chs F R" name="Painted Side Protection + Spare Tire (cagep_st_35)"/>
+  <accessory value="chs_f_r.cagep_st_52" group="Chs F R" name="Painted Side Protection + Spare Tire (cagep_st_52)"/>
+  <accessory value="chs_r_r.bch" group="Chs R R" name="Chromed Box"/>
+  <accessory value="chs_r_r.bp" group="Chs R R" name="Painted Box"/>
+  <accessory value="chs_r_r.bpl" group="Chs R R" name="Plastic Box (bpl)"/>
+  <accessory value="chs_r_r.bpl2" group="Chs R R" name="Plastic Box (bpl2)"/>
+  <accessory value="chs_r_r.ext" group="Chs R R" name="Extinguisher"/>
+  <accessory value="chs_r_r.wt" group="Chs R R" name="Water Tank"/>
+  <accessory value="f_body.ext_1" group="F Body" name="Extinguisher"/>
+  <accessory value="f_body.ext_2" group="F Body" name="Extinguisher, 2x"/>
+  <accessory value="l_body.t_1_al_35" group="L Body" name="Hose, Aluminum (t_1_al_35)"/>
+  <accessory value="l_body.t_1_al_352" group="L Body" name="Hose, Aluminum (t_1_al_352)"/>
+  <accessory value="l_body.t_1_al_52" group="L Body" name="Hose, Aluminum (t_1_al_52)"/>
+  <accessory value="l_body.t_1_al_522" group="L Body" name="Hose, Aluminum (t_1_al_522)"/>
+  <accessory value="l_body.t_1_p_35" group="L Body" name="Hose, Painted (t_1_p_35)"/>
+  <accessory value="l_body.t_1_p_352" group="L Body" name="Hose, Painted (t_1_p_352)"/>
+  <accessory value="l_body.t_1_p_52" group="L Body" name="Hose, Painted (t_1_p_52)"/>
+  <accessory value="l_body.t_1_p_522" group="L Body" name="Hose, Painted (t_1_p_522)"/>
+  <accessory value="l_body.t_1_pl_35" group="L Body" name="Hose, Plastic (t_1_pl_35)"/>
+  <accessory value="l_body.t_1_pl_352" group="L Body" name="Hose, Plastic (t_1_pl_352)"/>
+  <accessory value="l_body.t_1_pl_52" group="L Body" name="Hose, Plastic (t_1_pl_52)"/>
+  <accessory value="l_body.t_1_pl_522" group="L Body" name="Hose, Plastic (t_1_pl_522)"/>
+  <accessory value="l_body.t_2_al_35" group="L Body" name="Hose, Aluminum, 2x (t_2_al_35)"/>
+  <accessory value="l_body.t_2_al_352" group="L Body" name="Hose, Aluminum, 2x (t_2_al_352)"/>
+  <accessory value="l_body.t_2_al_52" group="L Body" name="Hose, Aluminum, 2x (t_2_al_52)"/>
+  <accessory value="l_body.t_2_al_522" group="L Body" name="Hose, Aluminum, 2x (t_2_al_522)"/>
+  <accessory value="l_body.t_2_p_35" group="L Body" name="Hose, Painted, 2x (t_2_p_35)"/>
+  <accessory value="l_body.t_2_p_352" group="L Body" name="Hose, Painted, 2x (t_2_p_352)"/>
+  <accessory value="l_body.t_2_p_52" group="L Body" name="Hose, Painted, 2x (t_2_p_52)"/>
+  <accessory value="l_body.t_2_p_522" group="L Body" name="Hose, Painted, 2x (t_2_p_522)"/>
+  <accessory value="l_body.t_2_pl_35" group="L Body" name="Hose, Plastic, 2x (t_2_pl_35)"/>
+  <accessory value="l_body.t_2_pl_352" group="L Body" name="Hose, Plastic, 2x (t_2_pl_352)"/>
+  <accessory value="l_body.t_2_pl_52" group="L Body" name="Hose, Plastic, 2x (t_2_pl_52)"/>
+  <accessory value="l_body.t_2_pl_522" group="L Body" name="Hose, Plastic, 2x (t_2_pl_522)"/>
+  <accessory value="l_body.t_3_al_35" group="L Body" name="Hose, Aluminum, 3x (t_3_al_35)"/>
+  <accessory value="l_body.t_3_al_352" group="L Body" name="Hose, Aluminum, 3x (t_3_al_352)"/>
+  <accessory value="l_body.t_3_al_52" group="L Body" name="Hose, Aluminum, 3x (t_3_al_52)"/>
+  <accessory value="l_body.t_3_al_522" group="L Body" name="Hose, Aluminum, 3x (t_3_al_522)"/>
+  <accessory value="l_body.t_3_p_35" group="L Body" name="Hose, Painted, 3x (t_3_p_35)"/>
+  <accessory value="l_body.t_3_p_352" group="L Body" name="Hose, Painted, 3x (t_3_p_352)"/>
+  <accessory value="l_body.t_3_p_52" group="L Body" name="Hose, Painted, 3x (t_3_p_52)"/>
+  <accessory value="l_body.t_3_p_522" group="L Body" name="Hose, Painted, 3x (t_3_p_522)"/>
+  <accessory value="l_body.t_3_pl_35" group="L Body" name="Hose, Plastic, 3x (t_3_pl_35)"/>
+  <accessory value="l_body.t_3_pl_352" group="L Body" name="Hose, Plastic, 3x (t_3_pl_352)"/>
+  <accessory value="l_body.t_3_pl_52" group="L Body" name="Hose, Plastic, 3x (t_3_pl_52)"/>
+  <accessory value="l_body.t_3_pl_522" group="L Body" name="Hose, Plastic, 3x (t_3_pl_522)"/>
+  <accessory value="m_mudflap.lw" group="M Mudflap" name="FFB (lw)"/>
+  <accessory value="m_mudflap.lw2" group="M Mudflap" name="FFB (lw2)"/>
+  <accessory value="markers.simple" group="Markers" name="Standard"/>
+  <accessory value="markers.simple_r1" group="Markers" name="Exclusive (simple_r1)"/>
+  <accessory value="markers.simple_r2" group="Markers" name="Exclusive (simple_r2)"/>
+  <accessory value="r_body.t_1_al_35" group="R Body" name="Hose, Aluminum (t_1_al_35)"/>
+  <accessory value="r_body.t_1_al_352" group="R Body" name="Hose, Aluminum (t_1_al_352)"/>
+  <accessory value="r_body.t_1_al_52" group="R Body" name="Hose, Aluminum (t_1_al_52)"/>
+  <accessory value="r_body.t_1_al_522" group="R Body" name="Hose, Aluminum (t_1_al_522)"/>
+  <accessory value="r_body.t_1_p_35" group="R Body" name="Hose, Painted (t_1_p_35)"/>
+  <accessory value="r_body.t_1_p_352" group="R Body" name="Hose, Painted (t_1_p_352)"/>
+  <accessory value="r_body.t_1_p_52" group="R Body" name="Hose, Painted (t_1_p_52)"/>
+  <accessory value="r_body.t_1_p_522" group="R Body" name="Hose, Painted (t_1_p_522)"/>
+  <accessory value="r_body.t_1_pl_35" group="R Body" name="Hose, Plastic (t_1_pl_35)"/>
+  <accessory value="r_body.t_1_pl_352" group="R Body" name="Hose, Plastic (t_1_pl_352)"/>
+  <accessory value="r_body.t_1_pl_52" group="R Body" name="Hose, Plastic (t_1_pl_52)"/>
+  <accessory value="r_body.t_1_pl_522" group="R Body" name="Hose, Plastic (t_1_pl_522)"/>
+  <accessory value="r_body.t_2_al_35" group="R Body" name="Hose, Aluminum, 2x (t_2_al_35)"/>
+  <accessory value="r_body.t_2_al_352" group="R Body" name="Hose, Aluminum, 2x (t_2_al_352)"/>
+  <accessory value="r_body.t_2_al_52" group="R Body" name="Hose, Aluminum, 2x (t_2_al_52)"/>
+  <accessory value="r_body.t_2_al_522" group="R Body" name="Hose, Aluminum, 2x (t_2_al_522)"/>
+  <accessory value="r_body.t_2_p_35" group="R Body" name="Hose, Painted, 2x (t_2_p_35)"/>
+  <accessory value="r_body.t_2_p_352" group="R Body" name="Hose, Painted, 2x (t_2_p_352)"/>
+  <accessory value="r_body.t_2_p_52" group="R Body" name="Hose, Painted, 2x (t_2_p_52)"/>
+  <accessory value="r_body.t_2_p_522" group="R Body" name="Hose, Painted, 2x (t_2_p_522)"/>
+  <accessory value="r_body.t_2_pl_35" group="R Body" name="Hose, Plastic, 2x (t_2_pl_35)"/>
+  <accessory value="r_body.t_2_pl_352" group="R Body" name="Hose, Plastic, 2x (t_2_pl_352)"/>
+  <accessory value="r_body.t_2_pl_52" group="R Body" name="Hose, Plastic, 2x (t_2_pl_52)"/>
+  <accessory value="r_body.t_2_pl_522" group="R Body" name="Hose, Plastic, 2x (t_2_pl_522)"/>
+  <accessory value="r_body.t_3_al_35" group="R Body" name="Hose, Aluminum, 3x (t_3_al_35)"/>
+  <accessory value="r_body.t_3_al_352" group="R Body" name="Hose, Aluminum, 3x (t_3_al_352)"/>
+  <accessory value="r_body.t_3_al_52" group="R Body" name="Hose, Aluminum, 3x (t_3_al_52)"/>
+  <accessory value="r_body.t_3_al_522" group="R Body" name="Hose, Aluminum, 3x (t_3_al_522)"/>
+  <accessory value="r_body.t_3_p_35" group="R Body" name="Hose, Painted, 3x (t_3_p_35)"/>
+  <accessory value="r_body.t_3_p_352" group="R Body" name="Hose, Painted, 3x (t_3_p_352)"/>
+  <accessory value="r_body.t_3_p_52" group="R Body" name="Hose, Painted, 3x (t_3_p_52)"/>
+  <accessory value="r_body.t_3_p_522" group="R Body" name="Hose, Painted, 3x (t_3_p_522)"/>
+  <accessory value="r_body.t_3_pl_35" group="R Body" name="Hose, Plastic, 3x (t_3_pl_35)"/>
+  <accessory value="r_body.t_3_pl_352" group="R Body" name="Hose, Plastic, 3x (t_3_pl_352)"/>
+  <accessory value="r_body.t_3_pl_52" group="R Body" name="Hose, Plastic, 3x (t_3_pl_52)"/>
+  <accessory value="r_body.t_3_pl_522" group="R Body" name="Hose, Plastic, 3x (t_3_pl_522)"/>
+  <accessory value="r_bumper.ex_p" group="R Bumper" name="Ex P"/>
+  <accessory value="r_bumper.excl_paint" group="R Bumper" name="Exclusive Painted"/>
+  <accessory value="r_bumper.simple_al" group="R Bumper" name="Aluminum"/>
+  <accessory value="r_bumper.simple_al_2" group="R Bumper" name="Aluminum II"/>
+  <accessory value="r_bumper.simple_al_3" group="R Bumper" name="Aluminum III"/>
+  <accessory value="r_fender.chrome" group="R Fender" name="Chromed (chrome)"/>
+  <accessory value="r_fender.d_chrome" group="R Fender" name="Chromed (d_chrome)"/>
+  <accessory value="r_fender.d_paint" group="R Fender" name="Painted (d_paint)"/>
+  <accessory value="r_fender.d_plastic" group="R Fender" name="Standard (d_plastic)"/>
+  <accessory value="r_fender.paint" group="R Fender" name="Painted (paint)"/>
+  <accessory value="r_fender.plastic" group="R Fender" name="Standard (plastic)"/>
+  <accessory value="r_mudflap.lo" group="R Mudflap" name="Exclusive"/>
+  <accessory value="r_mudflap.lw" group="R Mudflap" name="Standard (lw)"/>
+  <accessory value="r_mudflap.lw2" group="R Mudflap" name="Standard (lw2)"/>
+  <accessory value="rear_body.bp_35" group="Rear Body" name="Painted Box (bp_35)"/>
+  <accessory value="rear_body.bp_52" group="Rear Body" name="Painted Box (bp_52)"/>
+  <accessory value="trlr_cables.dolly" group="Trlr Cables" name="Dolly"/>
+  <accessory value="trlr_cables.trailer" group="Trlr Cables" name="Trailer"/>
+</vehicle>

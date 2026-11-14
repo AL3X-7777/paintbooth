@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Paintbooth vehicle library 2026.11.14 -->
+<vehicle id="schwmuller.cisternfood" game="ets2" brand="Schwmuller" name="Food Tank" author="SCS Software" definition_by="Paintbooth library" type="Trailers">
+  <!-- cabins: id is what goes into suitable_for[] -->
+  <variant id="body.tank" name="Food Tank"/>
+  <!-- paintable accessories: value is what goes into acc_list[] -->
+  <accessory value="body.tank" group="Body" name="Tank"/>
+  <accessory value="chs_f_l.sp2p" group="Chs F L" name="Painted Side Skirt"/>
+  <accessory value="chs_f_l.sp2p_b1" group="Chs F L" name="Painted Side Skirt + Chromed Box"/>
+  <accessory value="chs_f_l.sp2p_b1p" group="Chs F L" name="Painted Side Skirt + Painted Box"/>
+  <accessory value="chs_f_l.sp2p_b2" group="Chs F L" name="Painted Side Skirt + Store Box"/>
+  <accessory value="chs_f_l.sp2p_t" group="Chs F L" name="Painted Side Skirt + Spare Tire"/>
+  <accessory value="chs_f_r.sp2p" group="Chs F R" name="Painted Side Skirt"/>
+  <accessory value="chs_f_r.sp2p_b1" group="Chs F R" name="Painted Side Skirt + Chromed Box"/>
+  <accessory value="chs_f_r.sp2p_b1p" group="Chs F R" name="Painted Side Skirt + Painted Box"/>
+  <accessory value="chs_f_r.sp2p_b2" group="Chs F R" name="Painted Side Skirt + Store Box"/>
+  <accessory value="chs_f_r.sp2p_t" group="Chs F R" name="Painted Side Skirt + Spare Tire"/>
+  <accessory value="markers.markers1" group="Markers" name="Standard"/>
+  <accessory value="r_banner.ali_dep" group="R Banner" name="A + D"/>
+  <accessory value="r_banner.alimentari" group="R Banner" name="A"/>
+  <accessory value="r_banner.deperibili" group="R Banner" name="D"/>
+  <accessory value="r_bumper.rbumper1" group="R Bumper" name="Exclusive"/>
+  <accessory value="r_bumper.rbumper1p" group="R Bumper" name="Exclusive Painted"/>
+  <accessory value="r_bumper.rbumper2" group="R Bumper" name="Standard"/>
+  <accessory value="r_bumper.rbumper2p" group="R Bumper" name="Painted"/>
+  <accessory value="r_mudflap.empty" group="R Mudflap" name="Standard"/>
+  <accessory value="r_mudflap.empty_wide" group="R Mudflap" name="Standard + Schwarzmüller Special"/>
+  <accessory value="r_mudflap.logo" group="R Mudflap" name="Exclusive"/>
+  <accessory value="r_mudflap.logo_wide" group="R Mudflap" name="Exclusive + Schwarzmüller Special"/>
+</vehicle>
