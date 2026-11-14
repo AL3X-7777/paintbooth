@@ -175,3 +175,38 @@ def rewrite(data: bytes, rename: dict[str, str] | None = None, keep_looks: int |
     struct.pack_into(f"<{len(offs)}I", out, h["material_offset"], *offs)
     struct.pack_into("<I", out, 4 * FIELDS.index("material_block_size"), len(blob))
     return bytes(out + blob)
+
+
+def add_materials(data: bytes, paths: list[str]) -> bytes:
+    """Return the .pmd with ``paths`` appended to every look's material list.
+
+    New pieces in the matching .pmg refer to the new slots by index (``material_count``,
+    ``material_count + 1``, ...). The material table must be directly followed by the material
+    strings, which must end the file (the layout SCS's exporter writes); both are rebuilt.
+
+    Raises:
+        PmdError: The file is damaged or laid out differently.
+    """
+    h = header(data)
+    table = material_table(data)
+    if h["material_offset"] + 4 * h["materials"] * h["looks"] != h["material_data_offset"]:
+        raise PmdError("unexpected .pmd layout (material table is not followed by its strings)")
+    if h["material_data_offset"] + h["material_block_size"] != len(data):
+        raise PmdError("unexpected .pmd layout (material strings are not the last block)")
+    table = [[*row, *paths] for row in table]
+    count = h["materials"] + len(paths)
+    base = h["material_offset"] + 4 * count * h["looks"]
+    blob = bytearray()
+    offs = []
+    for row in table:
+        for p in row:
+            offs.append(base + len(blob))
+            blob += p.encode("utf-8") + b"\0"
+    out = bytearray(data[: h["material_offset"]]) + struct.pack(f"<{len(offs)}I", *offs)
+    for name, value in (
+        ("materials", count),
+        ("material_data_offset", base),
+        ("material_block_size", len(blob)),
+    ):
+        struct.pack_into("<I", out, 4 * FIELDS.index(name), value)
+    return bytes(out + blob)

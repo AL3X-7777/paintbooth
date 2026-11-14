@@ -13,7 +13,7 @@ from pathlib import Path
 from tkinter import filedialog, messagebox
 from typing import TYPE_CHECKING
 
-from .. import vehlib
+from .. import appdirs, vehlib
 from .project_ctl import GAME_NAMES
 
 if TYPE_CHECKING:
@@ -98,6 +98,24 @@ class LibraryController:
                 return key
         return None
 
+    @staticmethod
+    def _bus_templates(src: Path, vehicles: list[vehlib.Vehicle]) -> int:
+        """Worker thread: write the UV templates of any scanned coaches; return how many files.
+
+        A failure only costs the templates (it is logged); the scan result still counts.
+        """
+        buses = [v for v in vehicles if v.is_bus]
+        if not buses:
+            return 0
+        from ..coach import write_templates
+        from ..scanner import game_reader
+
+        try:
+            return len(write_templates(game_reader(src), buses, appdirs.templates_dir("ets2") / "Buses"))
+        except (OSError, ValueError):
+            log.exception("could not write the coach templates")
+            return 0
+
     def scan_dialog(self, folder: bool = True) -> None:
         """Ask for the game folder (or a mod archive) and add the trucks found to the library.
 
@@ -146,13 +164,15 @@ class LibraryController:
             if any(Path(x.source).exists() for x in self.library.with_id(v.id, v.game)):
                 continue  # never overwrite files the user may have edited
             written.append(vehlib.save_to_library(v, self.library_dir, f"Scanned from {src.name}"))
+        templates = self._bus_templates(src, vehicles)
 
         def done() -> None:
             self.reload()
             kept = len(vehicles) - len(written)
             app.status(
-                f"Scan found {len(vehicles)} truck(s); added {len(written)} to your library"
+                f"Scan found {len(vehicles)} vehicle(s); added {len(written)} to your library"
                 + (f", kept {kept} existing file(s) unchanged" if kept else "")
+                + (f"; wrote {templates} coach templates to Templates\\ETS2\\Buses" if templates else "")
             )
 
         app.ui.call(done)

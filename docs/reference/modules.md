@@ -13,6 +13,7 @@ The full API of each one is in the [HTML reference](../api/index.html).
 | `paintbooth.appdirs` | Paintbooth's folders and files on disk, and the default 'paintbooth by AL3X' icons. |
 | `paintbooth.bcn` | DXT1 / DXT5 (BC1 / BC3) texture compression, done carefully for paint job textures. |
 | `paintbooth.builder` | Turn a loaded :class:`~paintbooth.model.Project` into a finished .scs mod - fast. |
+| `paintbooth.coach` | Coaches (the ETS2 "Coaches" DLC): UV templates, and painted windows and gloss-black trim. |
 | `paintbooth.formats` | Writers for the game file formats Paintbooth produces. |
 | `paintbooth.gui` | Paintbooth desktop UI. |
 | `paintbooth.gui.codeeditor` | Code editor for XML: line numbers, colouring, find/replace, go to line, auto-indent. |
@@ -46,6 +47,7 @@ The full API of each one is in the [HTML reference](../api/index.html).
 | `paintbooth.newproject` | Create a new, empty project folder for the ``project.xml`` pipeline (``paintbooth new``). |
 | `paintbooth.packer` | Minimal, fast ZIP (.scs) writer. |
 | `paintbooth.pmd` | SCS model descriptors (.pmd, version 4): read and rewrite the material table. |
+| `paintbooth.pmg` | SCS model geometry (.pmg, version 0x15): read pieces, and add new pieces. |
 | `paintbooth.safepath` | Path safety checks for every place Paintbooth turns untrusted text into a file path. |
 | `paintbooth.scanner` | Generate vehicle definitions from the game's own data. |
 | `paintbooth.server` | Local, offline browser UI for a ``project.xml`` project (``paintbooth ui``). |

@@ -874,7 +874,7 @@ class TruckSkinEditor(ttk.Notebook):
         hidden = 0
         kinds = sorted(
             cat.items(),
-            key=lambda kv: (kv[1][0].is_trailer, kv[1][0].brand.lower(), kv[1][0].display.lower()),
+            key=lambda kv: (kv[1][0].kind, kv[1][0].brand.lower(), kv[1][0].display.lower()),
         )
         for vid, (v, origin) in kinds:
             if not v.fits_game(game):
@@ -885,7 +885,7 @@ class TruckSkinEditor(ttk.Notebook):
                 continue
             b = (v.kind, v.brand or "Miscellaneous")
             if b not in brands:
-                label = b[1] + ("   (trailers)" if v.is_trailer else "")
+                label = b[1] + {"trailer": "   (trailers)", "bus": "   (coaches)"}.get(v.kind, "")
                 brands[b] = tv.insert("", "end", text=label, open=True, tags=("brand",))
             tv.insert(brands[b], "end", iid=f"v::{vid}", text="   " + text, tags=(origin,))
         self._vehicle_notes(hidden, game)
@@ -1036,6 +1036,7 @@ class TruckSkinEditor(ttk.Notebook):
         self.main_sections: list[Section] = []
         self._build_basic_section()
         self._build_icon_section()
+        self._build_windows_section()
         self._build_metallic_section()
         self._build_mask_section()
         ttk.Frame(page.inner, height=24).pack()
@@ -1166,6 +1167,75 @@ class TruckSkinEditor(ttk.Notebook):
         self._set("SkinIcon", value)
         self._icon_soon()
 
+    def _build_windows_section(self) -> None:
+        """Coaches only: paint the windows and gloss-black trim from a second image.
+
+        See :mod:`paintbooth.coach`. The controls are disabled for trucks and trailers.
+        """
+        self._section("Windows and trim (coaches)")
+        g, f = self._body, self._form
+        self.win_on = tk.BooleanVar()
+        cb = ttk.Checkbutton(
+            g, text="Paint windows and gloss-black trim", variable=self.win_on, command=self._windows_toggled
+        )
+        f.add(
+            "",
+            cb,
+            "PaintWindows",
+            "Adds the artwork of a second image to the windows (half see-through, also seen from inside) "
+            "and the gloss-black parts. This replaces the coach's model while the mod is active, so "
+            "every paint job of that body shows it.",
+            sticky="w",
+        )
+        row = ttk.Frame(g)
+        self.win_img = tk.StringVar()
+        _bind_entry(self.win_img, self._windows_image_typed, self)
+        entry = ttk.Entry(row, textvariable=self.win_img)
+        entry.pack(side="left", fill="x", expand=True)
+        browse = ttk.Button(row, text="Browse", command=self._browse_windows_image)
+        browse.pack(side="left", padx=(6, 0))
+        f.add(
+            "Image",
+            row,
+            "WindowsImage",
+            "Painted on the 'windows and trim' template (Templates\\ETS2\\Buses). Transparent pixels keep "
+            "the stock glass and trim.",
+        )
+        self.win_widgets: list[ttk.Widget] = [cb, entry, browse]
+        self._end_section()
+
+    def _windows_toggled(self) -> None:
+        """The windows-and-trim tick box changed."""
+        if not self.loading and self.item is not None:
+            self.item.set_extra("PaintWindows", "true" if self.win_on.get() else "false")
+            self.app.changed()
+
+    def _windows_image_typed(self, value: str) -> None:
+        """The windows-and-trim image path changed."""
+        if not self.loading and self.item is not None:
+            self.item.set_extra("WindowsImage", value)
+            self.app.changed()
+
+    def _browse_windows_image(self) -> None:
+        """Pick the windows-and-trim image."""
+        p = filedialog.askopenfilename(
+            title="Windows and trim image",
+            initialdir=self.app.image_dir(),
+            filetypes=[("Images", "*.png *.tga *.psd *.dds *.jpg"), ("All files", "*.*")],
+        )
+        if p:
+            self.app.remember_image_dir(Path(p))
+            self.win_img.set(str(Path(p)))
+
+    def _load_windows(self, it: AdvancedTruckSkin) -> None:
+        """Show the windows-and-trim values; the controls work only for coaches."""
+        self.win_on.set(it.vars.bool("PaintWindows"))
+        self.win_img.set(it.get("WindowsImage"))
+        veh = it.vehicle()
+        state = ["!disabled"] if veh is not None and veh.is_bus else ["disabled"]
+        for w in self.win_widgets:
+            w.state(state)
+
     def _build_metallic_section(self) -> None:
         """Flip-flake paint settings (disabled unless Enable Metallic Color is ticked)."""
         self._section("Metallic Options")
@@ -1256,6 +1326,7 @@ class TruckSkinEditor(ttk.Notebook):
         for k, row in self.colors.items():
             row.set(it.vars.color(k))
         self.icon.set(it.get("SkinIcon"))
+        self._load_windows(it)
 
     @staticmethod
     def _image_options(array: str, veh: vehlib.Vehicle | None) -> list[Option]:

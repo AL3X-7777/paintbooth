@@ -45,6 +45,11 @@ class Variant:
     name: str
     image: str | None = None
     description: str | None = None
+    # Buses only: the cabin's paint job mask region, e.g. "pjm_at_0x2048_size_4096x2048"
+    # (see paintbooth.coach). None for trucks and trailers, whose masks cover the whole UV space.
+    mask: str | None = None
+    # Buses only: the cabin's model (from its definition), needed for window and trim films.
+    model: str | None = None
 
 
 @dataclass
@@ -89,9 +94,14 @@ class Vehicle:
         return "trailer" in (self.vehicle_type or "").lower()
 
     @property
+    def is_bus(self) -> bool:
+        """True for coaches (vehicle type ``Buses``, from the ETS2 Coaches DLC)."""
+        return "bus" in (self.vehicle_type or "").lower()
+
+    @property
     def kind(self) -> str:
-        """Return ``"trailer"`` or ``"truck"``."""
-        return "trailer" if self.is_trailer else "truck"
+        """Return ``"trailer"``, ``"bus"`` or ``"truck"``."""
+        return "trailer" if self.is_trailer else "bus" if self.is_bus else "truck"
 
     def fits_game(self, game: str) -> bool:
         """Return True if the vehicle can be used in ``game``; no game on either side matches any.
@@ -296,6 +306,8 @@ def _skinyard_vehicle(n: Node, rel: str, source: str, errors: list[str]) -> Vehi
                     c.attrib.get("name", c.attrib["id"]),
                     c.attrib.get("image"),
                     c.attrib.get("description"),
+                    c.attrib.get("mask"),
+                    c.attrib.get("model"),
                 )
             )
     for c in n.find_all("accessory"):
@@ -401,7 +413,10 @@ def to_xml(v: Vehicle, comment: str = "") -> str:
     lines.append(f"<vehicle{head}>")
     lines.append("  <!-- cabins: id is what goes into suitable_for[] -->")
     for x in v.variants:
-        lines.append(f"  <variant{attrs(id=x.id, name=x.name, image=x.image, description=x.description)}/>")
+        var = attrs(
+            id=x.id, name=x.name, image=x.image, description=x.description, mask=x.mask, model=x.model
+        )
+        lines.append(f"  <variant{var}/>")
     lines.append("  <!-- paintable accessories: value is what goes into acc_list[] -->")
     for a in v.accessories:
         acc = attrs(value=a.value, group=a.group, name=a.name, description=a.description, image=a.image)
@@ -451,7 +466,14 @@ def from_ms2(var: Elem) -> Vehicle:
         v.brand = v.brand.split()[0]
     for x in (var.find("VehicleVariants") or Elem("x")).children:
         v.variants.append(
-            Variant(x.get_text("InternalName"), x.get_text("Name"), _opt(x, "Image"), _opt(x, "Description"))
+            Variant(
+                x.get_text("InternalName"),
+                x.get_text("Name"),
+                _opt(x, "Image"),
+                _opt(x, "Description"),
+                _opt(x, "PaintboothMask"),  # bus data only Paintbooth writes (see apply_to_ms2)
+                _opt(x, "PaintboothModel"),
+            )
         )
     for x in (var.find("AccessoryItems") or Elem("x")).children:
         v.accessories.append(
@@ -505,6 +527,9 @@ def apply_to_ms2(var: Elem, v: Vehicle) -> None:
                 *opt("Image", x.image),
                 E("InternalName", text=x.id),
                 E("Name", text=x.name),
+                # buses: extra elements Mods Studio 2 does not know; it skips them when loading
+                *opt("PaintboothMask", x.mask),
+                *opt("PaintboothModel", x.model),
             )
             for x in v.variants
         ],

@@ -3,6 +3,18 @@
 Each release on GitHub shows the section for its version. Add a new section at the top before
 tagging a release (see RELEASING.md).
 
+## 0.12.0
+- **Coaches (ETS2 Coaches DLC):** the Volvo 9700 Double Decker, Scania Touring and MAN Lion's
+  Coach can be skinned like trucks. Run **Vehicles > Scan game folder** once: it adds the coaches
+  to your vehicle list and writes their templates to `Templates\ETS2\Buses`.
+- Each coach body has two templates: `... paint.png` (the paint job, 4096x2048) and
+  `... windows and trim.png` (flat views of the coach from every side).
+- **Paint windows and gloss-black trim** (coaches only, off by default): paint the second
+  template and tick the option. Windows show the artwork half see-through, also from inside;
+  transparent pixels keep the stock glass and trim. This replaces the coach's model while the mod
+  is active, so all paint jobs of that body show it, and it needs a new export after a game update
+  that changes the coach.
+
 ## 0.11.0
 - **New name and logo:** Paint booth is now **Paintbooth**. Installing over an older version moves
   the program, the shortcuts and `Documents\Paint booth` to the new name; projects and settings come

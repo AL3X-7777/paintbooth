@@ -16,7 +16,7 @@ installation, read at export time.
 
 ## Install (Windows, works offline)
 
-Download **Paintbooth Setup 0.11.0.exe** from [Releases](https://github.com/AL3X-7777/paintbooth/releases)
+Download **Paintbooth Setup 0.12.0.exe** from [Releases](https://github.com/AL3X-7777/paintbooth/releases)
 and run it. It needs no admin rights and no internet, and it includes everything Paintbooth needs,
 Python too. You can choose the install folder (default `%LOCALAPPDATA%\Programs\Paintbooth`;
 updates go to the same folder) and tick *Create a desktop icon*. A Start-menu entry is always
@@ -32,7 +32,7 @@ Paintbooth used to be called Paint booth, and before that Skinyard. Installing i
 removes the old program and moves `Documents\Paint booth` (or `Documents\Skinyard`) to
 `Documents\Paintbooth`, with the same folders inside. Your settings and recent projects come along.
 
-No installer? Unzip **Paintbooth 0.11.0 portable.zip** anywhere and run `Paintbooth.exe`.
+No installer? Unzip **Paintbooth 0.12.0 portable.zip** anywhere and run `Paintbooth.exe`.
 
 ### Your Paintbooth folder
 
@@ -273,6 +273,6 @@ a verified Mods Studio 2 export, but check your first one in game.
 ## Development and releases
 
 Source and releases: <https://github.com/AL3X-7777/paintbooth>. Every push is built and tested on
-GitHub (Actions); pushing a tag such as `v0.11.0` publishes a release. See [RELEASING.md](RELEASING.md).
+GitHub (Actions); pushing a tag such as `v0.12.0` publishes a release. See [RELEASING.md](RELEASING.md).
 Changes per version: [CHANGELOG.md](CHANGELOG.md). Code signing and privacy: [CODE_SIGNING.md](CODE_SIGNING.md).
 

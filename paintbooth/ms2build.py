@@ -47,6 +47,7 @@ from collections import OrderedDict
 from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path, PureWindowsPath
+from typing import TYPE_CHECKING
 
 from PIL import Image
 
@@ -55,6 +56,9 @@ from .formats import dds_size, is_dds, sii_file, sii_float3, sii_str, tobj_bytes
 from .ms2 import SKIN_NAME_LIMIT, AdvancedTruckSkin, Item, Ms2Project, SuitableImage, TemplateItem, Vars
 from .names import TokenIssue, token_issue
 from .util import is_pot
+
+if TYPE_CHECKING:
+    from . import vehlib
 
 log = logging.getLogger(__name__)
 
@@ -386,6 +390,68 @@ def _validate_images(it: AdvancedTruckSkin, idx: int, base: Path | None) -> list
     return probs
 
 
+def _cab_masks(it: AdvancedTruckSkin) -> dict[str, str | None]:
+    """Map each cabin of the skin's vehicle to its paint job mask region (buses; else None)."""
+    veh = it.vehicle()
+    return {x.id: x.mask for x in veh.variants} if veh is not None else {}
+
+
+def _validate_bus(it: AdvancedTruckSkin, idx: int, base: Path | None) -> list[Problem]:
+    """Bus skins: one mask region per skin image, 2:1 images, and the windows-and-trim option."""
+    veh = it.vehicle()
+    if veh is None or not veh.is_bus:
+        return []
+    probs: list[Problem] = []
+    masks = _cab_masks(it)
+    for k, e in enumerate(it.entries("CabVariantSkin")):
+        fld = f"CabVariantSkin[{k}]"
+        if len({masks.get(c) for c in e.suitable}) > 1:
+            probs.append(
+                Problem(
+                    "error",
+                    idx,
+                    fld,
+                    f"Skin image {k + 1}: the ticked bodies use different template layouts; "
+                    "use one image per body",
+                )
+            )
+        src = resolve(e.image, base)
+        size = image_size(src) if src else None
+        if size and size[0] != 2 * size[1]:
+            probs.append(
+                Problem(
+                    "warning",
+                    idx,
+                    fld,
+                    f"Skin image {k + 1} is {size[0]}x{size[1]}; coach templates are 2:1 (4096x2048)",
+                )
+            )
+    if it.vars.bool(PAINT_WINDOWS):
+        img = it.get(WINDOWS_IMAGE)
+        if not img:
+            probs.append(Problem("error", idx, WINDOWS_IMAGE, "Choose the windows and trim image"))
+        elif resolve(img, base) is None:
+            probs.append(Problem("error", idx, WINDOWS_IMAGE, f"Windows and trim image not found ({img})"))
+        if not _game_dir():
+            probs.append(
+                Problem(
+                    "error",
+                    idx,
+                    PAINT_WINDOWS,
+                    "Painting windows needs your ETS2 game folder: Vehicles > Scan game folder once",
+                )
+            )
+    return probs
+
+
+def _game_dir() -> Path | None:
+    """The ETS2 game folder from the settings (set by Vehicles > Scan game folder), or None."""
+    from .tplbuild import _settings
+
+    d = (_settings().get("game_dirs") or {}).get("ets2")
+    return Path(d) if d and Path(d).is_dir() else None
+
+
 def _validate_skin(it: AdvancedTruckSkin, idx: int, seen: dict[str, int], base: Path | None) -> list[Problem]:
     """Check one Advanced Truck Skin item."""
     probs = _validate_skin_name(it, idx, seen)
@@ -395,6 +461,7 @@ def _validate_skin(it: AdvancedTruckSkin, idx: int, seen: dict[str, int], base: 
     if not it.truck_id:
         probs.append(Problem("error", idx, "Truck", "Select a truck or trailer"))
     probs += _validate_images(it, idx, base)
+    probs += _validate_bus(it, idx, base)
     icon = it.get("SkinIcon")
     if icon and resolve(icon, base) is None:
         probs.append(
@@ -537,6 +604,11 @@ def next_version(current: str, last_exported: str | None) -> str:
 # --------------------------------------------------------------------------
 
 
+#: Bus skins: the option to paint windows and gloss-black trim, and its image (see paintbooth.coach).
+PAINT_WINDOWS = "PaintWindows"
+WINDOWS_IMAGE = "WindowsImage"
+
+
 @functools.lru_cache(maxsize=4)
 def _builtin_icons(home: str) -> tuple[Path, Path]:
     """Render the default icons into the Paintbooth folder ``home`` once per process."""
@@ -638,8 +710,9 @@ def _plan_skin(it: AdvancedTruckSkin, base: Path | None, icons: tuple[Path, Path
     accs = [(e, resolve(e.image, base)) for e in it.entries("AccessorySkins")]
     veh = it.vehicle()
     trailer = veh is not None and veh.is_trailer
-    vt = "trailer_owned" if trailer else "truck"
+    vt = "trailer_owned" if trailer else "bus" if veh is not None and veh.is_bus else "truck"
     pj_root = f"vehicle/{vt}/upgrade/paintjob/{t}/{n}"
+    masks = _cab_masks(it)
     def_dir = f"def/vehicle/{vt}/{t}/paint_job"
 
     files = _icon_files(it, n, base, icons)
@@ -653,9 +726,13 @@ def _plan_skin(it: AdvancedTruckSkin, base: Path | None, icons: tuple[Path, Path
         kv += [("acc_list[]", sii_str(a)) for a in acc.suitable]
         overrides.append(("simple_paint_job_data", f".ovr{k}", kv))
 
-    # skin textures
-    for i, (_cab, src) in enumerate(cabs):
-        files += _texture_files(f"{pj_root}/{n}_{i}.dds", src)
+    # skin textures; a bus cabin's mask is named after its region of the paint UV space
+    tex: list[str] = []
+    for i, (cab, src) in enumerate(cabs):
+        region = next((masks[c] for c in cab.suitable if masks.get(c)), None)
+        stem = f"{pj_root}/{n}_{i}/{region}" if region else f"{pj_root}/{n}_{i}"
+        tex.append(f"/{stem}.tobj")
+        files += _texture_files(f"{stem}.dds", src)
 
     if trailer:
         # one paint job for the trailer; each skin image paints its bodies via an override
@@ -682,12 +759,59 @@ def _plan_skin(it: AdvancedTruckSkin, base: Path | None, icons: tuple[Path, Path
     for i, (cab, _src) in enumerate(cabs):
         unit_attrs = list(attrs)
         unit_attrs += [("suitable_for[]", sii_str(c)) for c in cab.suitable]
-        unit_attrs.append(("paint_job_mask", sii_str(f"/{pj_root}/{n}_{i}.tobj")))
+        unit_attrs.append(("paint_job_mask", sii_str(tex[i])))
         unit = ("accessory_paint_job_data", f"{n}_{i}.{t}.paint_job", unit_attrs)
         files.append(OutFile(f"{def_dir}/{n}_{i}.sii", sii_file([unit]).encode()))
         if overrides:
             files.append(OutFile(f"{def_dir}/accessory/{n}_{i}.sii", sii_file(overrides).encode()))
+    if veh is not None and veh.is_bus and it.vars.bool(PAINT_WINDOWS):
+        files += _film_files(it, veh, pj_root, base)
     return files
+
+
+def _film_files(it: AdvancedTruckSkin, veh: vehlib.Vehicle, pj_root: str, base: Path | None) -> list[OutFile]:
+    """Window and trim films for every ticked bus body (see :mod:`paintbooth.coach`).
+
+    The bodies' models are read from the game folder and written back, with the films added,
+    at their own paths, so the mod replaces them.
+
+    Raises:
+        RuntimeError: The game folder or a body's model can't be read.
+    """
+    from . import coach
+    from .scanner import game_reader
+
+    src = resolve(it.get(WINDOWS_IMAGE), base)
+    game = _game_dir()
+    if src is None or game is None:  # validate() reports both; plan_ms2 stops on errors first
+        return []
+    films = [
+        OutFile(
+            f"{pj_root}/film_glass.dds", job=TextureJob(src, "film", None, "DXT5", None, coach.GLASS_OPACITY)
+        ),
+        OutFile(f"{pj_root}/film_glass.tobj", tobj_bytes(f"/{pj_root}/film_glass.dds", profile="skin")),
+        OutFile(f"{pj_root}/film_trim.dds", job=TextureJob(src, "film", None, "DXT5", None, 1.0)),
+        OutFile(f"{pj_root}/film_trim.tobj", tobj_bytes(f"/{pj_root}/film_trim.dds", profile="skin")),
+        OutFile(
+            f"{pj_root}/film_glass.mat", coach.film_material(f"/{pj_root}/film_glass.tobj", glossy=False)
+        ),
+        OutFile(f"{pj_root}/film_trim.mat", coach.film_material(f"/{pj_root}/film_trim.tobj", glossy=True)),
+    ]
+    ticked = {c for e in it.entries("CabVariantSkin") for c in e.suitable}
+    models = sorted({x.model for x in veh.variants if x.id in ticked and x.model})
+    try:
+        read = game_reader(game)
+        for model in models:
+            cab = coach.load_cabin(read, model)
+            pmd_bytes, pmg_bytes = coach.with_films(
+                cab, f"/{pj_root}/film_glass.mat", f"/{pj_root}/film_trim.mat"
+            )
+            rel = model.lstrip("/")
+            films.append(OutFile(rel, pmd_bytes))
+            films.append(OutFile(rel[: -len(".pmd")] + ".pmg", pmg_bytes))
+    except (OSError, ValueError) as e:
+        raise RuntimeError(f"{it.display()}: could not read the coach model from the game: {e}") from e
+    return films
 
 
 def _manifest_files(

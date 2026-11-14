@@ -23,6 +23,7 @@ import re
 import xml.parsers.expat
 from collections.abc import Iterable, Sequence
 from pathlib import Path, PureWindowsPath
+from typing import ClassVar
 
 from . import vehlib
 from .xmldom import E, Elem, parse, serialize
@@ -460,6 +461,23 @@ class AdvancedTruckSkin(Item):
     def set(self, name: str, value: object) -> None:
         """Set variable ``name``'s value (converted with ``str``)."""
         self.vars.set_value(name, str(value))
+
+    #: Variables only Paintbooth knows (bus windows and trim, see :mod:`paintbooth.coach`):
+    #: name -> (MS2 variable type, label). They are added to a skin the first time they are set,
+    #: so projects that never use them stay exactly as Mods Studio 2 wrote them.
+    EXTRA_VARS: ClassVar[dict[str, tuple[str, str]]] = {
+        "PaintWindows": ("BooleanVariable", "Paint windows and black trim"),
+        "WindowsImage": ("StringVariable", "Windows and trim image"),
+    }
+
+    def set_extra(self, name: str, value: str) -> None:
+        """Set one of :data:`EXTRA_VARS`, adding the variable first if the skin doesn't have it."""
+        if self.vars.get(name) is None:
+            from .ms2skeleton import _var
+
+            vtype, label = self.EXTRA_VARS[name]
+            self.vars.el.children.append(_var(vtype, name, label, "basic", value=""))
+        self.vars.set_value(name, value)
 
     # ---- image arrays
     def entries(self, array: str) -> list[SuitableImage]:

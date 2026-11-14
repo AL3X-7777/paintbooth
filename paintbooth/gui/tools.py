@@ -161,10 +161,10 @@ class VehicleManager:
         return sel[0][3:] if sel and sel[0].startswith("v::") else None
 
     @staticmethod
-    def _sort_key(kv: tuple[str, vehlib.Vehicle]) -> tuple[bool, str, str, str]:
-        """Order vehicles: trucks before trailers, then by game, brand and display name."""
+    def _sort_key(kv: tuple[str, vehlib.Vehicle]) -> tuple[int, str, str, str]:
+        """Order vehicles: trucks, coaches, then trailers; then by game, brand and display name."""
         v = kv[1]
-        return (v.is_trailer, v.game, v.brand.lower(), v.display.lower())
+        return ({"truck": 0, "bus": 1}.get(v.kind, 2), v.game, v.brand.lower(), v.display.lower())
 
     def render(self, select: str | None = None) -> None:
         """Redraw the vehicle tree (applying the filter) and the load-error list.
@@ -181,7 +181,7 @@ class VehicleManager:
                 continue
             g = (
                 {"all": "ATS + ETS2", "": "Any game"}.get(v.game, v.game.upper()),
-                "Trailers" if v.is_trailer else "Trucks",
+                {"trailer": "Trailers", "bus": "Coaches"}.get(v.kind, "Trucks"),
                 v.brand or "Miscellaneous",
             )
             if g not in groups:

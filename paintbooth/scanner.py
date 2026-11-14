@@ -22,6 +22,7 @@ binary SII files are counted as unreadable and skipped.
 
 from __future__ import annotations
 
+import functools
 import logging
 import re
 import zipfile
@@ -399,6 +400,7 @@ class _TruckInfo:
         self.cabins: dict[str, str] = {}
         self.acc_names: dict[str, str] = {}
         self.acc_used: Counter[str] = Counter()
+        self.models: dict[str, str] = {}  # cabin -> model path (buses use it for window films)
         self.unread = 0
 
     def add(self, tid: str, rel: str, text: str) -> None:
@@ -410,6 +412,10 @@ class _TruckInfo:
                 self.name = nm
             elif cls == "accessory_cabin_data":
                 self.cabins[uname] = nm if nm and not nm.startswith("@@") else ""
+                model = (attrs.get("model") or [""])[0]
+                if model:
+                    self.models[uname] = model
+
             elif cls == "simple_paint_job_data" and rel.startswith("paint_job/"):
                 for a in attrs.get("acc_list[]", []):
                     self.acc_used[a] += 1
@@ -420,15 +426,41 @@ class _TruckInfo:
                     self.acc_names[value] = nm
 
 
-def _to_vehicle(tid: str, t: _TruckInfo, game: str, source: Path) -> Vehicle:
-    """Return the library entry for one scanned truck."""
+def _bus_cabin_name(cab_id: str) -> str:
+    """A readable name for a coach body such as ``143d6``: "14.3 m double-deck, 6 wheels".
+
+    The game's own names are translation keys (``@@busbody_dd_40m@@``) that need the language
+    files; the cabin id carries the length (decimetres), the deck type and the wheel count.
+    """
+    m = re.fullmatch(r"(\d{3})([dh])(\d)", cab_id.split(".", maxsplit=1)[0])
+    if not m:
+        return _pretty(cab_id.split(".", maxsplit=1)[0])
+    deck = "double-deck" if m.group(2) == "d" else "high-deck"
+    return f"{int(m.group(1)) / 10:.1f} m {deck}, {m.group(3)} wheels"
+
+
+def _to_vehicle(tid: str, t: _TruckInfo, game: str, source: Path, kind: str = "truck") -> Vehicle:
+    """Return the library entry for one scanned truck or coach (``kind`` is ``"truck"`` or ``"bus"``)."""
+    from .templates import known_name
     from .vehlib import Accessory, Variant, Vehicle
 
     brand = tid.split(".", maxsplit=1)[0]
     model = t.name or _pretty(tid.split(".", 1)[-1])
-    v = Vehicle(tid, game, _pretty(brand), model, "SCS Software", "Paintbooth scan", source=str(source))
+    if kind == "bus":
+        full = known_name(tid, game or "ets2")  # "Volvo 9700 Double Decker": drop the brand
+        if full:
+            model = full.split(" ", 1)[-1] if full.lower().startswith(brand.lower()) else full
+    shown_brand = _pretty(brand)
+    if kind == "bus":
+        full = known_name(tid, game or "ets2")
+        if full.lower().startswith(brand.lower()):
+            shown_brand = full[: len(brand)]  # "MAN", not "Man"
+    v = Vehicle(tid, game, shown_brand, model, "SCS Software", "Paintbooth scan", source=str(source))
+    if kind == "bus":
+        v.vehicle_type = "Buses"
     for cab_id, nm in sorted(t.cabins.items()):
-        v.variants.append(Variant(cab_id, nm or _pretty(cab_id.split(".")[0])))
+        name = nm or (_bus_cabin_name(cab_id) if kind == "bus" else _pretty(cab_id.split(".")[0]))
+        v.variants.append(Variant(cab_id, name, model=t.models.get(cab_id) if kind == "bus" else None))
     for value in sorted(t.acc_used):
         typ, _, name = value.partition(".")
         label = t.acc_names.get(value) or _pretty(name)
@@ -446,13 +478,14 @@ def scan_vehicles(source: Path, game: str = "", log: Log = print) -> list[Vehicl
         log: Receives one summary line per truck.
     """
     with _Layered(Path(source)) as src:
-        trucks: dict[str, _TruckInfo] = {}
-        for path, reader in src.files("def/vehicle/truck").items():
-            m = re.match(r"def/vehicle/truck/([^/]+)/(.+)\.sii$", path)
+        trucks: dict[tuple[str, str], _TruckInfo] = {}
+        files = {**src.files("def/vehicle/truck"), **src.files("def/vehicle/bus")}
+        for path, reader in files.items():
+            m = re.match(r"def/vehicle/(truck|bus)/([^/]+)/(.+)\.sii$", path)
             if not m:
                 continue
-            tid, rel = m.groups()
-            t = trucks.setdefault(tid, _TruckInfo())
+            kind, tid, rel = m.groups()
+            t = trucks.setdefault((kind, tid), _TruckInfo())
             try:
                 text = reader(path)
             except (OSError, KeyError, ValueError, zipfile.BadZipFile):
@@ -461,13 +494,83 @@ def scan_vehicles(source: Path, game: str = "", log: Log = print) -> list[Vehicl
             t.add(tid, rel, text)
 
     out = []
-    for tid, t in sorted(trucks.items()):
+    for (kind, tid), t in sorted(trucks.items()):
         if not t.cabins:
             continue
-        v = _to_vehicle(tid, t, game, source)
+        v = _to_vehicle(tid, t, game, source, kind)
+        if kind == "bus":
+            _add_bus_regions(v, source)
         out.append(v)
         log(
             f"{tid:32} cabins: {len(v.variants):2}  paintable accessories: {len(v.accessories):3}"
             + (f"  ({t.unread} unreadable files)" if t.unread else "")
         )
     return out
+
+
+def _add_bus_regions(v: Vehicle, source: Path) -> None:
+    """Record each bus body's paint tile (``Variant.mask``), read from its model.
+
+    A body whose model can't be read keeps no region; its skins then cover the whole UV space,
+    and the problem is logged.
+    """
+    from .coach import load_cabin, paint_region
+
+    try:
+        read = game_reader(source)
+    except OSError as e:
+        log.warning("no coach models in %s: %s", source, e)
+        return
+    for x in v.variants:
+        if not x.model:
+            continue
+        try:
+            region = paint_region(load_cabin(read, x.model))
+        except ValueError as e:
+            log.warning("coach body %s: %s", x.id, e)
+            continue
+        x.mask = region.name if region else None
+
+
+@functools.lru_cache(maxsize=2)
+def game_reader(game_dir: Path) -> Callable[[str], bytes | None]:
+    """Return a function that reads any file of the installed game by path, as bytes.
+
+    The DLC archives are searched first (the coaches live in ``dlc_bus.scs``), then the base
+    game's. The archives stay open for the life of the process, so repeated exports don't
+    re-read their tables; at most two game folders are kept.
+
+    Args:
+        game_dir: The game folder (contains ``def.scs``).
+
+    Raises:
+        OSError: The folder has no game archives.
+    """
+    from .hashfs import HashFs
+
+    if game_dir.is_file():  # one archive, e.g. dlc_bus.scs on its own
+        names = [game_dir]
+    else:
+        names = [
+            *sorted(game_dir.glob("dlc_*.scs")),
+            *(game_dir / n for n in ("base_vehicle.scs", "base_share.scs", "base.scs", "def.scs")),
+        ]
+    archives = []
+    for a in names:
+        if not a.is_file():
+            continue
+        try:
+            archives.append(HashFs(a))
+        except (OSError, ValueError) as e:  # a damaged or foreign archive must not stop the export
+            log.warning("skipping %s: %s", a.name, e)
+    if not archives:
+        raise OSError(f"no game archives (.scs) in {game_dir}")
+
+    def read(path: str) -> bytes | None:
+        for fs in archives:
+            data = fs.read(path)
+            if data is not None:
+                return data
+        return None
+
+    return read

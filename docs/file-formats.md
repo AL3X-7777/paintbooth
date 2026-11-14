@@ -145,3 +145,23 @@ Paths saved under the program's earlier names are mapped to `Documents\Paintboot
 
 The older, hand-editable format for the command line: a `project.xml` plus `vehicles/*.xml` and an
 art folder. See `paintbooth new --help`.
+
+## Model geometry: `.pmg` (version 0x15)
+
+| | |
+|---|---|
+| Code | `paintbooth/pmg.py` (read, add pieces), `paintbooth/coach.py` (coach templates and films) |
+| Direction | read; write with extra pieces |
+
+The meshes of a model, in "pieces" that each use one material slot of the matching `.pmd`. Vertices
+are interleaved (position, normal, colour, tangent, UV sets); indices are 16 bit. Paintbooth reads
+the coaches' bodies to draw UV templates, and writes a copy with *film* pieces added for painted
+windows and trim. The original pieces are copied byte for byte; the new ones go after them, and
+every absolute offset behind the piece table moves with them.
+
+## Coach paint masks
+
+The coaches' paint UV space is a virtual 4096x4096 texture made of two 4096x2048 tiles, named
+after their place: `pjm_at_0x0_size_4096x2048` (upper half) and `pjm_at_0x2048_size_4096x2048`
+(lower half). Which half a body paints is read from its model's UVs (`coach.paint_region`), not
+from the names SCS's own paint jobs use, because the game loads every tile of a paint job's folder.

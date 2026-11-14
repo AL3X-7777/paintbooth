@@ -66,11 +66,12 @@ class TextureJob:
     Attributes:
         src: The source image (or, for "copy", the file to copy unchanged).
         purpose: "mask" (paint job texture, DDS with mips), "icon" (shop icon), "modicon"
-            (mod manager JPEG) or "copy" (used as it is).
+            (mod manager JPEG), "film" (bus window/trim film: a mask whose alpha is multiplied
+            by ``overlay_alpha``) or "copy" (used as it is).
         size: Resize/crop target; None keeps the source size.
         fmt: DXT5 | DXT1 | BGRA_SRGB | JPG | RAW.
         overlay: Icons only: an image blended on top.
-        overlay_alpha: Opacity of ``overlay``.
+        overlay_alpha: Opacity of ``overlay``; for "film", the factor applied to the alpha.
     """
 
     src: Path
@@ -168,6 +169,10 @@ def encode(job: TextureJob) -> bytes:
     with Image.open(job.src) as im:
         im.load()
         img = im.convert("RGBA")
+    if job.purpose == "film":  # window/trim film (paintbooth.coach): alpha scaled by overlay_alpha
+        a = img.getchannel("A").point(lambda x: round(x * job.overlay_alpha))
+        img.putalpha(a)
+        return dds_bytes(img, job.fmt, mips=True)
     if job.purpose == "mask":
         if job.size and img.size != job.size:
             img = img.resize(job.size, Image.Resampling.LANCZOS)
