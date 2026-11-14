@@ -61,7 +61,7 @@ max-complexity = 15
 ".github/*" = ["D100"]
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"  # numpy's type stubs use 3.12 syntax; ruff still checks 3.11 compatibility
 files = ["paintbooth", "installer/build_installer.py", "installer/winsetup.py"]
 check_untyped_defs = true
 warn_unused_ignores = true

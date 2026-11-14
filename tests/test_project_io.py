@@ -7,9 +7,11 @@ Regression tests for review findings F7, F12, F13, F15, F24, F25, F26, F32, F33 
 
 import _isolation  # noqa: F401, I001  (must come first: isolates the user folders)
 
+import contextlib
 import io
 import json
 import os
+import sys
 import tempfile
 import time
 import unittest
@@ -433,6 +435,11 @@ class AppDirs(unittest.TestCase):
             with (
                 mock.patch.dict(os.environ, env, clear=True),
                 mock.patch.object(Path, "home", return_value=Path(t)),
+                # on Windows documents() asks the shell for the real folder; the logic under test
+                # is the migration, so point it at the temporary one there
+                mock.patch.object(appdirs, "documents", return_value=docs)
+                if sys.platform == "win32"
+                else contextlib.nullcontext(),
             ):
                 self.assertEqual(appdirs.documents(), docs)
                 self.assertTrue(appdirs.migrate())
@@ -451,15 +458,15 @@ class AppDirs(unittest.TestCase):
                 self.assertTrue((docs / "Paintbooth" / "Projects" / "c.pb").is_file())
                 self.assertFalse((docs / "Paint booth").exists())
                 spaced = str(docs / "Paint booth" / "Exports")
-                self.assertEqual(appdirs.moved_path(spaced), str(docs / "Paintbooth") + "/Exports")
+                self.assertEqual(appdirs.moved_path(spaced), str(docs / "Paintbooth" / "Exports"))
                 other = str(docs / "Paint booth") + "2/x"  # a different folder that only starts the same
                 self.assertEqual(appdirs.moved_path(other), other)
                 old = str(docs / "Skinyard" / "x.png")
-                self.assertEqual(appdirs.moved_path(old), str(docs / "Paintbooth") + "/x.png")
+                self.assertEqual(appdirs.moved_path(old), str(docs / "Paintbooth" / "x.png"))
                 (Path(t) / ".skinyard.json").write_text(json.dumps({"recent": [old]}))
                 s = appdirs.settings_file()
                 self.assertEqual(s, Path(t) / ".paintbooth.json")
-                self.assertEqual(json.loads(s.read_text())["recent"], [str(docs / "Paintbooth") + "/x.png"])
+                self.assertEqual(json.loads(s.read_text())["recent"], [str(docs / "Paintbooth" / "x.png")])
 
     def test_icons(self):
         img = appdirs.render_icon((64, 16), "AB12")

@@ -484,6 +484,7 @@ class PayloadTrailerTest(unittest.TestCase):
 
 
 @unittest.skipUnless(importlib.util.find_spec("ziglang"), "needs the ziglang package (C compiler)")
+@unittest.skipIf(sys.platform == "win32", "the test harness is the POSIX build of setup.c's portable core")
 class SetupHarnessTest(unittest.TestCase):
     """Build setup.c's portable core with -DSKY_TEST and run it on crafted payloads."""
 
