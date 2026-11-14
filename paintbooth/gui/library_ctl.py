@@ -98,6 +98,25 @@ class LibraryController:
                 return key
         return None
 
+    def auto_coaches(self) -> None:
+        """Add the Coaches DLC's coaches to the library without a manual scan, once.
+
+        Runs at start-up. If the library has no coaches yet and ETS2 with ``dlc_bus.scs`` is found
+        (the folder from Settings, else the Steam libraries), the DLC archive alone is scanned on a
+        worker thread: the coaches are added, their templates written and the game folder
+        remembered for exports.
+        """
+        app = self.app
+        if any(v.is_bus for v in self.library.values()):
+            return
+        known = (app.settings.get("game_dirs") or {}).get("ets2")
+        game = Path(known) if known else appdirs.find_game_dir("ets2")
+        if game is None or not (game / "dlc_bus.scs").is_file():
+            return
+        app.settings.setdefault("game_dirs", {})["ets2"] = str(game)
+        app.status("Adding the coaches from the Coaches DLC…")
+        threading.Thread(target=self._scan, args=(game / "dlc_bus.scs", "ets2"), daemon=True).start()
+
     @staticmethod
     def _bus_templates(src: Path, vehicles: list[vehlib.Vehicle]) -> int:
         """Worker thread: write the UV templates of any scanned coaches; return how many files.

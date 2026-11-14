@@ -1,4 +1,4 @@
-"""Coaches (the ETS2 "Coaches" DLC): UV templates, and painted windows and gloss-black trim.
+"""Coaches (the ETS2 "Coaches" DLC): the blueprint template, baking, and painted windows and trim.
 
 Buses are ordinary paint job vehicles in ``def/vehicle/bus/...``, so skins for them are built by
 :mod:`paintbooth.ms2build` like truck skins. This module adds what is new for buses:
@@ -10,17 +10,21 @@ with it, so the name SCS's paint jobs use does not say which half a body paints.
 reads that from the model instead (:func:`paint_region`): the half its paint UVs lie in. A bus
 skin image is that half only (4096x2048), and the exported texture is named after it.
 
-**UV templates.** :func:`body_template` draws every paintable triangle of a cabin in its region,
-so the user can paint over it.
+**One blueprint per body.** The user paints a single image, the *blueprint*
+(:func:`blueprint_template`): flat views of the coach from the left, right, front, rear and top,
+each seen from outside, with the body, the default accessories (bumpers, panels...), the windows
+and the gloss-black trim drawn in. At export :func:`bake` turns it into the paint job texture:
+every texel of the game's UV layout is traced back to its point on the coach, and from there to
+the blueprint. So one stripe painted across the blueprint runs across the paint, the bumpers and,
+with the option below, the windows, without lining up three layouts by hand. Painting straight
+on the game's layout (:func:`uv_template`) still works for those who prefer it.
 
 **Windows and gloss-black trim.** These parts don't take a paint job in the game. When a skin
 asks for it, the export adds *films*: copies of the glass and dark glossy pieces, lifted 1.5 mm
-off the surface, with a material that shows the skin's "windows and trim" image. That image has
-its own layout, made by :func:`film_template`: flat views of the coach from the left, right,
-front, rear and top, each seen from outside, so a window is painted where it is seen. Pixels
-left transparent keep the stock look. Window films let half the light through (the image's
-alpha is halved) and exist on both faces, so passengers see the same artwork from inside;
-trim films are opaque where painted.
+off the surface, whose UVs are their positions in the blueprint, so they show the same image.
+Pixels left transparent keep the stock look. Window films let half the light through (the
+image's alpha is halved) and exist on both faces, so passengers see the same artwork from
+inside; trim films are opaque where painted.
 
 The films change the cabin's model files (``.pmd`` + ``.pmg``), which the mod then overrides:
 while the mod is active, that cabin shows the films whatever paint job is bought. The model
@@ -30,6 +34,7 @@ the coach needs a new export.
 
 from __future__ import annotations
 
+import logging
 import re
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass
@@ -43,7 +48,8 @@ from . import pmd, pmg
 #: The virtual paint UV space of the coaches, in pixels.
 VIRTUAL = 4096
 #: Film template size (pixels) and how far films sit off the surface (metres).
-FILM_SIZE = (4096, 2048)
+BLUEPRINT_SIZE = (4096, 2048)
+FILM_SIZE = BLUEPRINT_SIZE  # 0.12.0 name
 FILM_LIFT = 0.0015
 #: Window films show the artwork at this opacity.
 GLASS_OPACITY = 0.5
@@ -51,6 +57,7 @@ GLASS_OPACITY = 0.5
 _REGION_RE = re.compile(r"pjm_at_(\d+)x(\d+)_size_(\d+)x(\d+)")
 
 Reader = Callable[[str], bytes | None]
+log = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -163,20 +170,6 @@ def load_cabin(read: Reader, pmd_path: str) -> CabinModel:
     return CabinModel(pmd_path, d, pmg.read(g), mats)
 
 
-def paint_region(cab: CabinModel) -> Region | None:
-    """Return the tile of the paint UV space the cabin's paint pieces use, or None.
-
-    Paint pieces carry several UV sets (detail, normal map, paint job); the paint job set is the
-    one that fits inside one tile.
-    """
-    for p in cab.pieces(is_paint):
-        for uv in p.uvs:
-            for tile in TILES:
-                if _inside(uv, tile):
-                    return tile
-    return None
-
-
 def _inside(uv: np.ndarray, region: Region) -> bool:
     """True if every UV (0-1 of the virtual space) lies in ``region``, with a 1 % margin."""
     lo = np.array([region.x, region.y]) / VIRTUAL
@@ -200,8 +193,128 @@ def paint_uvs(cab: CabinModel, region: Region) -> list[tuple[pmg.Piece, np.ndarr
     return out
 
 
-# ---------------------------------------------------------------------------------- film layout
-# The five views of the film template. Each maps a face pointing along `normal` to the image,
+# ---------------------------------------------------------------------------------- the body
+@dataclass
+class Body:
+    """A coach body: its cabin model plus the accessory models drawn on and painted from the blueprint.
+
+    Attributes:
+        cab: The cabin model.
+        defaults: Accessories the body comes with (bumpers, panels, window frames...).
+        others: Other accessories for the body that take the paint job (alternative bumpers...);
+            they are painted from the blueprint too, but not drawn on it.
+    """
+
+    cab: CabinModel
+    defaults: list[CabinModel]
+    others: list[CabinModel]
+
+    def all_models(self) -> list[CabinModel]:
+        """Every model, cabin first."""
+        return [self.cab, *self.defaults, *self.others]
+
+    def pieces(self, test: Callable[[_Mat], bool], others: bool = False) -> list[pmg.Piece]:
+        """The pieces passing ``test`` of the cabin and its default accessories (and the others)."""
+        models = [self.cab, *self.defaults, *(self.others if others else [])]
+        return [p for m in models for p in m.pieces(test)]
+
+
+_DEFAULTS_RE = re.compile(r'defaults\[\]\s*:\s*"([^"]+)"')
+_EXTERIOR_RE = re.compile(r'exterior_model\s*:\s*"([^"]+)"')
+_SUITABLE_RE = re.compile(r'suitable_for\[\]\s*:\s*"([^"]+)"')
+
+
+def _accessory_model(read: Reader, sii_path: str) -> str | None:
+    """The ``exterior_model`` of an accessory definition, or None."""
+    data = read(sii_path.lstrip("/"))
+    m = _EXTERIOR_RE.search(data.decode("utf-8", "replace")) if data else None
+    return m.group(1) if m else None
+
+
+def load_body(read: Reader, vehicle_id: str, cabin_id: str, model: str) -> Body:
+    """Load a coach body with its accessories from the game.
+
+    The cabin definition (``def/vehicle/bus/<vehicle>/cabin/<cabin>.sii``) lists the default
+    accessories. When ``read`` can list folders (``read.listdir``), the other accessories of
+    the same types that fit this cabin and take paint are loaded too. Accessory models without a
+    locator are placed in the cabin's own coordinates, which is the case for body parts like
+    bumpers and panels.
+
+    Raises:
+        ValueError: The cabin model is missing or damaged. Unreadable accessories are skipped.
+    """
+    cab = load_cabin(read, model)
+    short = cabin_id.split(".", 1)[0]
+    cab_def = read(f"def/vehicle/bus/{vehicle_id}/cabin/{short}.sii")
+    defaults: list[str] = []
+    types: set[str] = set()
+    for d in _DEFAULTS_RE.findall(cab_def.decode("utf-8", "replace")) if cab_def else []:
+        if "/accessory/" in d:
+            types.add(d.split("/accessory/", 1)[1].split("/", 1)[0])
+            acc = _accessory_model(read, d)
+            if acc:
+                defaults.append(acc)
+    others: list[str] = []
+    listdir: Callable[[str], list[str]] | None = getattr(read, "listdir", None)
+    for t in sorted(types):
+        folder = f"def/vehicle/bus/{vehicle_id}/accessory/{t}"
+        for name in listdir(folder) if listdir is not None else []:
+            if not name.endswith(".sii"):
+                continue
+            text = (read(f"{folder}/{name}") or b"").decode("utf-8", "replace")
+            fits = _SUITABLE_RE.findall(text)
+            m = _EXTERIOR_RE.search(text)
+            if m and (not fits or cabin_id in fits) and m.group(1) not in defaults + others:
+                others.append(m.group(1))
+
+    def load_all(paths: list[str], paint_only: bool) -> list[CabinModel]:
+        out = []
+        for path in paths:
+            try:
+                acc = load_cabin(read, path)
+            except ValueError as e:  # one broken accessory must not stop the body
+                log.info("skipping accessory %s: %s", path, e)
+                continue
+            if not paint_only or acc.pieces(is_paint):
+                out.append(acc)
+        return out
+
+    return Body(cab, [a for a in load_all(defaults, False) if _on_body(a, cab)], load_all(others, True))
+
+
+def _on_body(acc: CabinModel, cab: CabinModel, margin: float = 0.5) -> bool:
+    """True if the accessory lies on the outside of the cabin (within ``margin`` metres of its box).
+
+    Some default accessories (destination displays, interior parts) are placed by a locator
+    elsewhere on the coach; drawn in cabin coordinates they would float off the body.
+    """
+    pos = [p.positions for p in acc.model.pieces if len(p.positions)]
+    if not pos:
+        return False
+    a = np.concatenate(pos)
+    c = np.concatenate([p.positions for p in cab.model.pieces if len(p.positions)])
+    return bool(
+        (a.min(axis=0) >= c.min(axis=0) - margin).all() and (a.max(axis=0) <= c.max(axis=0) + margin).all()
+    )
+
+
+def paint_region(cab: CabinModel | Body) -> Region | None:
+    """Return the tile of the paint UV space the cabin's paint pieces use, or None.
+
+    Paint pieces carry several UV sets (detail, normal map, paint job); the paint job set is the
+    one that fits inside one tile.
+    """
+    model = cab.cab if isinstance(cab, Body) else cab
+    for p in model.pieces(is_paint):
+        for uv in p.uvs:
+            for tile in TILES:
+                if _inside(uv, tile):
+                    return tile
+    return None
+
+
+# ---------------------------------------------------------------------------------- blueprint layout
+# The five views of the blueprint. Each maps a face pointing along `normal` to the image,
 # seen from outside: (normal axis, sign, u axis, u sign, v axis, v sign). v grows downwards.
 _VIEWS = {
     "left": (0, -1, 2, +1, 1, -1),
@@ -213,26 +326,27 @@ _VIEWS = {
 
 
 @dataclass
-class FilmLayout:
-    """Where each view of the coach sits in the film template (all in pixels)."""
+class Layout:
+    """Where each view of the coach sits in the blueprint (all in pixels)."""
 
     scale: float  # pixels per metre
-    origin: dict[str, tuple[float, float]]  # view -> pixel of the view's minimum (u, v) corner
-    lo: np.ndarray  # model bounding box
+    origin: dict[str, tuple[float, float]]  # view -> pixel of the view's top-left corner
+    lo: np.ndarray  # bounding box of the body
     hi: np.ndarray
 
     @classmethod
-    def for_model(cls, model: pmg.Model) -> FilmLayout:
-        """Lay out the five views for this model's size.
+    def for_body(cls, body: Body | CabinModel) -> Layout:
+        """Lay out the five views for the body's size (cabin plus default accessories).
 
         Rows: left side + front, right side + rear, top. A 40 px gap separates the views.
         """
-        allpos = np.concatenate([p.positions for p in model.pieces if len(p.positions)])
+        models = [body.cab, *body.defaults] if isinstance(body, Body) else [body]
+        allpos = np.concatenate([p.positions for m in models for p in m.model.pieces if len(p.positions)])
         lo, hi = allpos.min(axis=0), allpos.max(axis=0)
         size = hi - lo  # x width, y height, z length
         gap = 40
         w_m, h_m = size[2] + size[0], 2 * size[1] + size[0]
-        scale = min((FILM_SIZE[0] - 3 * gap) / w_m, (FILM_SIZE[1] - 4 * gap) / h_m)
+        scale = min((BLUEPRINT_SIZE[0] - 3 * gap) / w_m, (BLUEPRINT_SIZE[1] - 4 * gap) / h_m)
         row = [gap, 2 * gap + size[1] * scale, 3 * gap + 2 * size[1] * scale]
         col2 = 2 * gap + size[2] * scale
         origin = {
@@ -245,15 +359,22 @@ class FilmLayout:
         return cls(scale, origin, lo, hi)
 
     def project(self, view: str, pos: np.ndarray) -> np.ndarray:
-        """Return the template pixel (u, v) of model-space points ``pos`` in ``view``."""
+        """Return the blueprint pixel (u, v) of model-space points ``pos`` in ``view``."""
         _, _, ua, us, va, vs = _VIEWS[view]
-        # measure from the bounding box edge that is at the view's top-left
-        u0 = self.lo[ua] if us > 0 else self.hi[ua]
+        u0 = self.lo[ua] if us > 0 else self.hi[ua]  # the box edge at the view's top-left
         v0 = self.lo[va] if vs > 0 else self.hi[va]
-        u = (pos[:, ua] - u0) * us * self.scale
-        v = (pos[:, va] - v0) * vs * self.scale
         ox, oy = self.origin[view]
-        return np.c_[u + ox, v + oy]
+        return np.c_[(pos[:, ua] - u0) * us * self.scale + ox, (pos[:, va] - v0) * vs * self.scale + oy]
+
+    def project_faces(self, views: list[str], pos: np.ndarray) -> np.ndarray:
+        """Project points, each in the view of its face (``views`` has one entry per point)."""
+        out = np.zeros((len(pos), 2))
+        flat = np.asarray(views)
+        for v in _VIEWS:
+            sel = flat == v
+            if sel.any():
+                out[sel] = self.project(v, pos[sel])
+        return out
 
 
 def _face_views(p: pmg.Piece) -> list[str]:
@@ -265,51 +386,33 @@ def _face_views(p: pmg.Piece) -> list[str]:
     n *= np.sign((n * vn).sum(axis=1, keepdims=True) + 1e-12)
     axis = np.abs(n).argmax(axis=1)
     sign = np.sign(n[np.arange(len(n)), axis])
-    names = []
-    for ax, sg in zip(axis, sign, strict=True):
-        if ax == 1:
-            names.append("top")
-        else:
-            names.append(next(v for v, (na, ns, *_) in _VIEWS.items() if na == ax and ns == sg))
-    return names
+    by_axis = {(na, ns): v for v, (na, ns, *_) in _VIEWS.items()}
+    return ["top" if ax == 1 else by_axis[(int(ax), int(sg) or 1)] for ax, sg in zip(axis, sign, strict=True)]
 
 
-def film_piece(src: pmg.Piece, layout: FilmLayout, material: int, double_sided: bool) -> list[pmg.Piece]:
-    """Make the film pieces over ``src``: its triangles, lifted off the surface, with film UVs.
+def film_piece(src: pmg.Piece, layout: Layout, material: int, double_sided: bool) -> list[pmg.Piece]:
+    """Make the film pieces over ``src``: its triangles, lifted off the surface, with blueprint UVs.
 
     Every triangle gets its own three vertices, so the UVs of neighbouring triangles seen in
     different views don't have to agree. With ``double_sided`` a reversed copy, lifted the other
     way, is added so the film is seen from inside too. Pieces are split to stay under 65535
     vertices.
     """
-    views = _face_views(src)
     tri = src.triangles
     pos = src.positions[tri].reshape(-1, 3)
     nrm = src.normals[tri].reshape(-1, 3)
     rgba = src.rgba[tri].reshape(-1) if src.rgba is not None else None
-    uv = np.zeros((len(pos), 2))
-    flat_views = np.repeat(np.array(views), 3)
-    for v in _VIEWS:
-        sel = flat_views == v
-        if sel.any():
-            uv[sel] = layout.project(v, pos[sel])
-    uv /= np.array(FILM_SIZE, dtype=float)
+    uv = layout.project_faces(list(np.repeat(_face_views(src), 3)), pos) / np.array(BLUEPRINT_SIZE, float)
 
-    def build(sign: float) -> tuple[np.ndarray, ...]:
-        p = pos + nrm * FILM_LIFT * sign
-        n = nrm * sign
+    def build(sign: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         t = np.arange(len(pos)).reshape(-1, 3)
-        if sign < 0:
-            t = t[:, ::-1]  # reversed winding faces inwards
-        return p, n, t
+        return pos + nrm * FILM_LIFT * sign, nrm * sign, t if sign > 0 else t[:, ::-1]
 
-    parts = [build(1.0)] + ([build(-1.0)] if double_sided else [])
     out = []
     per = (0xFFFF // 3) * 3  # vertices per output piece, whole triangles only
-    for p, n, t in parts:
+    for p, n, t in [build(1.0)] + ([build(-1.0)] if double_sided else []):
         for start in range(0, len(p), per):
-            stop = min(start + per, len(p))
-            sl = slice(start, stop)
+            sl = slice(start, min(start + per, len(p)))
             out.append(
                 pmg.Piece(
                     material,
@@ -317,41 +420,52 @@ def film_piece(src: pmg.Piece, layout: FilmLayout, material: int, double_sided: 
                     n[sl].astype("f4"),
                     [uv[sl].astype("f4")],
                     rgba[sl] if rgba is not None else None,
-                    t[start // 3 : stop // 3] - start,
+                    t[start // 3 : sl.stop // 3] - start,
                 )
             )
     return out
 
 
 # ---------------------------------------------------------------------------------- templates
-def body_template(cab: CabinModel, region: Region) -> Image.Image:
-    """Draw the cabin's paintable surface in its mask region: grey islands, light outlines."""
+def uv_template(body: Body | CabinModel, region: Region) -> Image.Image:
+    """Draw the paint UV layout of the body (cabin and painted accessories) in its region.
+
+    For people who prefer painting on the game's own layout; the blueprint is the easier way.
+    """
+    body = body if isinstance(body, Body) else Body(body, [], [])
     img = Image.new("RGBA", (region.w, region.h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    for p, px in paint_uvs(cab, region):
-        for t in p.triangles:
-            d.polygon([tuple(px[k]) for k in t], fill=(128, 128, 128, 255))
-    for p, px in paint_uvs(cab, region):
-        for t in p.triangles:
-            d.polygon([tuple(px[k]) for k in t], outline=(235, 235, 235, 255))
+    for m in [body.cab, *body.defaults]:
+        for p, px in paint_uvs(m, region):
+            for t in p.triangles:
+                d.polygon([tuple(px[k]) for k in t], fill=(128, 128, 128, 255), outline=(235, 235, 235, 255))
     return img
 
 
-def film_template(cab: CabinModel) -> Image.Image:
-    """Draw the windows-and-trim template: windows blue, gloss-black parts yellow, body grey.
+body_template = uv_template  # 0.12.0 name
 
-    The body outline (from the paint pieces) is only there to find one's way around; painting
-    it has no effect. Everything not drawn is transparent.
+
+def blueprint_template(body: Body | CabinModel) -> Image.Image:
+    """Draw the blueprint: flat views of the coach from the left, right, front, rear and top.
+
+    Body paint is grey, painted accessories lighter grey, windows blue and gloss-black parts
+    yellow. Everything not drawn is transparent. One image painted on this template colours the
+    paint job, the accessories, and (with the option) the windows and trim, all lined up.
     """
-    layout = FilmLayout.for_model(cab.model)
-    img = Image.new("RGBA", FILM_SIZE, (0, 0, 0, 0))
+    body = body if isinstance(body, Body) else Body(body, [], [])
+    layout = Layout.for_body(body)
+    img = Image.new("RGBA", BLUEPRINT_SIZE, (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    layers = [(is_paint, None, (90, 90, 90, 255)), (is_gloss_black, (60, 50, 0, 255), (255, 200, 0, 255))]
-    layers.append((is_window, (20, 50, 90, 255), (90, 170, 255, 255)))
-    for test, fill, line in layers:
-        for p in cab.pieces(test):
+    layers: list[tuple[list[pmg.Piece], tuple[int, ...], tuple[int, ...]]] = [
+        (body.cab.pieces(is_paint), (85, 85, 85, 255), (150, 150, 150, 255)),
+        ([p for m in body.defaults for p in m.pieces(is_paint)], (120, 120, 120, 255), (200, 200, 200, 255)),
+        (body.pieces(is_gloss_black), (60, 50, 0, 255), (255, 200, 0, 255)),
+        (body.pieces(is_window), (20, 50, 90, 255), (90, 170, 255, 255)),
+    ]
+    for pieces, fill, line in layers:
+        for p in pieces:
             for piece in film_piece(p, layout, 0, double_sided=False):
-                px = piece.uvs[0] * FILM_SIZE
+                px = piece.uvs[0] * BLUEPRINT_SIZE
                 for t in piece.triangles:
                     d.polygon([tuple(px[k]) for k in t], fill=fill, outline=line)
     for view, (ox, oy) in layout.origin.items():
@@ -359,7 +473,90 @@ def film_template(cab: CabinModel) -> Image.Image:
     return img
 
 
-# ---------------------------------------------------------------------------------- export
+film_template = blueprint_template  # 0.12.0 name
+
+
+# ---------------------------------------------------------------------------------- baking
+def bake(body: Body, region: Region, blueprint: Image.Image, pad: int = 8) -> Image.Image:
+    """Turn a blueprint image into the paint job texture of ``region``.
+
+    Every texel of the paint UV layout is traced back to its point on the coach (through the
+    triangle it lies in), and that point to the blueprint (through the view its face looks
+    into). Texels outside every island stay transparent; the islands are then grown by ``pad``
+    pixels so texture filtering doesn't pull transparent pixels into their edges.
+
+    Accessories other than the defaults are painted first, so where their UVs share space with
+    the defaults' or the cabin's, the cabin and defaults win.
+
+    Args:
+        body: The body (cabin and accessories).
+        region: The cabin's tile of the paint UV space; the result has its size.
+        blueprint: The user's image, drawn on :func:`blueprint_template` (any size; it is scaled
+            to :data:`BLUEPRINT_SIZE`).
+        pad: How many pixels the islands are grown by.
+    """
+    bp = np.asarray(blueprint.convert("RGBA").resize(BLUEPRINT_SIZE, Image.Resampling.LANCZOS))
+    layout = Layout.for_body(body)
+    tris_uv, tris_pos, tris_view = [], [], []
+    for m in [*body.others, *body.defaults, body.cab]:
+        for p, px in paint_uvs(m, region):
+            tris_uv.append(px[p.triangles])
+            tris_pos.append(p.positions[p.triangles].astype(float))
+            tris_view += _face_views(p)
+    w, h = region.w, region.h
+    if not tris_uv:
+        return Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    uv = np.concatenate(tris_uv)  # (n, 3, 2)
+    pos = np.concatenate(tris_pos)  # (n, 3, 3)
+
+    # 1. which triangle covers each texel (later triangles win, hence the order above)
+    ids = Image.new("I", (w, h), 0)
+    d = ImageDraw.Draw(ids)
+    for i, t in enumerate(uv, start=1):
+        d.polygon([tuple(c) for c in t], fill=i, outline=i)
+    idmap = np.asarray(ids, dtype=np.int64)
+    ys, xs = np.nonzero(idmap)
+    t = idmap[ys, xs] - 1
+
+    # 2. barycentric coordinates of each texel centre in its triangle -> point on the coach
+    a, b, c = uv[t, 0], uv[t, 1], uv[t, 2]
+    p = np.c_[xs + 0.5, ys + 0.5]
+    v0, v1, v2 = b - a, c - a, p - a
+    den = v0[:, 0] * v1[:, 1] - v1[:, 0] * v0[:, 1]
+    den[np.abs(den) < 1e-12] = 1e-12  # degenerate (zero-area) triangles
+    l1 = (v2[:, 0] * v1[:, 1] - v1[:, 0] * v2[:, 1]) / den
+    l2 = (v0[:, 0] * v2[:, 1] - v2[:, 0] * v0[:, 1]) / den
+    l0 = 1 - l1 - l2
+    world = pos[t, 0] * l0[:, None] + pos[t, 1] * l1[:, None] + pos[t, 2] * l2[:, None]
+
+    # 3. point on the coach -> blueprint pixel, in the view of its triangle's face
+    views = np.asarray(tris_view)[t]
+    bxy = layout.project_faces(list(views), world)
+    bx = np.clip(bxy[:, 0].astype(int), 0, BLUEPRINT_SIZE[0] - 1)
+    by = np.clip(bxy[:, 1].astype(int), 0, BLUEPRINT_SIZE[1] - 1)
+    out = np.zeros((h, w, 4), np.uint8)
+    out[ys, xs] = bp[by, bx]
+    covered = np.zeros((h, w), bool)
+    covered[ys, xs] = True
+    return Image.fromarray(_pad(out, covered, pad), "RGBA")
+
+
+def _pad(img: np.ndarray, covered: np.ndarray, steps: int) -> np.ndarray:
+    """Grow the covered texels outwards by ``steps`` pixels, copying the nearest edge colour."""
+    img, covered = img.copy(), covered.copy()
+    for _ in range(steps):
+        grown = covered.copy()
+        for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            src = np.roll(covered, (dy, dx), axis=(0, 1))
+            new = src & ~grown
+            if new.any():
+                img[new] = np.roll(img, (dy, dx), axis=(0, 1))[new]
+                grown |= new
+        covered = grown
+    return img
+
+
+# ---------------------------------------------------------------------------------- films
 FILM_MAT = """effect : "eut2.dif.spec.weight.a.rfx" {{
 \tadditional_ambient : 0.000000
 \tdiffuse : {{ 1.000000 , 1.000000 , 1.000000 }}
@@ -380,40 +577,37 @@ def film_material(tobj: str, glossy: bool) -> bytes:
     return FILM_MAT.format(shininess=shininess, spec=spec, tobj=tobj).encode()
 
 
-def with_films(cab: CabinModel, glass_mat: str, trim_mat: str) -> tuple[bytes, bytes]:
+def with_films(body: Body | CabinModel, glass_mat: str, trim_mat: str) -> tuple[bytes, bytes]:
     """Return the cabin's ``.pmd`` and ``.pmg`` with window and trim films added.
 
+    The films use the blueprint layout of the whole body, so they line up with the paint job
+    baked from the same image. Only the cabin model gets films; accessories keep their own.
+
     Args:
-        cab: The cabin model from the game.
+        body: The body (or just its cabin model).
         glass_mat: Mod path of the window film material (``/...mat``).
         trim_mat: Mod path of the trim film material.
 
     Returns:
         ``(pmd bytes, pmg bytes)``. The original pieces and materials are unchanged.
     """
-    looks = pmd.material_table(cab.pmd_data)
-    n = len(looks[0])
-    layout = FilmLayout.for_model(cab.model)
+    body = body if isinstance(body, Body) else Body(body, [], [])
+    cab = body.cab
+    n = len(pmd.material_table(cab.pmd_data)[0])
+    layout = Layout.for_body(body)
     new: list[pmg.Piece] = []
     for p in cab.pieces(is_window):
         new += film_piece(p, layout, n, double_sided=True)
     for p in cab.pieces(is_gloss_black):
         new += film_piece(p, layout, n + 1, double_sided=False)
-    pmd_bytes = pmd.add_materials(cab.pmd_data, [glass_mat, trim_mat])
-    return pmd_bytes, pmg.add_pieces(cab.model, new)
+    return pmd.add_materials(cab.pmd_data, [glass_mat, trim_mat]), pmg.add_pieces(cab.model, new)
 
 
 def write_templates(read: Reader, vehicles: Iterable[object], out_dir: Path) -> list[Path]:
-    """Write the UV templates of every bus body into ``out_dir``.
+    """Write the templates of every bus body into ``out_dir/<Brand Model>/``.
 
-    For each body two PNGs go into ``<out_dir>/<Brand Model>/``: ``<body> paint.png`` (the paint
-    job template, its region of the UV space) and ``<body> windows and trim.png`` (the film
-    template). Bodies without a model or region are skipped.
-
-    Args:
-        read: Reads a game file by path (see :func:`paintbooth.scanner.game_reader`).
-        vehicles: Library entries; only buses are used.
-        out_dir: Usually ``Templates/ETS2/Buses``.
+    Two PNGs per body: ``<body> blueprint.png`` (the one to paint) and ``<body> UV layout.png``
+    (the game's own layout, for advanced use). Bodies without a model or region are skipped.
 
     Returns:
         The files written.
@@ -429,12 +623,12 @@ def write_templates(read: Reader, vehicles: Iterable[object], out_dir: Path) -> 
             region = Region.parse(x.mask or "")
             if not (x.model and region):
                 continue
-            cab = load_cabin(read, x.model)
+            body = load_body(read, v.id, x.id, x.model)  # type: ignore[attr-defined]
             folder.mkdir(parents=True, exist_ok=True)
             label = safe_name(x.name)
             for suffix, img in (
-                ("paint", body_template(cab, region)),
-                ("windows and trim", film_template(cab)),
+                ("blueprint", blueprint_template(body)),
+                ("UV layout", uv_template(body, region)),
             ):
                 path = folder / f"{label} {suffix}.png"
                 img.save(path)

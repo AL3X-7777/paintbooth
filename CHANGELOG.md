@@ -3,6 +3,19 @@
 Each release on GitHub shows the section for its version. Add a new section at the top before
 tagging a release (see RELEASING.md).
 
+## 0.13.0
+- **Coaches appear by themselves:** Paintbooth finds ETS2 in your Steam libraries and adds the
+  three coaches to the vehicle list at start-up (no scan needed), with their templates in
+  `Templates\ETS2\Buses`.
+- **One template per coach body, the blueprint:** flat views of the coach from every side with
+  the body, bumpers and other accessories, windows and black trim drawn in. Paint it like a
+  drawing of the coach; Paintbooth fits it onto the game's own layout when exporting, so a
+  design runs seamlessly across the paint, the accessories and (with the option) the windows.
+  The game's layout is still there as `... UV layout.png` for those who prefer it (tick
+  *Images are drawn on the UV layout*).
+- Painted windows and trim now use the same image as the paint; there's no second image any more.
+- Fixed: the taskbar showed Python's icon instead of Paintbooth's.
+
 ## 0.12.0
 - **Coaches (ETS2 Coaches DLC):** the Volvo 9700 Double Decker, Scania Touring and MAN Lion's
   Coach can be skinned like trucks. Run **Vehicles > Scan game folder** once: it adds the coaches

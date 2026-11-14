@@ -467,7 +467,7 @@ class AdvancedTruckSkin(Item):
     #: so projects that never use them stay exactly as Mods Studio 2 wrote them.
     EXTRA_VARS: ClassVar[dict[str, tuple[str, str]]] = {
         "PaintWindows": ("BooleanVariable", "Paint windows and black trim"),
-        "WindowsImage": ("StringVariable", "Windows and trim image"),
+        "UvLayout": ("BooleanVariable", "Images are drawn on the UV layout"),
     }
 
     def set_extra(self, name: str, value: str) -> None:

@@ -25,6 +25,7 @@ import contextlib
 import json
 import logging
 import os
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -377,3 +378,49 @@ def default_icons(font_setting: str | None = None) -> tuple[Path, Path]:
     render_icon(SKIN_ICON_SIZE, font_path=font).save(skin)
     render_icon(MOD_ICON_SIZE, font_path=font).convert("RGB").save(mod, quality=95)
     return skin, mod
+
+
+#: Steam's folder name of each game.
+STEAM_FOLDERS = {"ets2": "Euro Truck Simulator 2", "ats": "American Truck Simulator"}
+
+
+def steam_libraries() -> list[Path]:
+    r"""Return the Steam library folders on this PC (Windows), main installation first.
+
+    Steam's own folder comes from the registry (``HKCU\Software\Valve\Steam``, ``SteamPath``);
+    the other libraries are listed in its ``steamapps\libraryfolders.vdf``. Anything that can't
+    be read is skipped, so the result may be empty.
+    """
+    roots: list[Path] = []
+    if sys.platform.startswith("win"):
+        try:
+            import winreg
+
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam") as k:  # type: ignore[attr-defined]
+                roots.append(Path(winreg.QueryValueEx(k, "SteamPath")[0]))  # type: ignore[attr-defined]
+        except OSError as e:
+            log.debug("no Steam in the registry: %s", e)
+        roots.append(Path(os.environ.get("PROGRAMFILES(X86)", r"C:\Program Files (x86)")) / "Steam")
+    else:
+        roots += [Path.home() / ".steam" / "steam", Path.home() / ".local" / "share" / "Steam"]
+    libs: list[Path] = []
+    for root in roots:
+        vdf = root / "steamapps" / "libraryfolders.vdf"
+        try:
+            text = vdf.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        found = [root] + [Path(p.replace("\\\\", "\\")) for p in re.findall(r'"path"\s+"([^"]+)"', text)]
+        for lib in found:
+            if lib not in libs:
+                libs.append(lib)
+    return libs
+
+
+def find_game_dir(game: str) -> Path | None:
+    """Return the installed game's folder (contains ``def.scs``), looked for in the Steam libraries."""
+    for lib in steam_libraries():
+        d = lib / "steamapps" / "common" / STEAM_FOLDERS[game]
+        if (d / "def.scs").is_file():
+            return d
+    return None

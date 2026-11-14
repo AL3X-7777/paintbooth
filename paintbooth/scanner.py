@@ -447,17 +447,18 @@ def _to_vehicle(tid: str, t: _TruckInfo, game: str, source: Path, kind: str = "t
     brand = tid.split(".", maxsplit=1)[0]
     model = t.name or _pretty(tid.split(".", 1)[-1])
     if kind == "bus":
-        full = known_name(tid, game or "ets2")  # "Volvo 9700 Double Decker": drop the brand
+        full = known_name(tid, "ets2")  # "Volvo 9700 Double Decker": drop the brand
         if full:
             model = full.split(" ", 1)[-1] if full.lower().startswith(brand.lower()) else full
     shown_brand = _pretty(brand)
     if kind == "bus":
-        full = known_name(tid, game or "ets2")
+        full = known_name(tid, "ets2")
         if full.lower().startswith(brand.lower()):
             shown_brand = full[: len(brand)]  # "MAN", not "Man"
     v = Vehicle(tid, game, shown_brand, model, "SCS Software", "Paintbooth scan", source=str(source))
     if kind == "bus":
         v.vehicle_type = "Buses"
+        v.game = "ets2"  # the Coaches DLC exists for ETS2 only, whatever game the scan was for
     for cab_id, nm in sorted(t.cabins.items()):
         name = nm or (_bus_cabin_name(cab_id) if kind == "bus" else _pretty(cab_id.split(".")[0]))
         v.variants.append(Variant(cab_id, name, model=t.models.get(cab_id) if kind == "bus" else None))
@@ -533,7 +534,7 @@ def _add_bus_regions(v: Vehicle, source: Path) -> None:
 
 
 @functools.lru_cache(maxsize=2)
-def game_reader(game_dir: Path) -> Callable[[str], bytes | None]:
+def game_reader(game_dir: Path) -> GameFiles:
     """Return a function that reads any file of the installed game by path, as bytes.
 
     The DLC archives are searched first (the coaches live in ``dlc_bus.scs``), then the base
@@ -566,11 +567,32 @@ def game_reader(game_dir: Path) -> Callable[[str], bytes | None]:
     if not archives:
         raise OSError(f"no game archives (.scs) in {game_dir}")
 
-    def read(path: str) -> bytes | None:
-        for fs in archives:
+    return GameFiles(archives)
+
+
+class GameFiles:
+    """Read access to the installed game's files; the first archive that has a file wins.
+
+    Calling the object reads a file (``files("def/x.sii")`` returns bytes or None), so it can be
+    passed wherever a plain reader function is expected. :meth:`listdir` lists a folder.
+    """
+
+    def __init__(self, archives: list[HashFs]):
+        self.archives = archives
+
+    def __call__(self, path: str) -> bytes | None:
+        """Return the bytes of ``path`` (no leading ``/``), or None if no archive has it."""
+        for fs in self.archives:
             data = fs.read(path)
             if data is not None:
                 return data
         return None
 
-    return read
+    def listdir(self, path: str) -> list[str]:
+        """Return the file names in folder ``path`` across all archives (no sub-folders)."""
+        names: set[str] = set()
+        for fs in self.archives:
+            found = fs.listdir(path)
+            if found:
+                names.update(found[1])
+        return sorted(names)

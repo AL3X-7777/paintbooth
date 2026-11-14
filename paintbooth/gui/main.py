@@ -123,6 +123,7 @@ class App:
             self.root.after(500, lambda: messagebox.showwarning("Settings", settings_problem))
         root.after(POLL_MS, self._poll)
         root.after(3000, self._check_updates)
+        root.after(1500, self.vehicles.auto_coaches)
         root.after(150, self._restore_sash)
         self.pane.bind("<ButtonRelease-1>", lambda e: self.root.after(10, self._guard_sash), add="+")
         self.pane.bind("<Configure>", lambda e: self.root.after(10, self._guard_sash), add="+")
@@ -944,18 +945,36 @@ def _set_window_icon(root: tk.Tk) -> None:
         log.info("window icon not set: %s", e)
 
 
-def _windows_setup(root: tk.Tk) -> None:
-    """Windows only: give the taskbar button Paintbooth's own icon and group."""
-    ico = Path(__file__).resolve().parents[2] / "paintbooth.ico"
-    if not ico.is_file():
-        return
+def _windows_app_id() -> None:
+    """Windows only: give the process its own taskbar identity, before any window exists.
+
+    The program runs as ``pythonw.exe``. Without its own AppUserModelID Windows groups the window
+    with Python and shows Python's icon on the taskbar. The ID must be set before the first
+    window is created, or the taskbar ignores it.
+    """
     try:
         import ctypes
 
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("AL3X.PaintBooth")  # type: ignore[attr-defined]
-        root.iconbitmap(default=str(ico))
-    except (OSError, AttributeError, tk.TclError) as e:
-        log.info("taskbar icon not set: %s", e)
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("AL3X.Paintbooth")  # type: ignore[attr-defined]
+    except (OSError, AttributeError) as e:
+        log.info("taskbar identity not set: %s", e)
+
+
+def _windows_setup(root: tk.Tk) -> None:
+    """Windows only: use the installed ``paintbooth.ico`` for the window and the taskbar button.
+
+    The .ico carries the small sizes (16, 24, 32 px) the taskbar and title bar use, so it looks
+    sharper there than the PNG logo set by :func:`_set_window_icon`.
+    """
+    ico = Path(__file__).resolve().parents[2] / "paintbooth.ico"
+    if not ico.is_file():
+        log.info("no %s; the window keeps the PNG logo", ico)
+        return
+    try:
+        root.iconbitmap(str(ico))  # this window
+        root.iconbitmap(default=str(ico))  # and every window opened later
+    except tk.TclError as e:
+        log.info("window icon not set from %s: %s", ico, e)
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -976,6 +995,8 @@ def main(argv: list[str] | None = None) -> None:
             ctypes.windll.shcore.SetProcessDpiAwareness(1)  # type: ignore[attr-defined]  # sharp text on HiDPI
         except (OSError, AttributeError) as e:
             log.info("DPI awareness not set: %s", e)
+    if sys.platform == "win32":
+        _windows_app_id()
     root = tk.Tk()
     _set_window_icon(root)
     if sys.platform == "win32":

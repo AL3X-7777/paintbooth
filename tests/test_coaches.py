@@ -130,6 +130,51 @@ class CoachModel(unittest.TestCase):
         with self.assertRaises(ValueError):
             coach.load_cabin(self.files.get, "/missing/cab.pmd")
 
+    def test_blueprint_and_bake(self):
+        body = coach.Body(self.cab, [], [])
+        bp = coach.blueprint_template(body)
+        self.assertEqual(bp.size, coach.BLUEPRINT_SIZE)
+        layout = coach.Layout.for_body(body)
+        # paint the left view red, everything else blue: the left-side paint panel bakes red
+        art = Image.new("RGBA", coach.BLUEPRINT_SIZE, (0, 0, 255, 255))
+        ox, oy = layout.origin["left"]
+        art.paste(
+            (255, 0, 0, 255), (int(ox), int(oy), int(ox + 15 * layout.scale), int(oy + 4 * layout.scale))
+        )
+        baked = coach.bake(body, coach.TILES[0], art)
+        self.assertEqual(baked.size, (4096, 2048))
+        self.assertEqual(baked.getpixel((2048, 500)), (255, 0, 0, 255))  # inside the panel's UVs
+        self.assertEqual(baked.getpixel((2048, 1900))[3], 0)  # outside every island
+        self.assertEqual(baked.getpixel((409 - 4, 500))[3], 255)  # grown by the padding
+
+    def test_load_body_with_accessories(self):
+        files = dict(self.files)
+        files["def/vehicle/bus/test.coach/cabin/c1.sii"] = (
+            b'defaults[]: "/def/vehicle/bus/test.coach/accessory/f_bumper/a.sii"\n'
+            b'defaults[]: "/def/vehicle/bus/test.coach/paint_job/x.sii"\n'
+        )
+        files["def/vehicle/bus/test.coach/accessory/f_bumper/a.sii"] = (
+            b'exterior_model: "/vehicle/bus/test/cab.pmd"'
+        )
+        files["def/vehicle/bus/test.coach/accessory/f_bumper/b.sii"] = (
+            b'exterior_model: "/vehicle/bus/test/b.pmd"\nsuitable_for[]: "c1.test.coach.cabin"'
+        )
+        files["vehicle/bus/test/b.pmd"] = files["vehicle/bus/test/cab.pmd"]
+        files["vehicle/bus/test/b.pmg"] = files["vehicle/bus/test/cab.pmg"]
+
+        class Reader:
+            def __call__(self, path):
+                return files.get(path)
+
+            def listdir(self, path):
+                return sorted(k.rsplit("/", 1)[1] for k in files if k.rsplit("/", 1)[0] == path)
+
+        body = coach.load_body(Reader(), "test.coach", "c1.test.coach.cabin", "/vehicle/bus/test/cab.pmd")
+        self.assertEqual(len(body.defaults), 1)  # the bumper; the paint job default is not an accessory
+        self.assertEqual(len(body.others), 1)  # the other bumper of the same type
+        self.assertEqual(len(body.pieces(coach.is_paint, others=True)), 3)
+        self.assertEqual(coach.paint_region(body), coach.TILES[0])
+
     def test_films(self):
         d, g = coach.with_films(self.cab, "/f/glass.mat", "/f/trim.mat")
         self.assertEqual(pmd.material_table(d)[0][-2:], ["/f/glass.mat", "/f/trim.mat"])
@@ -165,7 +210,6 @@ class CoachExport(unittest.TestCase):
                 )
             )
             Image.new("RGBA", (256, 128), (0, 128, 0, 255)).save(root / "skin.png")
-            Image.new("RGBA", (256, 128), (255, 0, 0, 255)).save(root / "win.png")
             p = Ms2Project.new("ets2")
             p.manifest.vars.set_value("display_name", "Coach test")
             idx = p.add_like("AdvancedTruckSkin", None)
@@ -185,9 +229,7 @@ class CoachExport(unittest.TestCase):
             it.set_extra("PaintWindows", "true")
             tplbuild.configure({})
             probs = {x.message for x in validate(p) if x.level == "error"}
-            self.assertTrue(any("windows and trim image" in m for m in probs))
             self.assertTrue(any("game folder" in m for m in probs))
-            it.set_extra("WindowsImage", str(root / "win.png"))
             tplbuild.configure({"game_dirs": {"ets2": str(game)}})
             self.addCleanup(tplbuild.configure, None)
             from unittest import mock
@@ -201,7 +243,7 @@ class CoachExport(unittest.TestCase):
             pj = "vehicle/bus/upgrade/paintjob/test.coach/coach1"
             self.assertIn(f"{pj}/coach1_0/pjm_at_0x0_size_4096x2048.dds", paths)
             self.assertIn("vehicle/bus/test/cab.pmg", paths)
-            self.assertIn(f"{pj}/film_glass.mat", paths)
+            self.assertIn(f"{pj}/coach1_0/film_glass.mat", paths)
             sii = next(f for f in out_files if f.path.endswith("coach1_0.sii")).data.decode()
             self.assertIn("pjm_at_0x0_size_4096x2048.tobj", sii)
             self.assertIn("def/vehicle/bus/test.coach/paint_job/coach1_0.sii", paths)
@@ -212,7 +254,7 @@ class CoachExport(unittest.TestCase):
                 b.close()
             self.assertTrue(res.ok, res.issues)
             with zipfile.ZipFile(root / "out.scs") as z:
-                glass = z.read(f"{pj}/film_glass.dds")
+                glass = z.read(f"{pj}/coach1_0/film_glass.dds")
             self.assertEqual(glass[:4], b"DDS ")
 
     def test_mixed_layouts_and_aspect_are_reported(self):
@@ -230,6 +272,7 @@ class CoachExport(unittest.TestCase):
             e = it.add_entry("CabVariantSkin")
             e.image = str(Path(t) / "sq.png")
             e.suitable = ["a.test.coach.cabin", "b.test.coach.cabin"]
+            it.set_extra("UvLayout", "true")  # the layout rule is for images on the game's UV layout
             msgs = [x.message for x in validate(p)]
         self.assertTrue(any("different template layouts" in m for m in msgs), msgs)
         self.assertTrue(any("coach templates are 2:1" in m for m in msgs), msgs)

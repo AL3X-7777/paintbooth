@@ -159,9 +159,14 @@ the coaches' bodies to draw UV templates, and writes a copy with *film* pieces a
 windows and trim. The original pieces are copied byte for byte; the new ones go after them, and
 every absolute offset behind the piece table moves with them.
 
-## Coach paint masks
+## Coach paint masks and blueprints
 
 The coaches' paint UV space is a virtual 4096x4096 texture made of two 4096x2048 tiles, named
 after their place: `pjm_at_0x0_size_4096x2048` (upper half) and `pjm_at_0x2048_size_4096x2048`
 (lower half). Which half a body paints is read from its model's UVs (`coach.paint_region`), not
 from the names SCS's own paint jobs use, because the game loads every tile of a paint job's folder.
+
+Users paint coaches on a *blueprint* (`coach.blueprint_template`): flat views from the left, right,
+front, rear and top. `coach.bake` turns it into the paint mask by tracing every texel of the
+game's UV layout back to its point on the coach and from there to the blueprint; window and trim
+films use blueprint positions as their UVs, so all three line up.
