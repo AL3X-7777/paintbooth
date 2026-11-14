@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-16"?>
+<Variable xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:type="ScsVehicleVariable">
+  <!-- Made-up test vehicle in Mods Studio 2's vehicle XML format (mixed tabs/spaces on purpose). -->
+  <ChildVariables />
+  <Id>00000000-0000-0000-0000-000000000001</Id>
+  <IsEnabled>true</IsEnabled>
+  <AccessoryItems>
+    <ListItem>
+      <Group>Axles</Group>
+      <Text>Axles 2_PAINT</Text>
+      <Value>axles.2_paint</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Axles</Group>
+      <Text>Axles 2_PAINT_S</Text>
+      <Value>axles.2_paint_s</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Axles</Group>
+      <Text>Axles 3_PAINT</Text>
+      <Value>axles.3_paint</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Axles</Group>
+      <Text>Axles 3_PAINT_S</Text>
+      <Value>axles.3_paint_s</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Chassis Front Left</Group>
+      <Text>Chassis Front Left P1</Text>
+      <Value>chs_f_l.p1</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Chassis Front Left</Group>
+      <Text>Chassis Front Left P2</Text>
+      <Value>chs_f_l.p2</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Chassis Front Left</Group>
+      <Text>Chassis Front Left P3</Text>
+      <Value>chs_f_l.p3</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Chassis Front Left</Group>
+      <Text>Chassis Front Left P4</Text>
+      <Value>chs_f_l.p4</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Chassis Front Left</Group>
+      <Text>Chassis Front Left P5</Text>
+      <Value>chs_f_l.p5</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Chassis Front Left</Group>
+      <Text>Chassis Front Left P6</Text>
+      <Value>chs_f_l.p6</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Chassis Front Right</Group>
+      <Text>Chassis Front Right P1</Text>
+      <Value>chs_f_r.p1</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Chassis Front Right</Group>
+      <Text>Chassis Front Right P2</Text>
+      <Value>chs_f_r.p2</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Chassis Front Right</Group>
+      <Text>Chassis Front Right P3</Text>
+      <Value>chs_f_r.p3</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Chassis Front Right</Group>
+      <Text>Chassis Front Right P4</Text>
+      <Value>chs_f_r.p4</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Chassis Front Right</Group>
+      <Text>Chassis Front Right P5</Text>
+      <Value>chs_f_r.p5</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Chassis Front Right</Group>
+      <Text>Chassis Front Right P6</Text>
+      <Value>chs_f_r.p6</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Chassis Rear Left</Group>
+      <Text>Chassis Rear Left P1</Text>
+      <Value>chs_r_l.p1</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Chassis Rear Left</Group>
+      <Text>Chassis Rear Left P2</Text>
+      <Value>chs_r_l.p2</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Chassis Rear Left</Group>
+      <Text>Chassis Rear Left P3</Text>
+      <Value>chs_r_l.p3</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Chassis Rear Left</Group>
+      <Text>Chassis Rear Left P4</Text>
+      <Value>chs_r_l.p4</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Chassis Rear Left</Group>
+      <Text>Chassis Rear Left P5</Text>
+      <Value>chs_r_l.p5</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Chassis Rear Left</Group>
+      <Text>Chassis Rear Left P6</Text>
+      <Value>chs_r_l.p6</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Chassis Rear Right</Group>
+      <Text>Chassis Rear Right P1</Text>
+      <Value>chs_r_r.p1</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Chassis Rear Right</Group>
+      <Text>Chassis Rear Right P2</Text>
+      <Value>chs_r_r.p2</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Chassis Rear Right</Group>
+      <Text>Chassis Rear Right P3</Text>
+      <Value>chs_r_r.p3</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Chassis Rear Right</Group>
+      <Text>Chassis Rear Right P4</Text>
+      <Value>chs_r_r.p4</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Chassis Rear Right</Group>
+      <Text>Chassis Rear Right P5</Text>
+      <Value>chs_r_r.p5</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Chassis Rear Right</Group>
+      <Text>Chassis Rear Right P6</Text>
+      <Value>chs_r_r.p6</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Side Underrun</Group>
+      <Text>Side Underrun S1</Text>
+      <Value>underrun.s1</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Side Underrun</Group>
+      <Text>Side Underrun S2</Text>
+      <Value>underrun.s2</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Side Underrun</Group>
+      <Text>Side Underrun S3</Text>
+      <Value>underrun.s3</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Side Underrun</Group>
+      <Text>Side Underrun S4</Text>
+      <Value>underrun.s4</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Side Underrun</Group>
+      <Text>Side Underrun S5</Text>
+      <Value>underrun.s5</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Rear Bumper</Group>
+      <Text>Rear Bumper R1</Text>
+      <Value>bumper.r1</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Rear Bumper</Group>
+      <Text>Rear Bumper R2</Text>
+      <Value>bumper.r2</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Rear Bumper</Group>
+      <Text>Rear Bumper R3</Text>
+      <Value>bumper.r3</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Rear Bumper</Group>
+      <Text>Rear Bumper R4</Text>
+      <Value>bumper.r4</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Rear Bumper</Group>
+      <Text>Rear Bumper R5</Text>
+      <Value>bumper.r5</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Mudflaps</Group>
+      <Text>Mudflaps M1</Text>
+      <Value>mudflap.m1</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Mudflaps</Group>
+      <Text>Mudflaps M2</Text>
+      <Value>mudflap.m2</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Mudflaps</Group>
+      <Text>Mudflaps M3</Text>
+      <Value>mudflap.m3</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Mudflaps</Group>
+      <Text>Mudflaps M4</Text>
+      <Value>mudflap.m4</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Mudflaps</Group>
+      <Text>Mudflaps M5</Text>
+      <Value>mudflap.m5</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Toolbox</Group>
+      <Text>Toolbox T1</Text>
+      <Value>toolbox.t1</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Toolbox</Group>
+      <Text>Toolbox T2</Text>
+      <Value>toolbox.t2</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Toolbox</Group>
+      <Text>Toolbox T3</Text>
+      <Value>toolbox.t3</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Toolbox</Group>
+      <Text>Toolbox T4</Text>
+      <Value>toolbox.t4</Value>
+    </ListItem>
+	<ListItem>
+      <Group>Toolbox</Group>
+      <Text>Toolbox T5</Text>
+      <Value>toolbox.t5</Value>
+    </ListItem>
+    <ListItem>
+      <Group>Toolbox</Group>
+      <Text>Toolbox T6</Text>
+      <Value>toolbox.t6</Value>
+    </ListItem>
+  </AccessoryItems>
+  <Game>ETS2</Game>
+  <InternalName>koegel.cargo</InternalName>
+  <VehicleAuthor>Paintbooth tests</VehicleAuthor>
+  <VehicleName>Kögel Cargo</VehicleName>
+  <VehicleType>Trailers</VehicleType>
+  <VehicleVariants>
+    <Variant>
+      <InternalName>body.curtain_137</InternalName>
+      <Name>Kögel Cargo</Name>
+	  <Image>x</Image>
+	  <Description>13.7m Curtainsider</Description>
+    </Variant>
+    <Variant>
+      <InternalName>body.curtain_137w</InternalName>
+      <Name>Kögel Cargo</Name>
+	  <Image>x</Image>
+	  <Description>13.7m Curtainsider Wide</Description>
+    </Variant>
+    <Variant>
+      <InternalName>body.curtain_152</InternalName>
+      <Name>Kögel Cargo</Name>
+	  <Image>x</Image>
+	  <Description>15.2m Curtainsider</Description>
+    </Variant>
+    <Variant>
+      <InternalName>body.wall_137</InternalName>
+      <Name>Kögel Cargo</Name>
+	  <Image>x</Image>
+	  <Description>13.7m Curtainsider with side walls</Description>
+    </Variant>
+  </VehicleVariants>
+  <XmlDefinitionAuthor>Paintbooth tests</XmlDefinitionAuthor>
+</Variable>

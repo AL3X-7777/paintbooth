@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# build output
+dist/
+build/
+_work/
+*.egg-info/
+
+# Offline wheels (about 64 MB): not kept in git. They ship in the source zip and the portable
+# build for install.bat. Their pinned versions and hashes are tracked in requirements-offline.txt.
+# "wheels/*" (not "wheels/") so the exception below can apply.
+wheels/*
+!wheels/requirements-offline.txt
+
+# local test files
+*.scs
+*.log
+
+# generated HTML API reference (built by tools/gen_docs.py and in CI)
+docs/api/

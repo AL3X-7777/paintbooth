@@ -1,0 +1,82 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "paintbooth"
+dynamic = ["version"]  # read from paintbooth/__init__.py, the only place the version is written
+description = "Paintbooth: fast, offline skin mod tool for ETS2 and ATS that opens and saves Mods Studio 2 projects"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+dependencies = ["pillow>=11.2", "numpy>=1.24"]
+
+[project.optional-dependencies]
+# pip install -e ".[dev]"; CI installs the exact, hash-pinned versions from requirements-dev.txt
+dev = ["ruff==0.16.9", "mypy==2.3.1", "coverage==7.17.2"]
+
+[project.scripts]
+paintbooth = "paintbooth.__main__:main"
+
+[tool.setuptools]
+packages = ["paintbooth", "paintbooth.gui"]
+
+[tool.setuptools.dynamic]
+version = { attr = "paintbooth.__version__" }
+
+[tool.setuptools.package-data]
+paintbooth = ["ui/*.html", "data/*.json", "data/*.png"]
+
+# ---------------------------------------------------------------- code quality
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+extend-exclude = ["installer/miniz", "wheels"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "C4", "RUF", "PIE", "RET", "D", "BLE", "S", "PL", "N"]
+ignore = [
+    "PLR2004",  # magic numbers: binary formats are full of documented constants
+    "PLR0913", "PLR0917",  # many-argument functions mirror the file formats they build
+    "PLC0415",  # lazy imports keep start-up fast (numpy/PIL only when needed)
+    "D105", "D107",  # magic methods / __init__ are documented on the class
+    "S101",     # assert is used in tests
+    "S603", "S607",  # subprocess calls use fixed argument lists, never a shell
+    "RUF001", "RUF002", "RUF003",  # typographic characters in UI text are intentional
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.pylint]
+max-branches = 15
+max-statements = 60
+max-returns = 8
+
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D", "S", "PLR", "N802"]
+".github/*" = ["D100"]
+
+[tool.mypy]
+python_version = "3.11"
+files = ["paintbooth", "installer/build_installer.py", "installer/winsetup.py"]
+check_untyped_defs = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["paintbooth.gui.*"]
+check_untyped_defs = false
+
+[[tool.mypy.overrides]]
+module = ["paintbooth.ms2tpl", "paintbooth.pmd", "paintbooth.bcn", "paintbooth.formats", "paintbooth.hashfs",
+          "paintbooth.packer", "paintbooth.xmldom", "paintbooth.ms2", "paintbooth.updates", "paintbooth.safepath"]
+disallow_untyped_defs = true
+
+[tool.coverage.run]
+source = ["paintbooth"]
+omit = ["paintbooth/gui/*"]

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SignPath artifact configuration for Paintbooth.
+     The GitHub workflow uploads one ZIP containing "Paintbooth Setup <version>.exe" and the
+     portable zip; SignPath signs the Setup.exe and passes the portable zip through unchanged.
+     Paste this into SignPath: Project > Artifact configurations > (default) > Edit. -->
+<artifact-configuration xmlns="http://signpath.io/artifact-configuration/v1">
+  <zip-file>
+    <pe-file-set>
+      <include path="Paintbooth Setup *.exe" />
+      <for-each>
+        <authenticode-sign />
+      </for-each>
+    </pe-file-set>
+  </zip-file>
+</artifact-configuration>

@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paintbooth</title>
+<!-- filled in by paintbooth/server.py; every /api/ request must send it back -->
+<meta name="paintbooth-token" content="__PAINTBOOTH_TOKEN__">
+<style>
+:root {
+  --bg: #f4f2ee; --panel: #ffffff; --ink: #1d1f22; --muted: #6a6f76; --line: #e2ded6;
+  --accent: #c2410c; --accent-ink: #ffffff; --ok: #15803d; --warn: #b45309; --err: #b91c1c;
+  --code: #f7f5f1; --sel: #fde7d8;
+  --mono: ui-monospace, "Cascadia Mono", Consolas, "SF Mono", Menlo, monospace;
+  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15171a; --panel: #1d2024; --ink: #e8e6e3; --muted: #9aa0a6; --line: #2e3237;
+    --accent: #f97316; --accent-ink: #1a0d04; --ok: #4ade80; --warn: #fbbf24; --err: #f87171;
+    --code: #17191c; --sel: #3a2618;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font: 14px/1.45 var(--sans); display: flex; flex-direction: column; }
+button { font: inherit; cursor: pointer; border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+  padding: 6px 12px; border-radius: 6px; }
+button:hover { border-color: var(--muted); }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:disabled { opacity: .55; cursor: default; }
+header { display: flex; align-items: center; gap: 14px; padding: 10px 18px; border-bottom: 1px solid var(--line);
+  background: var(--panel); flex-wrap: wrap; }
+.brand { font-weight: 700; letter-spacing: .02em; }
+.brand span { color: var(--accent); }
+.modinfo { color: var(--muted); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.spacer { flex: 1; }
+.pill { font-size: 12px; padding: 3px 9px; border-radius: 99px; border: 1px solid var(--line); white-space: nowrap; }
+.pill.ok { color: var(--ok); border-color: currentColor; }
+.pill.err { color: var(--err); border-color: currentColor; }
+.pill.busy { color: var(--warn); border-color: currentColor; }
+label.switch { display: flex; align-items: center; gap: 6px; color: var(--muted); user-select: none; }
+main { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 40%); min-height: 0; }
+main.no-editor { grid-template-columns: minmax(0, 1fr); }
+main.no-editor #editor { display: none; }
+.left { display: flex; flex-direction: column; min-height: 0; }
+nav.tabs { display: flex; gap: 2px; padding: 8px 18px 0; border-bottom: 1px solid var(--line); }
+nav.tabs button { border: none; border-bottom: 2px solid transparent; border-radius: 0; background: none; color: var(--muted); padding: 8px 12px; }
+nav.tabs button.on { color: var(--ink); border-bottom-color: var(--accent); }
+nav.tabs .count { font-size: 11px; margin-left: 4px; padding: 0 6px; border-radius: 99px; background: var(--line); color: var(--ink); }
+nav.tabs .count.err { background: var(--err); color: #fff; }
+.view { flex: 1; overflow: auto; padding: 16px 18px 40px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.card h3 { margin: 0; font-size: 15px; }
+.card .head { padding: 10px 12px; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.card .sub { color: var(--muted); font-size: 12px; font-family: var(--mono); }
+.thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 6px; padding: 6px; border-top: 1px solid var(--line); }
+.thumb { padding: 4px; cursor: pointer; border-radius: 6px; }
+.thumb:hover { background: var(--sel); }
+.thumb img { width: 100%; aspect-ratio: 1; object-fit: contain; background: repeating-conic-gradient(var(--line) 0 25%, transparent 0 50%) 0 0 / 16px 16px; border-radius: 4px; display: block; }
+.thumb .cap { font-size: 11px; color: var(--muted); margin-top: 4px; font-family: var(--mono); overflow-wrap: anywhere; }
+table { border-collapse: collapse; width: 100%; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; color: var(--muted); font-weight: 600; }
+td code, .mono { font-family: var(--mono); font-size: 12.5px; }
+tr.clickable { cursor: pointer; }
+tr.clickable:hover td { background: var(--sel); }
+.lvl { font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.lvl.error { color: var(--err); } .lvl.warning { color: var(--warn); }
+.empty { color: var(--muted); padding: 30px 0; text-align: center; }
+pre.log { margin: 0; font: 12.5px/1.5 var(--mono); white-space: pre-wrap; }
+#editor { border-left: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; background: var(--panel); }
+#editor .bar { display: flex; gap: 8px; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+#editor select { font: 13px var(--mono); padding: 5px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); flex: 1; min-width: 0; }
+#editor .wrap { flex: 1; display: flex; min-height: 0; background: var(--code); }
+#gutter { font: 13px/1.5 var(--mono); color: var(--muted); text-align: right; padding: 10px 8px 10px 10px; user-select: none; overflow: hidden; white-space: pre; }
+#text { flex: 1; border: none; resize: none; outline: none; background: transparent; color: var(--ink); font: 13px/1.5 var(--mono);
+  padding: 10px; white-space: pre; overflow: auto; tab-size: 2; }
+#edstatus { font-size: 12px; color: var(--muted); padding: 6px 10px; border-top: 1px solid var(--line); min-height: 28px; }
+#edstatus.err { color: var(--err); }
+.stats { color: var(--muted); font-size: 12px; white-space: nowrap; }
+@media (max-width: 900px) { main { grid-template-columns: minmax(0, 1fr); } #editor { border-left: none; border-top: 1px solid var(--line); min-height: 50vh; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Paint <span>booth</span></div>
+  <div class="modinfo" id="modinfo">Loading…</div>
+  <div class="spacer"></div>
+  <span class="stats" id="stats"></span>
+  <span class="pill" id="status">…</span>
+  <label class="switch"><input type="checkbox" id="auto"> Auto-build on save</label>
+  <button id="toggleEditor">Hide editor</button>
+  <button class="primary" id="build">Build mod</button>
+</header>
+<main id="main">
+  <section class="left">
+    <nav class="tabs" id="tabs">
+      <button data-tab="skins" class="on">Skins</button>
+      <button data-tab="vehicles">Vehicles</button>
+      <button data-tab="problems">Problems <span class="count" id="probcount">0</span></button>
+      <button data-tab="log">Log</button>
+    </nav>
+    <div class="view" id="view"></div>
+  </section>
+  <section id="editor">
+    <div class="bar">
+      <select id="filesel"></select>
+      <button id="save" class="primary" disabled>Save</button>
+    </div>
+    <div class="wrap"><div id="gutter">1</div><textarea id="text" spellcheck="false" wrap="off"></textarea></div>
+    <div id="edstatus">Edit any project XML here or in your own editor. Changes reload instantly.</div>
+  </section>
+</main>
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let state = null, tab = "skins", edFile = null, edOrig = "", edDirty = false;
+// per-session secret from the server: requests without it are refused (protects against other web pages)
+const TOKEN = document.querySelector('meta[name="paintbooth-token"]').content;
+
+// GET when body is undefined, otherwise POST the body as JSON
+async function api(path, body) {
+  const headers = { "X-Paintbooth-Token": TOKEN };
+  const opt = body === undefined ? { headers } : { method: "POST", headers: { ...headers, "Content-Type": "application/json" }, body: JSON.stringify(body) };
+  const r = await fetch(path, opt);
+  return r.json();
+}
+
+function fmtSize(n) { return n > 1e6 ? (n / 1e6).toFixed(1) + " MB" : Math.round(n / 1e3) + " KB"; }
+
+function renderHeader() {
+  const m = state.mod;
+  $("modinfo").textContent = m ? `${m.title} · ${m.package} v${m.version} · ${m.game.toUpperCase()} → ${state.output}` : state.project_dir;
+  const errs = state.issues.filter((i) => i.level === "error").length;
+  const st = $("status");
+  if (state.building) { st.className = "pill busy"; st.textContent = "Building…"; }
+  else if (errs) { st.className = "pill err"; st.textContent = `${errs} error${errs > 1 ? "s" : ""}`; }
+  else if (state.build && state.build.ok) { st.className = "pill ok"; st.textContent = "Built"; }
+  else { st.className = "pill"; st.textContent = "Ready"; }
+  const b = state.build;
+  $("stats").textContent = b && b.ok ? `${b.seconds}s · ${b.files} files · ${fmtSize(b.size)} · ${b.encoded} encoded, ${b.cached} cached` : "";
+  $("build").disabled = state.building || errs > 0;
+  $("auto").checked = state.auto_build;
+  const pc = $("probcount");
+  pc.textContent = state.issues.length;
+  pc.className = "count" + (errs ? " err" : "");
+}
+
+function renderView() {
+  const v = $("view");
+  if (tab === "skins") {
+    if (!state.skins.length) { v.innerHTML = `<div class="empty">No skins yet. Add a &lt;skin&gt; to project.xml.</div>`; return; }
+    v.innerHTML = `<div class="grid">${state.skins.map((s) => `
+      <div class="card">
+        <div class="head" data-goto="${esc(state.files[0])}:${s.line}" style="cursor:pointer">
+          <div><h3>${esc(s.name)}</h3><div class="sub">${esc(s.id)} · ${esc(s.mode)} · ${s.price}</div></div>
+        </div>
+        <div class="thumbs">${s.targets.map((t) => `
+          <div class="thumb" data-goto="${esc(state.files[0])}:${t.line}">
+            <img loading="lazy" src="/api/thumb?path=${encodeURIComponent(t.image)}&v=${state.version}&token=${encodeURIComponent(TOKEN)}" alt="">
+            <div class="cap">${esc(t.vehicle)}${t.slot ? " / " + esc(t.slot) : ""}</div>
+          </div>`).join("") || `<div class="thumb"><div class="cap">no targets</div></div>`}
+        </div>
+      </div>`).join("")}</div>`;
+  } else if (tab === "vehicles") {
+    v.innerHTML = state.vehicles.length ? `<table><tr><th>Vehicle</th><th>Kind</th><th>Slots (acc_list)</th><th>Template</th></tr>
+      ${state.vehicles.map((x) => `<tr class="clickable" data-goto="${esc(x.file)}:${x.line}">
+        <td><b>${esc(x.name)}</b><br><code>${esc(x.id)}</code></td><td>${esc(x.kind)}</td>
+        <td>${x.slots.map((s) => `<div class="mono">${esc(s.id)}${s.main ? " (main)" : ""}${s.accs.length ? " → " + s.accs.map(esc).join(", ") : ""}</div>`).join("")}</td>
+        <td class="mono">${x.template ? x.template.join("×") : "any"}</td></tr>`).join("")}</table>`
+      : `<div class="empty">No vehicles defined. Add XML files to the vehicles folder, or run <code>paintbooth scan</code>.</div>`;
+  } else if (tab === "problems") {
+    v.innerHTML = state.issues.length ? `<table><tr><th>Level</th><th>Where</th><th>Problem</th></tr>
+      ${state.issues.map((i) => `<tr class="clickable" data-goto="${esc(i.file)}:${i.line}">
+        <td class="lvl ${i.level}">${i.level}</td><td class="mono">${esc(i.file)}${i.line ? ":" + i.line : ""}</td><td>${esc(i.message)}</td></tr>`).join("")}</table>`
+      : `<div class="empty">No problems found.</div>`;
+  } else {
+    v.innerHTML = `<pre class="log">${esc(state.log.join("\n"))}</pre>`;
+    v.scrollTop = v.scrollHeight;
+  }
+}
+
+function renderFiles() {
+  const sel = $("filesel");
+  const want = edFile || state.files[0];
+  const opts = state.files.map((f) => `<option${f === want ? " selected" : ""}>${esc(f)}</option>`).join("");
+  if (sel.innerHTML !== opts) sel.innerHTML = opts;
+  if (!edFile && state.files.length) openFile(state.files[0]);
+}
+
+function updateGutter() {
+  const n = $("text").value.split("\n").length;
+  $("gutter").textContent = Array.from({ length: n }, (_, i) => i + 1).join("\n");
+  $("gutter").scrollTop = $("text").scrollTop;
+}
+
+async function openFile(path, line) {
+  if (edDirty && path !== edFile && !confirm(`Discard unsaved changes to ${edFile}?`)) { $("filesel").value = edFile; return; }
+  const r = await api(`/api/file?path=${encodeURIComponent(path)}`);
+  if (r.error) { setEdStatus(r.error, true); return; }
+  edFile = path; edOrig = r.text; edDirty = false;
+  $("text").value = r.text; $("filesel").value = path; $("save").disabled = true;
+  updateGutter(); setEdStatus(`${path}`);
+  if (line) gotoLine(line);
+}
+
+function gotoLine(line) {
+  const ta = $("text"), lines = ta.value.split("\n");
+  let pos = 0; for (let i = 0; i < line - 1 && i < lines.length; i++) pos += lines[i].length + 1;
+  ta.focus(); ta.setSelectionRange(pos, pos + (lines[line - 1] || "").length);
+  ta.scrollTop = Math.max(0, (line - 6) * parseFloat(getComputedStyle(ta).lineHeight));
+  updateGutter();
+}
+
+function setEdStatus(msg, err) { const s = $("edstatus"); s.textContent = msg; s.className = err ? "err" : ""; }
+
+async function save() {
+  if (!edFile) return;
+  const text = $("text").value;
+  const r = await api("/api/file", { path: edFile, text });
+  if (r.error) { setEdStatus(r.error, true); return; }
+  edOrig = text; edDirty = false; $("save").disabled = true;
+  setEdStatus(`Saved ${edFile} – reloaded`);
+}
+
+async function refreshOpenFileIfClean() {
+  if (!edFile || edDirty) return;
+  const r = await api(`/api/file?path=${encodeURIComponent(edFile)}`);
+  if (!r.error && r.text !== edOrig) {
+    const pos = $("text").selectionStart;
+    edOrig = r.text; $("text").value = r.text; $("text").setSelectionRange(pos, pos); updateGutter();
+    setEdStatus(`${edFile} changed on disk – reloaded`);
+  }
+}
+
+async function loop() {
+  let since = -1;
+  for (;;) {
+    try {
+      const s = await api(`/api/state?since=${since}`);
+      const first = !state;
+      state = s; since = s.version;
+      renderHeader(); renderView(); renderFiles();
+      if (!first) refreshOpenFileIfClean();
+    } catch (e) {
+      $("status").className = "pill err"; $("status").textContent = "Disconnected";
+      await new Promise((r) => setTimeout(r, 1500));
+    }
+  }
+}
+
+document.addEventListener("click", (e) => {
+  const g = e.target.closest("[data-goto]");
+  if (g) {
+    const [file, line] = g.dataset.goto.split(/:(?=\d+$)/);
+    if (state.files.includes(file)) {
+      $("main").classList.remove("no-editor"); $("toggleEditor").textContent = "Hide editor";
+      if (file === edFile) gotoLine(+line || 1); else openFile(file, +line || 1);
+    }
+  }
+  const t = e.target.closest("[data-tab]");
+  if (t) { tab = t.dataset.tab; document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("on", b === t)); renderView(); }
+});
+$("build").onclick = () => api("/api/build", {});
+$("auto").onchange = (e) => api("/api/autobuild", { on: e.target.checked });
+$("filesel").onchange = (e) => openFile(e.target.value);
+$("save").onclick = save;
+$("toggleEditor").onclick = () => {
+  const m = $("main"); m.classList.toggle("no-editor");
+  $("toggleEditor").textContent = m.classList.contains("no-editor") ? "Show editor" : "Hide editor";
+};
+$("text").addEventListener("input", () => { edDirty = $("text").value !== edOrig; $("save").disabled = !edDirty; updateGutter(); setEdStatus(edDirty ? `${edFile} – unsaved (Ctrl+S)` : edFile); });
+$("text").addEventListener("scroll", () => { $("gutter").scrollTop = $("text").scrollTop; });
+$("text").addEventListener("keydown", (e) => {
+  if (e.key === "Tab") { e.preventDefault(); const t = e.target, s = t.selectionStart; t.setRangeText("  ", s, t.selectionEnd, "end"); t.dispatchEvent(new Event("input")); }
+});
+document.addEventListener("keydown", (e) => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") { e.preventDefault(); save(); } });
+window.addEventListener("beforeunload", (e) => { if (edDirty) { e.preventDefault(); e.returnValue = ""; } });
+loop();
+</script>
+</body>
+</html>

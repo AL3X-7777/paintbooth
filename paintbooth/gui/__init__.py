@@ -1,0 +1,1 @@
+"""Paintbooth desktop UI."""
