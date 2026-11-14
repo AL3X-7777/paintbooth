@@ -150,14 +150,24 @@ art folder. See `paintbooth new --help`.
 
 | | |
 |---|---|
-| Code | `paintbooth/pmg.py` (read, add pieces), `paintbooth/coach.py` (coach templates and films) |
-| Direction | read; write with extra pieces |
+| Code | `paintbooth/pmg.py` (read, add pieces and locators, new models), `paintbooth/coach.py` (coach templates and films) |
+| Direction | read; write new models; add a locator |
 
 The meshes of a model, in "pieces" that each use one material slot of the matching `.pmd`. Vertices
 are interleaved (position, normal, colour, tangent, UV sets); indices are 16 bit. Paintbooth reads
-the coaches' bodies to draw UV templates, and writes a copy with *film* pieces added for painted
-windows and trim. The original pieces are copied byte for byte; the new ones go after them, and
-every absolute offset behind the piece table moves with them.
+the coaches' bodies to draw UV templates, and writes new one-part models holding the *films* for
+painted windows and trim (`pmg.new_model`, with `pmd.new_model` for the descriptor). Accessory
+models are drawn around a locator of the cabin named after their type (`f_bumper`...), so
+Paintbooth moves them onto it (`pmg.locators`). The films are an accessory of type `pb_film`; the
+cabin's `.pmg` is written back with one extra locator of that name at its origin
+(`pmg.add_locator`) and is otherwise copied byte for byte.
+
+The film accessory (`def/vehicle/bus/<coach>/accessory/pb_film/<paint job>.sii`) is suitable only
+for its own paint job, and the paint job lists it in `overrides[]`, so choosing the paint job
+puts the films on and other paint jobs leave the coach without them. Its `exterior_model` has the
+window films (opaque where painted) and the trim films facing out; its `interior_model` has the
+window films facing in at half opacity. The materials blend (`...decal.over`) instead of alpha
+testing, so soft edges in the artwork stay soft.
 
 ## Coach paint masks and blueprints
 

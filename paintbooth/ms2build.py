@@ -827,12 +827,14 @@ def _plan_bus_blueprint(
                     ("suitable_for[]", sii_str(cab_id)),
                     ("paint_job_mask", sii_str(f"/{stem}.tobj")),
                 ]
+                if it.vars.bool(PAINT_WINDOWS, True):  # on unless the user turned it off
+                    film, acc = _film_files(body, src, f"{pj_root}/{n}_{j}", t, f"{n}_{j}")
+                    taken = {f.path for f in files}  # bodies of one coach share nothing else
+                    files += [f for f in film if f.path not in taken]
+                    if acc:  # choosing the paint job puts its films on; other paint jobs drop them
+                        unit_attrs.append(("overrides[]", sii_str(acc)))
                 unit = ("accessory_paint_job_data", f"{n}_{j}.{t}.paint_job", unit_attrs)
                 files.append(OutFile(f"{def_dir}/{n}_{j}.sii", sii_file([unit]).encode()))
-                if it.vars.bool(PAINT_WINDOWS, True):  # on unless the user turned it off
-                    # bodies share some accessory models; the first body's films win for those
-                    taken = {f.path for f in files}
-                    files += [f for f in _film_files(body, src, f"{pj_root}/{n}_{j}") if f.path not in taken]
                 j += 1
     except (OSError, ValueError) as e:
         raise RuntimeError(f"{it.display()}: could not read the coach from the game: {e}") from e
@@ -840,7 +842,7 @@ def _plan_bus_blueprint(
 
 
 #: Raise when the baking changes, so cached bakes from older versions are not reused.
-BAKE_VERSION = 1
+BAKE_VERSION = 2
 
 
 def _baked(body: object, region: object, src: Path, model: str) -> Path:
@@ -870,29 +872,51 @@ def _baked(body: object, region: object, src: Path, model: str) -> Path:
     return path
 
 
-def _film_files(body: object, src: Path, root: str) -> list[OutFile]:
+def _film_files(body: object, src: Path, root: str, veh: str, n: str) -> tuple[list[OutFile], str | None]:
     """Window and trim films for one body, showing the blueprint ``src`` (see :mod:`paintbooth.coach`).
 
-    The body's cabin model is written back, with the films added, at its own path, so the mod
-    replaces it.
+    The films are an accessory of type :data:`paintbooth.coach.FILM_TYPE`, suitable only for the
+    paint job ``n``, so they are on the coach only while that paint job is. The cabin model is
+    written back with one more locator (the films' hook) and no other change.
+
+    Returns:
+        The files, and the accessory definition's path for the paint job's ``overrides[]`` (None
+        when the body has neither windows nor trim).
     """
     from . import coach
 
-    glass = TextureJob(src, "film", None, "DXT5", None, coach.GLASS_OPACITY)
-    trim = TextureJob(src, "film", None, "DXT5", None, 1.0)
-    models = coach.with_films(body, f"/{root}/film_glass.mat", f"/{root}/film_trim.mat")  # type: ignore[arg-type]
+    size = coach.BLUEPRINT_SIZE
+    outside = TextureJob(src, "film", size, "DXT5", None, 1.0)
+    inside = TextureJob(src, "film", size, "DXT5", None, coach.GLASS_OPACITY)
+    f = coach.films(body, f"/{root}/film_glass.mat", f"/{root}/film_trim.mat", f"/{root}/film_inside.mat")  # type: ignore[arg-type]
+    if f.exterior is None and f.interior is None:
+        return [], None
     out = [
-        OutFile(f"{root}/film_glass.dds", job=glass),
-        OutFile(f"{root}/film_glass.tobj", tobj_bytes(f"/{root}/film_glass.dds", profile="skin")),
-        OutFile(f"{root}/film_trim.dds", job=trim),
-        OutFile(f"{root}/film_trim.tobj", tobj_bytes(f"/{root}/film_trim.dds", profile="skin")),
-        OutFile(f"{root}/film_glass.mat", coach.film_material(f"/{root}/film_glass.tobj", glossy=False)),
-        OutFile(f"{root}/film_trim.mat", coach.film_material(f"/{root}/film_trim.tobj", glossy=True)),
+        OutFile(f"{root}/film.dds", job=outside),
+        OutFile(f"{root}/film.tobj", tobj_bytes(f"/{root}/film.dds", profile="skin")),
+        OutFile(f"{root}/film_inside.dds", job=inside),
+        OutFile(f"{root}/film_inside.tobj", tobj_bytes(f"/{root}/film_inside.dds", profile="skin")),
+        OutFile(f"{root}/film_glass.mat", coach.film_material(f"/{root}/film.tobj", glossy=False)),
+        OutFile(f"{root}/film_trim.mat", coach.film_material(f"/{root}/film.tobj", glossy=True)),
+        OutFile(f"{root}/film_inside.mat", coach.film_material(f"/{root}/film_inside.tobj", glossy=False)),
+        OutFile(f.cabin_pmg[0].lstrip("/"), f.cabin_pmg[1]),
     ]
-    for path, pmd_bytes, pmg_bytes in models:  # the changed models replace the game's own
-        rel = path.lstrip("/")
-        out += [OutFile(rel, pmd_bytes), OutFile(rel[: -len(".pmd")] + ".pmg", pmg_bytes)]
-    return out
+    acc = [
+        ("name", sii_str("Paintbooth window and trim film")),
+        ("price", "0"),
+        ("unlock", "0"),
+        ("part_type", "factory"),
+        ("suitable_for[]", sii_str(f"{n}.{veh}.paint_job")),
+    ]
+    for side, models in (("exterior", f.exterior), ("interior", f.interior)):
+        if models is not None:
+            stem = f"{root}/film" if side == "exterior" else f"{root}/film_inside"
+            out += [OutFile(f"{stem}.pmd", models[0]), OutFile(f"{stem}.pmg", models[1])]
+            acc.append((f"{side}_model", sii_str(f"/{stem}.pmd")))
+    def_path = f"def/vehicle/bus/{veh}/accessory/{coach.FILM_TYPE}/{n}.sii"
+    unit = ("accessory_addon_data", f"{n}.{veh}.{coach.FILM_TYPE}", acc)
+    out.append(OutFile(def_path, sii_file([unit]).encode()))
+    return out, f"/{def_path}"
 
 
 def _manifest_files(

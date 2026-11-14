@@ -3,6 +3,20 @@
 Each release on GitHub shows the section for its version. Add a new section at the top before
 tagging a release (see RELEASING.md).
 
+## 0.16.0
+- **Coach window and trim films reworked:**
+  - They now come with the paint job: they are a separate accessory that only the Paintbooth
+    paint job puts on, so other paint jobs no longer show them. The coach's own model is no
+    longer replaced (it only gets an invisible hook point for the films).
+  - Windows are fully covered from the outside where the artwork is opaque, and let half the
+    light through from the inside.
+  - Soft edges in the artwork stay soft on the films, like on the body (they were cut off hard).
+  - Bumpers, panels and other parts are now placed where they really are on the coach; before,
+    they were drawn in the wrong place on the blueprint, so their paint and trim films did not
+    line up. **The coach blueprints change**: the new ones are written at start-up; please move
+    your artwork onto them.
+  - Each paint job gets its own films (with several skins for one coach, all showed the first).
+
 ## 0.15.0
 - **Vehicle library:** every ETS2 truck, coach and ownable trailer (87 vehicles, game 1.62),
   with the names you see in the game's shop: cabins, trailer bodies and the parts that take the

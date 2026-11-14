@@ -176,20 +176,49 @@ class CoachModel(unittest.TestCase):
         self.assertEqual(coach.paint_region(body), coach.TILES[0])
 
     def test_films(self):
-        ((path, d, g),) = coach.with_films(self.cab, "/f/glass.mat", "/f/trim.mat")
-        self.assertEqual(path, "/vehicle/bus/test/cab.pmd")
-        self.assertEqual(pmd.material_table(d)[0][-2:], ["/f/glass.mat", "/f/trim.mat"])
-        m = pmg.read(g)
-        self.assertEqual(len(m.pieces), 4 + 3)  # window: outside + inside; trim: outside only
-        win_out, win_in, trim = m.pieces[4:]
-        self.assertEqual((win_out.material, trim.material), (4, 5))
-        # lifted 1.5 mm outwards (window normal is -x), the inside copy the other way, reversed
+        f = coach.films(self.cab, "/f/glass.mat", "/f/trim.mat", "/f/in.mat")
+        self.assertIsNotNone(f.exterior)
+        self.assertIsNotNone(f.interior)
+        d, g = f.exterior
+        self.assertEqual(pmd.material_table(d), [["/f/glass.mat", "/f/trim.mat"]])
+        out = pmg.read(g)
+        self.assertEqual(len(out.pieces), 2)  # window and trim, facing out
+        win_out, trim = out.pieces
+        self.assertEqual((win_out.material, trim.material), (0, 1))
+        d_in, g_in = f.interior
+        self.assertEqual(pmd.material_table(d_in), [["/f/in.mat"]])
+        (win_in,) = pmg.read(g_in).pieces
+        # lifted 1.5 mm outwards (window normal is -x); the inside copy the other way, reversed
         self.assertAlmostEqual(float(win_out.positions[0, 0]), -1.25 - coach.FILM_LIFT, places=5)
         self.assertAlmostEqual(float(win_in.positions[0, 0]), -1.25 + coach.FILM_LIFT, places=5)
         np.testing.assert_array_equal(win_in.triangles, win_out.triangles[:, ::-1])
         uv = win_out.uvs[0]
         self.assertTrue(((uv >= 0) & (uv <= 1)).all())
-        self.assertIn(b"film.tobj", coach.film_material("/x/film.tobj", glossy=True))
+        # the cabin only gets the films' locator; its pieces are unchanged
+        path, cab = f.cabin_pmg
+        self.assertEqual(path, "/vehicle/bus/test/cab.pmg")
+        m = pmg.read(cab)
+        self.assertIn(coach.FILM_TYPE, pmg.locators(m))
+        self.assertEqual(len(m.pieces), len(self.cab.model.pieces))
+        self.assertEqual(pmg.add_locator(m, coach.FILM_TYPE), cab)  # already there: unchanged
+        mat = coach.film_material("/x/film.tobj", glossy=True)
+        self.assertIn(b"film.tobj", mat)
+        self.assertIn(b".over.", mat)  # blended, not alpha-tested
+
+    def test_new_pmd_and_tokens(self):
+        d = pmd.new_model(["/a.mat", "/b.mat"])
+        self.assertEqual(pmd.material_table(d), [["/a.mat", "/b.mat"]])
+        self.assertEqual(pmd.look_names(d), ["default"])
+        self.assertEqual(pmd.token_str(pmg.token("pb_film")), "pb_film")
+        with self.assertRaises(pmg.PmgError):
+            pmg.token("Bad-Name")
+
+    def test_locator_moves_accessory(self):
+        loc = pmg.Locator("x", np.array([1.0, 2.0, 3.0]), 2.0, np.array([0.0, 0.0, 1.0, 0.0]))  # 180 deg on y
+        np.testing.assert_allclose(loc.apply(np.array([[1.0, 0.0, 0.0]])), [[-1.0, 2.0, 3.0]], atol=1e-6)
+        np.testing.assert_allclose(
+            loc.apply(np.array([[0.0, 0.0, 1.0]]), normals=True), [[0, 0, -1.0]], atol=1e-6
+        )
 
 
 class CoachExport(unittest.TestCase):
@@ -245,8 +274,13 @@ class CoachExport(unittest.TestCase):
             self.assertIn(f"{pj}/coach1_0/pjm_at_0x0_size_4096x2048.dds", paths)
             self.assertIn("vehicle/bus/test/cab.pmg", paths)
             self.assertIn(f"{pj}/coach1_0/film_glass.mat", paths)
-            sii = next(f for f in out_files if f.path.endswith("coach1_0.sii")).data.decode()
+            pj_def = "def/vehicle/bus/test.coach/paint_job/coach1_0.sii"
+            sii = next(f for f in out_files if f.path == pj_def).data.decode()
             self.assertIn("pjm_at_0x0_size_4096x2048.tobj", sii)
+            film_def = "def/vehicle/bus/test.coach/accessory/pb_film/coach1_0.sii"
+            self.assertIn(f'overrides[]: "/{film_def}"', sii)  # the paint job brings its films
+            acc = next(f for f in out_files if f.path == film_def).data.decode()
+            self.assertIn('suitable_for[]: "coach1_0.test.coach.paint_job"', acc)
             self.assertIn("def/vehicle/bus/test.coach/paint_job/coach1_0.sii", paths)
             b = Builder(None)
             try:
@@ -255,7 +289,7 @@ class CoachExport(unittest.TestCase):
                 b.close()
             self.assertTrue(res.ok, res.issues)
             with zipfile.ZipFile(root / "out.scs") as z:
-                glass = z.read(f"{pj}/coach1_0/film_glass.dds")
+                glass = z.read(f"{pj}/coach1_0/film_inside.dds")
             self.assertEqual(glass[:4], b"DDS ")
 
     def test_mixed_layouts_and_aspect_are_reported(self):

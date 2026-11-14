@@ -210,3 +210,26 @@ def add_materials(data: bytes, paths: list[str]) -> bytes:
     ):
         struct.pack_into("<I", out, 4 * FIELDS.index(name), value)
     return bytes(out + blob)
+
+
+# one look "default", one variant "default", one part with the attribute "visible" = 1: the
+# fixed middle of every simple SCS model, between the header and the material table
+_SIMPLE_BODY = bytes.fromhex(
+    "00e7c3731500000000e7c373150000000000000001000000ceb971ed0a000000000000000000000001000000"
+)
+
+
+def new_model(paths: list[str]) -> bytes:
+    """Return a .pmd for a new one-part model whose material slots are ``paths`` (one look)."""
+    table = _HEADER_SIZE + len(_SIMPLE_BODY)
+    base = table + 4 * len(paths)
+    blob = bytearray()
+    offs = []
+    for p in paths:
+        offs.append(base + len(blob))
+        blob += p.encode("utf-8") + b"\0"
+    head = struct.pack(
+        "<16I", 4, len(paths), 1, 0, 1, 1, 1, 4, len(blob),
+        64, 72, 80, 104, 88, table, base,
+    )  # fmt: skip
+    return head + _SIMPLE_BODY + struct.pack(f"<{len(offs)}I", *offs) + bytes(blob)

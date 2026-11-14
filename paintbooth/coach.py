@@ -46,14 +46,14 @@ from PIL import Image, ImageDraw
 from . import pmd, pmg
 
 #: Raise when the templates change, so start-up writes them again for existing users.
-TEMPLATE_VERSION = 3
+TEMPLATE_VERSION = 4
 #: The virtual paint UV space of the coaches, in pixels.
 VIRTUAL = 4096
 #: Film template size (pixels) and how far films sit off the surface (metres).
 BLUEPRINT_SIZE = (4096, 2048)
 FILM_SIZE = BLUEPRINT_SIZE  # 0.12.0 name
 FILM_LIFT = 0.0015
-#: Window films show the artwork at this opacity.
+#: Seen from inside the coach, window films show the artwork at this opacity (outside: fully).
 GLASS_OPACITY = 0.5
 
 _REGION_RE = re.compile(r"pjm_at_(\d+)x(\d+)_size_(\d+)x(\d+)")
@@ -250,8 +250,8 @@ def load_body(read: Reader, vehicle_id: str, cabin_id: str, model: str) -> Body:
     The cabin definition (``def/vehicle/bus/<vehicle>/cabin/<cabin>.sii``) lists the default
     accessories. When ``read`` can list folders (``read.listdir``), the other accessories of
     the same types that fit this cabin and take paint are loaded too. Accessory models without a
-    locator are placed in the cabin's own coordinates, which is the case for body parts like
-    bumpers and panels.
+    accessory model is moved from its own coordinates onto the cabin locator named after its
+    type (``f_bumper``, ``r_panel``...), as the game does.
 
     Raises:
         ValueError: The cabin model is missing or damaged. Unreadable accessories are skipped.
@@ -259,6 +259,7 @@ def load_body(read: Reader, vehicle_id: str, cabin_id: str, model: str) -> Body:
     cab = load_cabin(read, model)
     short = cabin_id.split(".", 1)[0]
     defaults: list[str] = []
+    kinds: dict[str, str] = {}  # model path -> accessory type (= the cabin locator it hangs on)
     types: set[str] = set()
     # defaults come from the cabin (Volvo) and from the vehicle's data.sii (MAN, Scania)
     for def_file in (
@@ -273,7 +274,9 @@ def load_body(read: Reader, vehicle_id: str, cabin_id: str, model: str) -> Body:
             fits = _SUITABLE_RE.findall(acc_text)
             m = _EXTERIOR_RE.search(acc_text)
             if m and (not fits or cabin_id in fits) and m.group(1) not in defaults:
-                types.add(d.split("/accessory/", 1)[1].split("/", 1)[0])
+                kind = d.split("/accessory/", 1)[1].split("/", 1)[0]
+                types.add(kind)
+                kinds.setdefault(m.group(1), kind)
                 defaults.append(m.group(1))
     others: list[str] = []
     listdir: Callable[[str], list[str]] | None = getattr(read, "listdir", None)
@@ -287,6 +290,8 @@ def load_body(read: Reader, vehicle_id: str, cabin_id: str, model: str) -> Body:
             m = _EXTERIOR_RE.search(text)
             if m and (not fits or cabin_id in fits) and m.group(1) not in defaults + others:
                 others.append(m.group(1))
+                kinds.setdefault(m.group(1), t)
+    locs = pmg.locators(cab.model)
 
     def load_all(paths: list[str], paint_only: bool) -> list[CabinModel]:
         out = []
@@ -296,6 +301,11 @@ def load_body(read: Reader, vehicle_id: str, cabin_id: str, model: str) -> Body:
             except ValueError as e:  # one broken accessory must not stop the body
                 log.info("skipping accessory %s: %s", path, e)
                 continue
+            loc = locs.get(kinds.get(path, ""))
+            if loc is not None:  # accessory models are drawn around their locator
+                for p in acc.model.pieces:
+                    p.positions = loc.apply(p.positions).astype("f4")
+                    p.normals = loc.apply(p.normals, normals=True).astype("f4")
             if not paint_only or acc.pieces(is_paint):
                 out.append(acc)
         return out
@@ -414,13 +424,15 @@ def _face_views(p: pmg.Piece) -> list[str]:
     return ["top" if ax == 1 else by_axis[(int(ax), int(sg) or 1)] for ax, sg in zip(axis, sign, strict=True)]
 
 
-def film_piece(src: pmg.Piece, layout: Layout, material: int, double_sided: bool) -> list[pmg.Piece]:
+def film_piece(
+    src: pmg.Piece, layout: Layout, material: int, sides: tuple[float, ...] = (1.0,)
+) -> list[pmg.Piece]:
     """Make the film pieces over ``src``: its triangles, lifted off the surface, with blueprint UVs.
 
     Every triangle gets its own three vertices, so the UVs of neighbouring triangles seen in
-    different views don't have to agree. With ``double_sided`` a reversed copy, lifted the other
-    way, is added so the film is seen from inside too. Pieces are split to stay under 65535
-    vertices.
+    different views don't have to agree. ``sides`` says which copies to make: ``1.0`` lifted
+    outwards and facing out, ``-1.0`` lifted inwards and facing in (seen from inside). Pieces
+    are split to stay under 65535 vertices.
     """
     tri = src.triangles
     pos = src.positions[tri].reshape(-1, 3)
@@ -434,7 +446,7 @@ def film_piece(src: pmg.Piece, layout: Layout, material: int, double_sided: bool
 
     out = []
     per = (0xFFFF // 3) * 3  # vertices per output piece, whole triangles only
-    for p, n, t in [build(1.0)] + ([build(-1.0)] if double_sided else []):
+    for p, n, t in [build(s) for s in sides]:
         for start in range(0, len(p), per):
             sl = slice(start, min(start + per, len(p)))
             out.append(
@@ -488,7 +500,7 @@ def blueprint_template(body: Body | CabinModel) -> Image.Image:
     ]
     for pieces, fill, line in layers:
         for p in pieces:
-            for piece in film_piece(p, layout, 0, double_sided=False):
+            for piece in film_piece(p, layout, 0):
                 px = piece.uvs[0] * BLUEPRINT_SIZE
                 for t in piece.triangles:
                     d.polygon([tuple(px[k]) for k in t], fill=fill, outline=line)
@@ -581,12 +593,16 @@ def _pad(img: np.ndarray, covered: np.ndarray, steps: int) -> np.ndarray:
 
 
 # ---------------------------------------------------------------------------------- films
-FILM_MAT = """effect : "eut2.dif.spec.weight.a.rfx" {{
+#: The accessory type of the window and trim films, and the cabin locator it hangs on.
+FILM_TYPE = "pb_film"
+
+FILM_MAT = """effect : "eut2.dif.spec.weight.decal.over.rfx" {{
 \tadditional_ambient : 0.000000
 \tdiffuse : {{ 1.000000 , 1.000000 , 1.000000 }}
 \treflection : 0.000000
 \tshininess : {shininess:.6f}
 \tspecular : {{ {spec:.6f} , {spec:.6f} , {spec:.6f} }}
+\tqueue_bias : 1
 \ttexture : "texture_base" {{
 \t\tsource : "{tobj}"
 \t\tsampler : default
@@ -596,7 +612,11 @@ FILM_MAT = """effect : "eut2.dif.spec.weight.a.rfx" {{
 
 
 def film_material(tobj: str, glossy: bool) -> bytes:
-    """The ``.mat`` text of a film: alpha-blended, showing ``tobj``."""
+    """The ``.mat`` text of a film: blended over what is behind it by the texture's alpha.
+
+    Blending (not alpha testing) keeps the soft edges of the artwork, as on the painted body,
+    and lets the inside window film let half the light through.
+    """
     shininess, spec = (250.0, 1.0) if glossy else (95.0, 0.3)
     return FILM_MAT.format(shininess=shininess, spec=spec, tobj=tobj).encode()
 
@@ -607,44 +627,56 @@ def _no_film(pmd_path: str) -> bool:
     return any(k in folder for k in ("light", "logo", "badge"))
 
 
-def with_films(body: Body | CabinModel, glass_mat: str, trim_mat: str) -> list[tuple[str, bytes, bytes]]:
-    """Return the models that get window and trim films, with the films added.
+@dataclass
+class Films:
+    """The film models of one body, in cabin coordinates (they hang on :data:`FILM_TYPE`).
 
-    The films use the blueprint layout of the whole body, so they line up with the paint job
-    baked from the same image. The cabin gets window and trim films; its default accessories
-    (window frames, grilles, mirrors) get trim films; lamps, logos and badges get none.
+    Attributes:
+        exterior: ``(pmd, pmg)`` seen from outside: window films (slot 0, opaque where painted)
+            and trim films (slot 1), facing out.
+        interior: ``(pmd, pmg)`` seen from the cab: window films facing in (slot 0, half the
+            light through), or None when the body has no windows.
+        cabin_pmg: The cabin's ``.pmg`` with the :data:`FILM_TYPE` locator added (it has no
+            other change), and its path.
+    """
+
+    exterior: tuple[bytes, bytes] | None
+    interior: tuple[bytes, bytes] | None
+    cabin_pmg: tuple[str, bytes]
+
+
+def films(body: Body | CabinModel, glass_out: str, trim: str, glass_in: str) -> Films:
+    """Build the window and trim films of a body as accessory models.
+
+    The films are copies of the glass and gloss-black pieces, lifted off the surface, with UVs
+    on the blueprint layout of the whole body, so they line up with the paint job baked from the
+    same image. Windows come from the cabin only (accessory "glass" is lamp lenses and mirror
+    glass); trim comes from the cabin and its default accessories, except lamps, logos and badges.
+
+    Because the films are an accessory of their own (not a change to the cabin model), they are
+    only on the coach while the paint job that brings them is.
 
     Args:
         body: The body (or just its cabin model).
-        glass_mat: Mod path of the window film material (``/...mat``).
-        trim_mat: Mod path of the trim film material.
-
-    Returns:
-        ``(pmd path, pmd bytes, pmg bytes)`` per changed model. The original pieces and materials
-        are unchanged; the films are new pieces using two new materials.
+        glass_out: Mod path of the outside window film material (``/...mat``).
+        trim: Mod path of the trim film material.
+        glass_in: Mod path of the inside window film material.
     """
     body = body if isinstance(body, Body) else Body(body, [], [])
     layout = Layout.for_body(body)
-    out = []
+    out: list[pmg.Piece] = []
+    inner: list[pmg.Piece] = []
+    for p in body.cab.pieces(is_window):
+        out += film_piece(p, layout, 0, sides=(1.0,))
+        inner += film_piece(p, layout, 0, sides=(-1.0,))
     for m in [body.cab, *body.defaults]:
-        if m is not body.cab and _no_film(m.pmd_path):
-            continue
-        n = len(pmd.material_table(m.pmd_data)[0])
-        new: list[pmg.Piece] = []
-        # windows only on the cabin: accessory "glass" is lamp lenses and mirror glass
-        for p in m.pieces(is_window) if m is body.cab else []:
-            new += film_piece(p, layout, n, double_sided=True)
-        for p in m.pieces(is_gloss_black):
-            new += film_piece(p, layout, n + 1, double_sided=False)
-        if new:
-            out.append(
-                (
-                    m.pmd_path,
-                    pmd.add_materials(m.pmd_data, [glass_mat, trim_mat]),
-                    pmg.add_pieces(m.model, new),
-                )
-            )
-    return out
+        if m is body.cab or not _no_film(m.pmd_path):
+            out += [f for p in m.pieces(is_gloss_black) for f in film_piece(p, layout, 1, sides=(1.0,))]
+    return Films(
+        (pmd.new_model([glass_out, trim]), pmg.new_model(out)) if out else None,
+        (pmd.new_model([glass_in]), pmg.new_model(inner)) if inner else None,
+        (body.cab.pmd_path[: -len(".pmd")] + ".pmg", pmg.add_locator(body.cab.model, FILM_TYPE)),
+    )
 
 
 def write_templates(read: Reader, vehicles: Iterable[object], out_dir: Path) -> list[Path]:

@@ -170,6 +170,8 @@ def encode(job: TextureJob) -> bytes:
         im.load()
         img = im.convert("RGBA")
     if job.purpose == "film":  # window/trim film (paintbooth.coach): alpha scaled by overlay_alpha
+        if job.size and img.size != job.size:
+            img = img.resize(job.size, Image.Resampling.LANCZOS)
         a = img.getchannel("A").point(lambda x: round(x * job.overlay_alpha))
         img.putalpha(a)
         return dds_bytes(img, job.fmt, mips=True)

@@ -232,3 +232,122 @@ def add_pieces(model: Model, new: list[Piece]) -> bytes:
     h[25], h[26] = new_ip_off, ip_size + sum(map(len, iblocks))
     _HEADER.pack_into(out, 0, *h)
     return bytes(out)
+
+
+# ---------------------------------------------------------------------------------- locators
+_LOCATOR = struct.Struct("<Q3ff4fi")
+_TOKEN = "\0" + "0123456789abcdefghijklmnopqrstuvwxyz_"
+
+
+@dataclass
+class Locator:
+    """A named point of the model; accessories of the same name hang on it.
+
+    Attributes:
+        name: The locator's name, e.g. ``f_bumper``.
+        position: (3,) float position in model space.
+        scale: Uniform scale.
+        rotation: (4,) float quaternion, ``w, x, y, z``.
+    """
+
+    name: str
+    position: np.ndarray
+    scale: float
+    rotation: np.ndarray
+
+    def apply(self, pos: np.ndarray, normals: bool = False) -> np.ndarray:
+        """Move points (or with ``normals``, rotate directions) from the locator's space to the model's."""
+        w, q = float(self.rotation[0]), np.asarray(self.rotation[1:], float)
+        v = np.asarray(pos, float)
+        t = 2 * np.cross(q, v)
+        out = v + w * t + np.cross(q, t)
+        return out if normals else out * self.scale + self.position
+
+
+def token(name: str) -> int:
+    """Encode a name (up to 12 of ``a-z 0-9 _``) as an SCS token.
+
+    Raises:
+        PmgError: The name is too long or has other characters.
+    """
+    if not 0 < len(name) <= 12 or any(c not in _TOKEN[1:] for c in name):
+        raise PmgError(f"{name!r} can't be a model name (1-12 of a-z, 0-9, _)")
+    return sum(_TOKEN.index(c) * 38**i for i, c in enumerate(name))
+
+
+def _token_str(v: int) -> str:
+    s = ""
+    while v:
+        s += _TOKEN[v % 38]
+        v //= 38
+    return s
+
+
+def locators(model: Model) -> dict[str, Locator]:
+    """The model's locators by name (the first one wins when a name repeats)."""
+    h, d = model.header, model.data
+    out: dict[str, Locator] = {}
+    for i in range(h[5]):
+        off = h[19] + i * _LOCATOR.size
+        _check(d, off, _LOCATOR.size, "locator table")
+        t, x, y, z, s, qw, qx, qy, qz, _hook = _LOCATOR.unpack_from(d, off)
+        out.setdefault(
+            _token_str(t), Locator(_token_str(t), np.array([x, y, z]), s, np.array([qw, qx, qy, qz]))
+        )
+    return out
+
+
+def _shift_after(out: bytearray, h: list[Any], start: int, shift: int) -> None:
+    """Move the sections from the piece table on, and piece offsets at or past ``start``, by ``shift``."""
+    for k in (20, 21, 23, 25):  # pieces, strings, vertex and index pools
+        if h[k] >= start:
+            h[k] += shift
+    for i in range(h[1]):
+        po = h[20] + i * _PIECE.size
+        w = list(_PIECE.unpack_from(out, po))
+        w[16:25] = [x + shift if x >= start else x for x in w[16:25]]
+        _PIECE.pack_into(out, po, *w)
+
+
+def add_locator(model: Model, name: str) -> bytes:
+    """Return the .pmg bytes of ``model`` with a locator ``name`` at the model origin.
+
+    Accessories hang on the locator named like their type; Paintbooth's window film accessory
+    uses this to sit in the cabin's own coordinates. The locator goes at the end of the last
+    part's locators. A model that already has the locator is returned unchanged.
+
+    Raises:
+        PmgError: The name is not a valid token, or the locators are not followed by the pieces.
+    """
+    d, h = model.data, list(model.header)
+    if name in locators(model):
+        return d
+    loc_off, count, pieces_off = h[19], h[5], h[20]
+    at = loc_off + count * _LOCATOR.size
+    if at != pieces_off:
+        raise PmgError("unexpected section order; the locators must be followed by the pieces")
+    pool = d[h[21] : h[21] + h[22]]
+    hook = 0 if pool[:1] == b"\0" else -1  # offset 0 of the string pool is the empty name
+    rec = _LOCATOR.pack(token(name), 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, hook)
+    out = bytearray(d[:at] + rec + d[at:])
+    h[5] = count + 1
+    _shift_after(out, h, at, len(rec))
+    if h[2]:
+        po = h[18] + (h[2] - 1) * _PART.size
+        tok, pc, pf, lc, lo = _PART.unpack_from(out, po)
+        _PART.pack_into(out, po, tok, pc, pf, lc + 1, lo if lc else count)
+    _HEADER.pack_into(out, 0, *h)
+    return bytes(out)
+
+
+def new_model(pieces: list[Piece], part: str = "films") -> bytes:
+    """Return a new .pmg holding only ``pieces`` (one part, no locators), with a fitting bounding box."""
+    pos = np.concatenate([p.positions for p in pieces]) if pieces else np.zeros((1, 3))
+    lo, hi = pos.min(axis=0), pos.max(axis=0)
+    center = (lo + hi) / 2
+    radius = float(np.linalg.norm(pos - center, axis=1).max())
+    base = 112 + _PART.size
+    h = [bytes([VERSION]) + b"gmP", 0, 1, 0, 0, 0, 0, *center.tolist(), radius, *lo.tolist(), *hi.tolist()]
+    h += [112, 112, base, base, base, 0, base, 0, base, 0]
+    data = _HEADER.pack(*h) + _PART.pack(token(part), 0, 0, 0, 0)
+    return add_pieces(Model(data, tuple(h)), pieces)
