@@ -643,7 +643,7 @@ class ColorPanel(ttk.Frame):
         if getattr(self, "_drawn_hue", None) != hue_rgb:
             self._drawn_hue = hue_rgb
             horiz = Image.linear_gradient("L").rotate(90).resize((SQ, SQ))
-            vert = Image.linear_gradient("L").transpose(Image.FLIP_TOP_BOTTOM).resize((SQ, SQ))
+            vert = Image.linear_gradient("L").transpose(Image.Transpose.FLIP_TOP_BOTTOM).resize((SQ, SQ))
             base = Image.composite(
                 Image.new("RGB", (SQ, SQ), hue_rgb), Image.new("RGB", (SQ, SQ), "white"), horiz
             )

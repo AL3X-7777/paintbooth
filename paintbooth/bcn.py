@@ -29,6 +29,7 @@ worker processes set it to 1, because they already run one process per core.
 from __future__ import annotations
 
 import os
+from typing import cast
 
 import numpy as np
 from PIL import Image
@@ -46,7 +47,8 @@ def bleed_colors(img: Image.Image) -> Image.Image:
     scaled back up and pasted coarse to fine, so the nearest colour wins.
     """
     alpha = img.getchannel("A")
-    lo, hi = alpha.getextrema()
+    # one band, so getextrema() is a (min, max) pair; Pillow's stub also allows a tuple per band
+    lo, hi = cast("tuple[int, int]", alpha.getextrema())
     if lo > 0 or hi == 0:
         return img
     w, h = img.size

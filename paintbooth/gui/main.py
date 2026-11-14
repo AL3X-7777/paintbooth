@@ -936,7 +936,8 @@ def _set_window_icon(root: tk.Tk) -> None:
 
         with Image.open(LOGO) as im:
             sizes = [im.resize((s, s), Image.Resampling.LANCZOS) for s in (256, 64, 32, 16)]
-        photos = [ImageTk.PhotoImage(i, master=root) for i in sizes]
+        # typed as Any: Tk's stub for iconphoto only knows tkinter's own PhotoImage
+        photos: list[Any] = [ImageTk.PhotoImage(i, master=root) for i in sizes]
         root.iconphoto(True, *photos)
         root._logo_photos = photos  # type: ignore[attr-defined]  # keep a reference: Tk does not
     except (OSError, ValueError, tk.TclError) as e:

@@ -443,8 +443,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> None:
     """Build Setup.exe and the portable zip (and the source zip with ``--source-zip``)."""
     a = parse_args(argv)
-    out: Path = a.out
-    work: Path = a.work or out / "_work"
+    # absolute: the compiler runs with the work folder as its current directory
+    out: Path = a.out.resolve()
+    work: Path = a.work.resolve() if a.work else out / "_work"
     reqs = read_requirements(OFFLINE_REQUIREMENTS)
     wheels = bundled_wheels(reqs)  # fail early, before compiling anything
     shutil.rmtree(work, ignore_errors=True)
