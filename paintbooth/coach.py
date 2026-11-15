@@ -53,6 +53,8 @@ VIRTUAL = 4096
 BLUEPRINT_SIZE = (4096, 2048)
 FILM_SIZE = BLUEPRINT_SIZE  # 0.12.0 name
 FILM_LIFT = 0.0015
+#: Vertex colour of the films: about 1.0 in SCS's doubled vertex colours, like the body paint.
+FILM_RGBA = 0xFF7D7D7D
 #: Seen from inside the coach, window films show the artwork at this opacity (outside: fully).
 GLASS_OPACITY = 0.5
 
@@ -437,7 +439,9 @@ def film_piece(
     tri = src.triangles
     pos = src.positions[tri].reshape(-1, 3)
     nrm = src.normals[tri].reshape(-1, 3)
-    rgba = src.rgba[tri].reshape(-1) if src.rgba is not None else None
+    # SCS vertex colours darken by baked shading (0x80 = unchanged); glass often carries black,
+    # which would darken the artwork, so films use the colour of the body paint instead
+    rgba = np.full(len(pos), FILM_RGBA, dtype=np.uint32)
     uv = layout.project_faces(list(np.repeat(_face_views(src), 3)), pos) / np.array(BLUEPRINT_SIZE, float)
 
     def build(sign: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -455,7 +459,7 @@ def film_piece(
                     p[sl].astype("f4"),
                     n[sl].astype("f4"),
                     [uv[sl].astype("f4")],
-                    rgba[sl] if rgba is not None else None,
+                    rgba[sl],
                     t[start // 3 : sl.stop // 3] - start,
                 )
             )
@@ -629,19 +633,20 @@ def _no_film(pmd_path: str) -> bool:
 
 @dataclass
 class Films:
-    """The film models of one body, in cabin coordinates (they hang on :data:`FILM_TYPE`).
+    """The film model of one body, in cabin coordinates (it hangs on :data:`FILM_TYPE`).
 
     Attributes:
-        exterior: ``(pmd, pmg)`` seen from outside: window films (slot 0, opaque where painted)
-            and trim films (slot 1), facing out.
-        interior: ``(pmd, pmg)`` seen from the cab: window films facing in (slot 0, half the
-            light through), or None when the body has no windows.
+        model: ``(pmd, pmg)``, or None when the body has neither windows nor trim. Slot 0: window
+            films facing out (opaque where painted); slot 1: trim films facing out; slot 2: window
+            films facing in (half the light through). Faces are seen from their front only, so
+            from outside the outer films show and from inside the inner ones. The same model is
+            the accessory's exterior and interior model, because the game shows one or the other
+            depending on the camera.
         cabin_pmg: The cabin's ``.pmg`` with the :data:`FILM_TYPE` locator added (it has no
             other change), and its path.
     """
 
-    exterior: tuple[bytes, bytes] | None
-    interior: tuple[bytes, bytes] | None
+    model: tuple[bytes, bytes] | None
     cabin_pmg: tuple[str, bytes]
 
 
@@ -664,17 +669,15 @@ def films(body: Body | CabinModel, glass_out: str, trim: str, glass_in: str) -> 
     """
     body = body if isinstance(body, Body) else Body(body, [], [])
     layout = Layout.for_body(body)
-    out: list[pmg.Piece] = []
-    inner: list[pmg.Piece] = []
+    pieces: list[pmg.Piece] = []
     for p in body.cab.pieces(is_window):
-        out += film_piece(p, layout, 0, sides=(1.0,))
-        inner += film_piece(p, layout, 0, sides=(-1.0,))
+        pieces += film_piece(p, layout, 0, sides=(1.0,))
+        pieces += film_piece(p, layout, 2, sides=(-1.0,))
     for m in [body.cab, *body.defaults]:
         if m is body.cab or not _no_film(m.pmd_path):
-            out += [f for p in m.pieces(is_gloss_black) for f in film_piece(p, layout, 1, sides=(1.0,))]
+            pieces += [f for p in m.pieces(is_gloss_black) for f in film_piece(p, layout, 1, sides=(1.0,))]
     return Films(
-        (pmd.new_model([glass_out, trim]), pmg.new_model(out)) if out else None,
-        (pmd.new_model([glass_in]), pmg.new_model(inner)) if inner else None,
+        (pmd.new_model([glass_out, trim, glass_in]), pmg.new_model(pieces)) if pieces else None,
         (body.cab.pmd_path[: -len(".pmd")] + ".pmg", pmg.add_locator(body.cab.model, FILM_TYPE)),
     )
 

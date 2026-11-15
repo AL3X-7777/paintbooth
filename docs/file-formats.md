@@ -164,10 +164,14 @@ cabin's `.pmg` is written back with one extra locator of that name at its origin
 
 The film accessory (`def/vehicle/bus/<coach>/accessory/pb_film/<paint job>.sii`) is suitable only
 for its own paint job, and the paint job lists it in `overrides[]`, so choosing the paint job
-puts the films on and other paint jobs leave the coach without them. Its `exterior_model` has the
-window films (opaque where painted) and the trim films facing out; its `interior_model` has the
-window films facing in at half opacity. The materials blend (`...decal.over`) instead of alpha
-testing, so soft edges in the artwork stay soft.
+puts the films on and other paint jobs leave the coach without them. One model serves as both its
+`exterior_model` and `interior_model`: window films facing out (opaque where painted), trim films
+facing out, and window films facing in at half opacity; faces are only seen from the front, so
+each side shows its own. The films use a neutral vertex colour (the glass's own is often black).
+The materials blend (`...decal.over`) instead of alpha testing, so soft edges stay soft.
+
+Which bodies get films is ticked per image in the Skins tab: `<cabin id>+films` next to the
+cabin id in the image's list (`ms2build.FILMS`).
 
 ## Coach paint masks and blueprints
 

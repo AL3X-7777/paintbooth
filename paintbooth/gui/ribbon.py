@@ -108,6 +108,13 @@ class Ribbon(ttk.Frame):
                 ("Open", "open", a.open_dialog, "Open a project, .pb or Mods Studio 2 .ms2 (Ctrl+O)", True),
                 ("Save", "save", a.save, "Save (Ctrl+S)", True),
                 ("Save as", "saveas", a.save_as, "Save under a new name (Ctrl+Shift+S)", True),
+                (
+                    "Export to\nmod folder",
+                    "export",
+                    lambda: a.export(to_mod_folder=True),
+                    "Build the mod straight into the game's mod folder (Shift+F5)",
+                    True,
+                ),
             ],
         )
         items = self._group(

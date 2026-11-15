@@ -446,6 +446,29 @@ class ManifestEditorTest(TkCase):
 
 
 @needs_display
+class CoachOptionsTest(TkCase):
+    def test_bus_bodies_get_a_windows_and_trim_option(self):
+        from paintbooth.gui.editors import TruckSkinEditor
+
+        bus = vehlib.Vehicle("a.coach", "ets2", "A", "Coach", vehicle_type="Buses")
+        bus.variants.append(vehlib.Variant("c1.a.coach.cabin", "12 m"))
+        ids = [o[0] for o in TruckSkinEditor._image_options("CabVariantSkin", bus)]
+        self.assertEqual(ids, ["c1.a.coach.cabin", "c1.a.coach.cabin+films"])
+        truck = vehlib.Vehicle("t.truck", "ets2", "T", "Truck")
+        truck.variants.append(vehlib.Variant("c.t.truck.cabin", "Cab"))
+        self.assertEqual(len(TruckSkinEditor._image_options("CabVariantSkin", truck)), 1)
+
+    def test_notice_has_an_ok_button(self):
+        from paintbooth.gui.widgets import Notice
+
+        n = Notice(self.root)
+        n.show("Exported", "")
+        self.assertIsNotNone(n.frame)
+        n.ok.invoke()
+        self.assertIsNone(n.frame)
+
+
+@needs_display
 class TruckSkinEditorTest(TkCase):
     def setUp(self):
         super().setUp()

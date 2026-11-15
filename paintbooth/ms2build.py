@@ -418,7 +418,28 @@ def _validate_bus(it: AdvancedTruckSkin, idx: int, base: Path | None) -> list[Pr
     masks = _cab_masks(it)
     for k, e in enumerate(it.entries("CabVariantSkin")):
         fld = f"CabVariantSkin[{k}]"
-        if uv_layout and len({masks.get(c) for c in e.suitable}) > 1:
+        bodies = body_ids(e.suitable)
+        lone = [c[: -len(FILMS)] for c in e.suitable if c.endswith(FILMS) and c[: -len(FILMS)] not in bodies]
+        if lone:
+            probs.append(
+                Problem(
+                    "error",
+                    idx,
+                    fld,
+                    f"Skin image {k + 1}: windows and trim are painted together with their body; "
+                    "tick the body too",
+                )
+            )
+        if uv_layout and len(bodies) < len(e.suitable):
+            probs.append(
+                Problem(
+                    "error",
+                    idx,
+                    fld,
+                    "Painting windows and trim needs images drawn on the blueprint template",
+                )
+            )
+        if uv_layout and len({masks.get(c) for c in bodies}) > 1:
             probs.append(
                 Problem(
                     "error",
@@ -439,12 +460,6 @@ def _validate_bus(it: AdvancedTruckSkin, idx: int, base: Path | None) -> list[Pr
                     f"Skin image {k + 1} is {size[0]}x{size[1]}; coach templates are 2:1 (4096x2048)",
                 )
             )
-    if uv_layout and it.vars.value(PAINT_WINDOWS) == "true":  # only when the user ticked it
-        probs.append(
-            Problem(
-                "error", idx, PAINT_WINDOWS, "Painting windows needs images drawn on the blueprint template"
-            )
-        )
     if not uv_layout and not _game_dir():
         probs.append(
             Problem(
@@ -619,6 +634,15 @@ def next_version(current: str, last_exported: str | None) -> str:
 
 #: Bus skins: the option to paint windows and gloss-black trim, and its image (see paintbooth.coach).
 PAINT_WINDOWS = "PaintWindows"
+#: Coach skins: ticking ``<cabin id>`` + this in an image's list paints that body's windows and trim.
+FILMS = "+films"
+
+
+def body_ids(suitable: list[str]) -> list[str]:
+    """The cabin/body ids of a coach image's ticked list, without the windows-and-trim ids."""
+    return [c for c in suitable if not c.endswith(FILMS)]
+
+
 #: Bus skins: the images are drawn on the game's UV layout, not on the blueprint (advanced).
 UV_LAYOUT = "UvLayout"
 
@@ -746,7 +770,7 @@ def _plan_skin(it: AdvancedTruckSkin, base: Path | None, icons: tuple[Path, Path
     # skin textures; a bus cabin's mask is named after its region of the paint UV space
     tex: list[str] = []
     for i, (cab, src) in enumerate(cabs):
-        region = next((masks[c] for c in cab.suitable if masks.get(c)), None)
+        region = next((masks[c] for c in body_ids(cab.suitable) if masks.get(c)), None)
         stem = f"{pj_root}/{n}_{i}/{region}" if region else f"{pj_root}/{n}_{i}"
         tex.append(f"/{stem}.tobj")
         files += _texture_files(f"{stem}.dds", src)
@@ -756,7 +780,7 @@ def _plan_skin(it: AdvancedTruckSkin, base: Path | None, icons: tuple[Path, Path
         body_ovr = []
         for i, (cab, _src) in enumerate(cabs):
             kv = [("paint_job_mask", sii_str(f"/{pj_root}/{n}_{i}.tobj"))]
-            kv += [("acc_list[]", sii_str(c)) for c in cab.suitable]
+            kv += [("acc_list[]", sii_str(c)) for c in body_ids(cab.suitable)]
             body_ovr.append(kv)
         all_ovr = [
             ("simple_paint_job_data", f".ovr{k}", kv)
@@ -775,7 +799,7 @@ def _plan_skin(it: AdvancedTruckSkin, base: Path | None, icons: tuple[Path, Path
     # trucks: one paint job per cab image
     for i, (cab, _src) in enumerate(cabs):
         unit_attrs = list(attrs)
-        unit_attrs += [("suitable_for[]", sii_str(c)) for c in cab.suitable]
+        unit_attrs += [("suitable_for[]", sii_str(c)) for c in body_ids(cab.suitable)]
         unit_attrs.append(("paint_job_mask", sii_str(tex[i])))
         unit = ("accessory_paint_job_data", f"{n}_{i}.{t}.paint_job", unit_attrs)
         files.append(OutFile(f"{def_dir}/{n}_{i}.sii", sii_file([unit]).encode()))
@@ -796,7 +820,8 @@ def _plan_bus_blueprint(
 
     Each (image, ticked body) pair becomes its own paint job ``N_j``: the blueprint is baked into
     that body's paint UV layout, because bodies of different length map the same image
-    differently. With the windows option, each body's model also gets films showing the image.
+    differently. Where ``<body>+films`` is ticked too, the paint job brings window and trim films
+    showing the image.
 
     Raises:
         RuntimeError: The game folder or a body's model can't be read.
@@ -814,7 +839,7 @@ def _plan_bus_blueprint(
     try:
         read = game_reader(game)
         for e, src in cabs:
-            for cab_id in e.suitable:
+            for cab_id in body_ids(e.suitable):
                 x = bodies.get(cab_id)
                 region = coach.Region.parse(x.mask or "") if x else None
                 if x is None or src is None or region is None or not x.model:
@@ -827,7 +852,7 @@ def _plan_bus_blueprint(
                     ("suitable_for[]", sii_str(cab_id)),
                     ("paint_job_mask", sii_str(f"/{stem}.tobj")),
                 ]
-                if it.vars.bool(PAINT_WINDOWS, True):  # on unless the user turned it off
+                if cab_id + FILMS in e.suitable:  # "<body> - windows and trim" is ticked
                     film, acc = _film_files(body, src, f"{pj_root}/{n}_{j}", t, f"{n}_{j}")
                     taken = {f.path for f in files}  # bodies of one coach share nothing else
                     files += [f for f in film if f.path not in taken]
@@ -889,7 +914,7 @@ def _film_files(body: object, src: Path, root: str, veh: str, n: str) -> tuple[l
     outside = TextureJob(src, "film", size, "DXT5", None, 1.0)
     inside = TextureJob(src, "film", size, "DXT5", None, coach.GLASS_OPACITY)
     f = coach.films(body, f"/{root}/film_glass.mat", f"/{root}/film_trim.mat", f"/{root}/film_inside.mat")  # type: ignore[arg-type]
-    if f.exterior is None and f.interior is None:
+    if f.model is None:
         return [], None
     out = [
         OutFile(f"{root}/film.dds", job=outside),
@@ -908,11 +933,11 @@ def _film_files(body: object, src: Path, root: str, veh: str, n: str) -> tuple[l
         ("part_type", "factory"),
         ("suitable_for[]", sii_str(f"{n}.{veh}.paint_job")),
     ]
-    for side, models in (("exterior", f.exterior), ("interior", f.interior)):
-        if models is not None:
-            stem = f"{root}/film" if side == "exterior" else f"{root}/film_inside"
-            out += [OutFile(f"{stem}.pmd", models[0]), OutFile(f"{stem}.pmg", models[1])]
-            acc.append((f"{side}_model", sii_str(f"/{stem}.pmd")))
+    out += [OutFile(f"{root}/film.pmd", f.model[0]), OutFile(f"{root}/film.pmg", f.model[1])]
+    acc += [
+        ("exterior_model", sii_str(f"/{root}/film.pmd")),
+        ("interior_model", sii_str(f"/{root}/film.pmd")),
+    ]
     def_path = f"def/vehicle/bus/{veh}/accessory/{coach.FILM_TYPE}/{n}.sii"
     unit = ("accessory_addon_data", f"{n}.{veh}.{coach.FILM_TYPE}", acc)
     out.append(OutFile(def_path, sii_file([unit]).encode()))

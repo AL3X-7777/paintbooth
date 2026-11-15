@@ -800,7 +800,7 @@ class SearchCombobox(ttk.Combobox):
 
 
 class Notice:
-    """A message box in the middle of the window that closes on any key press or mouse click.
+    """A message box in the middle of the window with an OK button; any key press or click closes it too.
 
     ``link`` (text, callback) adds a clickable line, e.g. the export folder.
     """
@@ -845,9 +845,11 @@ class Notice:
 
             lb.bind("<Button-1>", follow)
             Tooltip(lb, "Open this folder")
-        ttk.Label(f, text="Press any key or click to close", style="NoticeHint.TLabel").pack(
-            anchor="w", pady=(12, 0)
-        )
+        bar = ttk.Frame(f, style="Panel.TFrame")
+        bar.pack(fill="x", pady=(12, 0))
+        ttk.Label(bar, text="Press any key or click to close", style="NoticeHint.TLabel").pack(side="left")
+        self.ok = ttk.Button(bar, text="OK", style="Accent.TButton", command=self.hide)
+        self.ok.pack(side="right", padx=(16, 0))
         outer.place(relx=0.5, rely=0.42, anchor="center")
         outer.lift()
         self.frame = outer

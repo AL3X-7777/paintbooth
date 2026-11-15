@@ -177,17 +177,14 @@ class CoachModel(unittest.TestCase):
 
     def test_films(self):
         f = coach.films(self.cab, "/f/glass.mat", "/f/trim.mat", "/f/in.mat")
-        self.assertIsNotNone(f.exterior)
-        self.assertIsNotNone(f.interior)
-        d, g = f.exterior
-        self.assertEqual(pmd.material_table(d), [["/f/glass.mat", "/f/trim.mat"]])
-        out = pmg.read(g)
-        self.assertEqual(len(out.pieces), 2)  # window and trim, facing out
-        win_out, trim = out.pieces
-        self.assertEqual((win_out.material, trim.material), (0, 1))
-        d_in, g_in = f.interior
-        self.assertEqual(pmd.material_table(d_in), [["/f/in.mat"]])
-        (win_in,) = pmg.read(g_in).pieces
+        self.assertIsNotNone(f.model)
+        d, g = f.model
+        self.assertEqual(pmd.material_table(d), [["/f/glass.mat", "/f/trim.mat", "/f/in.mat"]])
+        pieces = pmg.read(g).pieces
+        self.assertEqual(len(pieces), 3)  # window out, window in, trim out
+        win_out, win_in, trim = pieces
+        self.assertEqual((win_out.material, win_in.material, trim.material), (0, 2, 1))
+        self.assertTrue((win_out.rgba == coach.FILM_RGBA).all())  # not the glass's dark colour
         # lifted 1.5 mm outwards (window normal is -x); the inside copy the other way, reversed
         self.assertAlmostEqual(float(win_out.positions[0, 0]), -1.25 - coach.FILM_LIFT, places=5)
         self.assertAlmostEqual(float(win_in.positions[0, 0]), -1.25 + coach.FILM_LIFT, places=5)
@@ -256,7 +253,12 @@ class CoachExport(unittest.TestCase):
             self.assertEqual(p.items[idx].vehicle().variants[0].mask, "pjm_at_0x0_size_4096x2048")
 
             it = p.items[idx]
-            it.set_extra("PaintWindows", "true")
+            e = it.entries("CabVariantSkin")[0]
+            e.suitable = ["c1.test.coach.cabin+films"]  # windows without their body: an error
+            tplbuild.configure({"game_dirs": {"ets2": str(game)}})
+            probs = {x.message for x in validate(p) if x.level == "error"}
+            self.assertTrue(any("tick the body too" in m for m in probs), probs)
+            e.suitable = ["c1.test.coach.cabin", "c1.test.coach.cabin+films"]
             tplbuild.configure({})
             probs = {x.message for x in validate(p) if x.level == "error"}
             self.assertTrue(any("game folder" in m for m in probs))
@@ -290,6 +292,7 @@ class CoachExport(unittest.TestCase):
             self.assertTrue(res.ok, res.issues)
             with zipfile.ZipFile(root / "out.scs") as z:
                 glass = z.read(f"{pj}/coach1_0/film_inside.dds")
+                self.assertIn(f"{pj}/coach1_0/film.pmd", z.namelist())
             self.assertEqual(glass[:4], b"DDS ")
 
     def test_mixed_layouts_and_aspect_are_reported(self):

@@ -34,7 +34,7 @@ from typing import TYPE_CHECKING, Any
 
 from .. import vehlib
 from ..ms2 import AdvancedTruckSkin, Manifest
-from ..ms2build import export_name, image_size, resolve
+from ..ms2build import FILMS, export_name, image_size, resolve
 from ..ms2skeleton import CATEGORIES
 from .icons import shared as icons
 from .theme import C
@@ -1168,26 +1168,15 @@ class TruckSkinEditor(ttk.Notebook):
         self._icon_soon()
 
     def _build_windows_section(self) -> None:
-        """Coaches only: how the skin images are drawn, and painting the windows and trim.
+        """Coaches only: how the skin images are drawn.
+
+        Painting a body's windows and trim is ticked per image, next to the body, in the Skins tab.
 
         See :mod:`paintbooth.coach`. The controls are disabled for trucks and trailers.
         """
         self._section("Coaches")
         g, f = self._body, self._form
-        self.win_on = tk.BooleanVar()
         self.uv_on = tk.BooleanVar()
-        win = ttk.Checkbutton(
-            g, text="Paint windows and gloss-black trim", variable=self.win_on, command=self._coach_toggled
-        )
-        f.add(
-            "",
-            win,
-            "PaintWindows",
-            "The windows (half see-through, also seen from inside) and the gloss-black parts show "
-            "the skin image too, lined up with the paint. This replaces the coach's model while the "
-            "mod is active, so every paint job of that body shows it.",
-            sticky="w",
-        )
         uv = ttk.Checkbutton(
             g,
             text="Images are drawn on the UV layout (advanced)",
@@ -1202,19 +1191,17 @@ class TruckSkinEditor(ttk.Notebook):
             "Paintbooth fits onto the coach. Tick this if your images use the game's own UV layout.",
             sticky="w",
         )
-        self.coach_widgets: list[ttk.Widget] = [win, uv]
+        self.coach_widgets: list[ttk.Widget] = [uv]
         self._end_section()
 
     def _coach_toggled(self) -> None:
         """One of the coach tick boxes changed."""
         if not self.loading and self.item is not None:
-            self.item.set_extra("PaintWindows", "true" if self.win_on.get() else "false")
             self.item.set_extra("UvLayout", "true" if self.uv_on.get() else "false")
             self.app.changed()
 
     def _load_windows(self, it: AdvancedTruckSkin) -> None:
         """Show the coach options; they work only for coaches."""
-        self.win_on.set(it.vars.bool("PaintWindows", True))  # on by default for coaches
         self.uv_on.set(it.vars.bool("UvLayout"))
         veh = it.vehicle()
         state = ["!disabled"] if veh is not None and veh.is_bus else ["disabled"]
@@ -1319,9 +1306,13 @@ class TruckSkinEditor(ttk.Notebook):
         if veh is None:
             return []
         if array == "CabVariantSkin":
-            return [
-                (x.id, f"{x.name}  -  {x.description}" if x.description else x.name, "") for x in veh.variants
-            ]
+            out: list[Option] = []
+            for x in veh.variants:
+                name = f"{x.name}  -  {x.description}" if x.description else x.name
+                out.append((x.id, name, ""))
+                if veh.is_bus:  # coaches: the body's windows and gloss-black trim, ticked separately
+                    out.append((x.id + FILMS, f"{name}  -  windows and trim", ""))
+            return out
         return [(a.value, a.name, a.group) for a in veh.accessories]
 
     def rebuild_blocks(self, array: str) -> None:
@@ -1419,7 +1410,7 @@ class TruckSkinEditor(ttk.Notebook):
             e.suitable = ticked
         veh = self.item.vehicle()
         if array == "CabVariantSkin" and not self.item.entries(array)[:-1] and veh is not None:
-            e.suitable = [x.id for x in veh.variants]  # first image: all cabins, like MS2
+            e.suitable = [o[0] for o in self._image_options(array, veh)]  # first image: all, like MS2
         self.app.changed()
         self.rebuild_blocks(array)
         self._scroll_to_end(array)

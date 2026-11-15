@@ -3,6 +3,17 @@
 Each release on GitHub shows the section for its version. Add a new section at the top before
 tagging a release (see RELEASING.md).
 
+## 0.17.0
+- **Coaches: windows and trim per body.** In the Skins tab every coach body now has a second
+  line, "<body> - windows and trim"; tick it to paint that body's windows and gloss-black trim
+  with the image. (This replaces the "Paint windows and gloss-black trim" tick box; in older
+  projects tick the new lines again.)
+- Window films are now fully opaque from the outside where the artwork is, and trim films show
+  (they were missing, and windows were too see-through). The films no longer take the dark
+  shading of the glass.
+- **Export to mod folder** button in the Project group of the Home tab.
+- The "exported" message has an **OK** button (any key or click still closes it).
+
 ## 0.16.0
 - **Coach window and trim films reworked:**
   - They now come with the paint job: they are a separate accessory that only the Paintbooth
