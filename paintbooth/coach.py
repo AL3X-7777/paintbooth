@@ -37,7 +37,7 @@ from __future__ import annotations
 import logging
 import re
 from collections.abc import Callable, Iterable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import numpy as np
@@ -223,6 +223,8 @@ class Body:
     cab: CabinModel
     defaults: list[CabinModel]
     others: list[CabinModel]
+    #: The definition (``.sii`` path) and model of each default accessory, by accessory type.
+    default_defs: dict[str, tuple[str, str]] = field(default_factory=dict)
 
     def all_models(self) -> list[CabinModel]:
         """Every model, cabin first."""
@@ -262,6 +264,7 @@ def load_body(read: Reader, vehicle_id: str, cabin_id: str, model: str) -> Body:
     short = cabin_id.split(".", 1)[0]
     defaults: list[str] = []
     kinds: dict[str, str] = {}  # model path -> accessory type (= the cabin locator it hangs on)
+    default_defs: dict[str, tuple[str, str]] = {}
     types: set[str] = set()
     # defaults come from the cabin (Volvo) and from the vehicle's data.sii (MAN, Scania)
     for def_file in (
@@ -279,6 +282,7 @@ def load_body(read: Reader, vehicle_id: str, cabin_id: str, model: str) -> Body:
                 kind = d.split("/accessory/", 1)[1].split("/", 1)[0]
                 types.add(kind)
                 kinds.setdefault(m.group(1), kind)
+                default_defs.setdefault(kind, (d, m.group(1)))
                 defaults.append(m.group(1))
     others: list[str] = []
     listdir: Callable[[str], list[str]] | None = getattr(read, "listdir", None)
@@ -312,7 +316,9 @@ def load_body(read: Reader, vehicle_id: str, cabin_id: str, model: str) -> Body:
                 out.append(acc)
         return out
 
-    return Body(cab, [a for a in load_all(defaults, False) if _on_body(a, cab)], load_all(others, True))
+    body = Body(cab, [a for a in load_all(defaults, False) if _on_body(a, cab)], load_all(others, True))
+    body.default_defs = default_defs
+    return body
 
 
 def _on_body(acc: CabinModel, cab: CabinModel, margin: float = 0.5) -> bool:
@@ -446,10 +452,7 @@ def film_piece(
 
     def build(sign: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         t = np.arange(len(pos)).reshape(-1, 3)
-        # In the game the films show the face the other way round from the model they copy
-        # (seen in game: outward copies were invisible from outside, inward ones visible), so the
-        # outward copy gets the reversed triangle order and the inward copy the original one.
-        return pos + nrm * FILM_LIFT * sign, nrm * sign, t[:, ::-1] if sign > 0 else t
+        return pos + nrm * FILM_LIFT * sign, nrm * sign, t if sign > 0 else t[:, ::-1]
 
     out = []
     per = (0xFFFF // 3) * 3  # vertices per output piece, whole triangles only
@@ -600,8 +603,11 @@ def _pad(img: np.ndarray, covered: np.ndarray, steps: int) -> np.ndarray:
 
 
 # ---------------------------------------------------------------------------------- films
-#: The accessory type of the window and trim films, and the cabin locator it hangs on.
-FILM_TYPE = "pb_film"
+#: The accessory slot the films go into: the coach's window frame. Every coach has one fitted as
+#: standard, and a paint job's ``overrides[]`` only replaces an accessory of a slot the coach
+#: already has, so the films travel as a window frame (the standard frame's own model plus the
+#: films) that the paint job puts on.
+FILM_TYPE = "f_wnd_frame"
 
 FILM_MAT = """effect : "eut2.dif.spec.weight.decal.over.rfx" {{
 \tadditional_ambient : 0.000000
@@ -636,52 +642,64 @@ def _no_film(pmd_path: str) -> bool:
 
 @dataclass
 class Films:
-    """The film model of one body, in cabin coordinates (it hangs on :data:`FILM_TYPE`).
+    """The window frame with films of one body (see :data:`FILM_TYPE`).
 
     Attributes:
-        model: ``(pmd, pmg)``, or None when the body has neither windows nor trim. Slot 0: window
-            films facing out (opaque where painted); slot 1: trim films facing out; slot 2: window
-            films facing in (half the light through). Faces are seen from their front only, so
-            from outside the outer films show and from inside the inner ones. The same model is
-            the accessory's exterior and interior model, because the game shows one or the other
-            depending on the camera.
-        cabin_pmg: The cabin's ``.pmg`` with the :data:`FILM_TYPE` locator added (it has no
-            other change), and its path.
+        exterior: ``(pmd, pmg)``: the standard window frame model with the outside films added:
+            window films (opaque where painted) and trim films, facing out.
+        interior: ``(pmd, pmg)`` of the inside window films (half the light through), facing in,
+            or None when the body has no windows. The game draws it in the cab view.
+        frame_def: Path of the standard frame's definition (``/def/...sii``); its icon and look
+            are reused.
     """
 
-    model: tuple[bytes, bytes] | None
-    cabin_pmg: tuple[str, bytes]
+    exterior: tuple[bytes, bytes]
+    interior: tuple[bytes, bytes] | None
+    frame_def: str
 
 
-def films(body: Body | CabinModel, glass_out: str, trim: str, glass_in: str) -> Films:
-    """Build the window and trim films of a body as accessory models.
+def films(body: Body, glass_out: str, trim: str, glass_in: str) -> Films | None:
+    """Build the window and trim films of a body, as a window frame accessory.
 
     The films are copies of the glass and gloss-black pieces, lifted off the surface, with UVs
     on the blueprint layout of the whole body, so they line up with the paint job baked from the
     same image. Windows come from the cabin only (accessory "glass" is lamp lenses and mirror
     glass); trim comes from the cabin and its default accessories, except lamps, logos and badges.
-
-    Because the films are an accessory of their own (not a change to the cabin model), they are
-    only on the coach while the paint job that brings them is.
+    They are moved into the space of the cabin's window frame locator.
 
     Args:
-        body: The body (or just its cabin model).
+        body: The body.
         glass_out: Mod path of the outside window film material (``/...mat``).
         trim: Mod path of the trim film material.
         glass_in: Mod path of the inside window film material.
+
+    Returns:
+        The films, or None when the body has no standard window frame or nothing to cover.
     """
-    body = body if isinstance(body, Body) else Body(body, [], [])
+    host_def = body.default_defs.get(FILM_TYPE)
+    loc = pmg.locators(body.cab.model).get(FILM_TYPE)
+    host = next((m for m in body.defaults if host_def and m.pmd_path == host_def[1]), None)
+    if host_def is None or loc is None or host is None:
+        return None
     layout = Layout.for_body(body)
-    pieces: list[pmg.Piece] = []
+    n = len(pmd.material_table(host.pmd_data)[0])
+    outer: list[pmg.Piece] = []
+    inner: list[pmg.Piece] = []
     for p in body.cab.pieces(is_window):
-        pieces += film_piece(p, layout, 0, sides=(1.0,))
-        pieces += film_piece(p, layout, 2, sides=(-1.0,))
+        outer += film_piece(p, layout, n, sides=(1.0,))
+        inner += film_piece(p, layout, 0, sides=(-1.0,))
     for m in [body.cab, *body.defaults]:
         if m is body.cab or not _no_film(m.pmd_path):
-            pieces += [f for p in m.pieces(is_gloss_black) for f in film_piece(p, layout, 1, sides=(1.0,))]
+            outer += [f for p in m.pieces(is_gloss_black) for f in film_piece(p, layout, n + 1, sides=(1.0,))]
+    if not outer:
+        return None
+    for f in outer + inner:  # cabin space -> the frame's own space
+        f.positions = loc.unapply(f.positions).astype("f4")
+        f.normals = loc.unapply(f.normals, normals=True).astype("f4")
     return Films(
-        (pmd.new_model([glass_out, trim, glass_in]), pmg.new_model(pieces)) if pieces else None,
-        (body.cab.pmd_path[: -len(".pmd")] + ".pmg", pmg.add_locator(body.cab.model, FILM_TYPE)),
+        (pmd.add_materials(host.pmd_data, [glass_out, trim]), pmg.add_pieces(host.model, outer)),
+        (pmd.new_model([glass_in]), pmg.new_model(inner)) if inner else None,
+        host_def[0],
     )
 
 

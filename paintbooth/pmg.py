@@ -228,6 +228,12 @@ def add_pieces(model: Model, new: list[Piece]) -> bytes:
     out += d[ip_off : ip_off + ip_size] + b"".join(iblocks)
 
     h[1] = piece_count + len(new)
+    # the bounding box must hold the new pieces too, or the game culls them with the old box
+    lo = np.minimum(np.array(h[11:14]), np.concatenate([p.positions for p in new]).min(axis=0))
+    hi = np.maximum(np.array(h[14:17]), np.concatenate([p.positions for p in new]).max(axis=0))
+    if (lo != np.array(h[11:14])).any() or (hi != np.array(h[14:17])).any():
+        center = (lo + hi) / 2
+        h[7:17] = [*center.tolist(), float(np.linalg.norm(hi - center)), *lo.tolist(), *hi.tolist()]
     h[21], h[23], h[24] = str_off + shift, new_vp_off, vp_size + vgrowth
     h[25], h[26] = new_ip_off, ip_size + sum(map(len, iblocks))
     _HEADER.pack_into(out, 0, *h)
@@ -262,6 +268,15 @@ class Locator:
         t = 2 * np.cross(q, v)
         out = v + w * t + np.cross(q, t)
         return out if normals else out * self.scale + self.position
+
+    def unapply(self, pos: np.ndarray, normals: bool = False) -> np.ndarray:
+        """The inverse of :meth:`apply`: from the model's space into the locator's."""
+        v = np.asarray(pos, float)
+        if not normals:
+            v = (v - self.position) / (self.scale or 1.0)
+        w, q = float(self.rotation[0]), -np.asarray(self.rotation[1:], float)  # the conjugate
+        t = 2 * np.cross(q, v)
+        return v + w * t + np.cross(q, t)
 
 
 def token(name: str) -> int:

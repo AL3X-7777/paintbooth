@@ -68,6 +68,25 @@ def build_coach() -> tuple[bytes, bytes, dict[str, bytes]]:
     return make_pmd([MATS]), g, files
 
 
+def coach_files() -> dict[str, bytes]:
+    """The synthetic coach's game files, with a standard window frame (cabin locator + accessory)."""
+    d, g, mats = build_coach()
+    g = pmg.add_locator(pmg.read(g), "f_wnd_frame")
+    return {
+        "vehicle/bus/test/cab.pmd": d,
+        "vehicle/bus/test/cab.pmg": g,
+        "vehicle/bus/test/frame.pmd": d,
+        "vehicle/bus/test/frame.pmg": g,
+        "def/vehicle/bus/test.coach/cabin/c1.sii": (
+            b'defaults[]: "/def/vehicle/bus/test.coach/accessory/f_wnd_frame/std.sii"\n'
+        ),
+        "def/vehicle/bus/test.coach/accessory/f_wnd_frame/std.sii": (
+            b'icon: "bus/test/frame"\nexterior_model: "/vehicle/bus/test/frame.pmd"\n'
+        ),
+        **mats,
+    }
+
+
 class PmgFormat(unittest.TestCase):
     def test_round_trip_and_errors(self):
         _, g, _ = build_coach()
@@ -176,31 +195,31 @@ class CoachModel(unittest.TestCase):
         self.assertEqual(coach.paint_region(body), coach.TILES[0])
 
     def test_films(self):
-        f = coach.films(self.cab, "/f/glass.mat", "/f/trim.mat", "/f/in.mat")
-        self.assertIsNotNone(f.model)
-        d, g = f.model
-        self.assertEqual(pmd.material_table(d), [["/f/glass.mat", "/f/trim.mat", "/f/in.mat"]])
-        pieces = pmg.read(g).pieces
-        self.assertEqual(len(pieces), 3)  # window out, window in, trim out
-        win_out, win_in, trim = pieces
-        self.assertEqual((win_out.material, win_in.material, trim.material), (0, 2, 1))
+        files = coach_files()
+        body = coach.load_body(files.get, "test.coach", "c1.test.coach.cabin", "/vehicle/bus/test/cab.pmd")
+        f = coach.films(body, "/f/glass.mat", "/f/trim.mat", "/f/in.mat")
+        self.assertIsNotNone(f)
+        self.assertEqual(f.frame_def, "/def/vehicle/bus/test.coach/accessory/f_wnd_frame/std.sii")
+        d, g = f.exterior
+        self.assertEqual(pmd.material_table(d)[0][-2:], ["/f/glass.mat", "/f/trim.mat"])
+        out = pmg.read(g).pieces
+        self.assertEqual(len(out), 4 + 3)  # the frame's own 4 pieces, then window, frame trim, cab trim
+        win_out = out[4]
+        self.assertEqual(win_out.material, 4)
         self.assertTrue((win_out.rgba == coach.FILM_RGBA).all())  # not the glass's dark colour
+        (win_in,) = pmg.read(f.interior[1]).pieces
+        self.assertEqual(pmd.material_table(f.interior[0]), [["/f/in.mat"]])
         # lifted 1.5 mm outwards (window normal is -x); the inside copy the other way, reversed
         self.assertAlmostEqual(float(win_out.positions[0, 0]), -1.25 - coach.FILM_LIFT, places=5)
         self.assertAlmostEqual(float(win_in.positions[0, 0]), -1.25 + coach.FILM_LIFT, places=5)
         np.testing.assert_array_equal(win_in.triangles, win_out.triangles[:, ::-1])
         uv = win_out.uvs[0]
         self.assertTrue(((uv >= 0) & (uv <= 1)).all())
-        # the cabin only gets the films' locator; its pieces are unchanged
-        path, cab = f.cabin_pmg
-        self.assertEqual(path, "/vehicle/bus/test/cab.pmg")
-        m = pmg.read(cab)
-        self.assertIn(coach.FILM_TYPE, pmg.locators(m))
-        self.assertEqual(len(m.pieces), len(self.cab.model.pieces))
-        self.assertEqual(pmg.add_locator(m, coach.FILM_TYPE), cab)  # already there: unchanged
         mat = coach.film_material("/x/film.tobj", glossy=True)
         self.assertIn(b"film.tobj", mat)
         self.assertIn(b".over.", mat)  # blended, not alpha-tested
+        # without a standard window frame there is nothing to carry the films
+        self.assertIsNone(coach.films(coach.Body(self.cab, [], []), "/a", "/b", "/c"))
 
     def test_new_pmd_and_tokens(self):
         d = pmd.new_model(["/a.mat", "/b.mat"])
@@ -216,17 +235,19 @@ class CoachModel(unittest.TestCase):
         np.testing.assert_allclose(
             loc.apply(np.array([[0.0, 0.0, 1.0]]), normals=True), [[0, 0, -1.0]], atol=1e-6
         )
+        pts = np.array([[0.3, -1.0, 2.0], [5.0, 0.5, -1.0]])
+        np.testing.assert_allclose(loc.unapply(loc.apply(pts)), pts, atol=1e-9)
+        np.testing.assert_allclose(loc.unapply(loc.apply(pts, True), True), pts, atol=1e-9)
 
 
 class CoachExport(unittest.TestCase):
     def test_bus_skin_with_films(self):
-        d, g, mats = build_coach()
         with tempfile.TemporaryDirectory() as t:
             root = Path(t)
             game = root / "game"
             game.mkdir()
             # the game's HashFS archives are replaced by a dict of files (see game_reader below)
-            files = {"vehicle/bus/test/cab.pmd": d, "vehicle/bus/test/cab.pmg": g, **mats}
+            files = coach_files()
             veh = vehlib.Vehicle("test.coach", "ets2", "Test", "Coach", vehicle_type="Buses")
             veh.variants.append(
                 vehlib.Variant(
@@ -274,15 +295,16 @@ class CoachExport(unittest.TestCase):
             paths = {f.path for f in out_files}
             pj = "vehicle/bus/upgrade/paintjob/test.coach/coach1"
             self.assertIn(f"{pj}/coach1_0/pjm_at_0x0_size_4096x2048.dds", paths)
-            self.assertIn("vehicle/bus/test/cab.pmg", paths)
+            self.assertNotIn("vehicle/bus/test/cab.pmg", paths)  # the game's models stay as they are
             self.assertIn(f"{pj}/coach1_0/film_glass.mat", paths)
             pj_def = "def/vehicle/bus/test.coach/paint_job/coach1_0.sii"
             sii = next(f for f in out_files if f.path == pj_def).data.decode()
             self.assertIn("pjm_at_0x0_size_4096x2048.tobj", sii)
-            film_def = "def/vehicle/bus/test.coach/accessory/pb_film/coach1_0.sii"
+            film_def = "def/vehicle/bus/test.coach/accessory/f_wnd_frame/coach1_0.sii"
             self.assertIn(f'overrides[]: "/{film_def}"', sii)  # the paint job brings its films
             acc = next(f for f in out_files if f.path == film_def).data.decode()
             self.assertIn('suitable_for[]: "coach1_0.test.coach.paint_job"', acc)
+            self.assertIn('icon: "bus/test/frame"', acc)  # the standard frame's shop icon
             self.assertIn("def/vehicle/bus/test.coach/paint_job/coach1_0.sii", paths)
             b = Builder(None)
             try:
@@ -292,7 +314,7 @@ class CoachExport(unittest.TestCase):
             self.assertTrue(res.ok, res.issues)
             with zipfile.ZipFile(root / "out.scs") as z:
                 glass = z.read(f"{pj}/coach1_0/film_inside.dds")
-                self.assertIn(f"{pj}/coach1_0/film.pmd", z.namelist())
+                self.assertIn(f"{pj}/coach1_0/frame.pmd", z.namelist())
             self.assertEqual(glass[:4], b"DDS ")
 
     def test_mixed_layouts_and_aspect_are_reported(self):

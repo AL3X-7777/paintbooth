@@ -3,6 +3,13 @@
 Each release on GitHub shows the section for its version. Add a new section at the top before
 tagging a release (see RELEASING.md).
 
+## Unreleased
+- Coach window and trim films now travel as a **window frame** (the coach's standard frame plus
+  the films). The game's log showed that a paint job's `overrides[]` only swaps an accessory of
+  a slot the coach already has, so the earlier separate film accessory was never fitted; the
+  pink seen on the windows was the body paint behind the glass. The game's own models are no
+  longer changed (no more cabin model override).
+
 ## 0.18.0
 - **Community vehicle pack:** *Install vehicle library* also downloads 174 community vehicle
   definitions (ETS2 and ATS trucks, trailers and mod vehicles) from GitHub into

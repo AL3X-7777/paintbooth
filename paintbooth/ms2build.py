@@ -853,7 +853,9 @@ def _plan_bus_blueprint(
                     ("paint_job_mask", sii_str(f"/{stem}.tobj")),
                 ]
                 if cab_id + FILMS in e.suitable:  # "<body> - windows and trim" is ticked
-                    film, acc = _film_files(body, src, f"{pj_root}/{n}_{j}", t, f"{n}_{j}")
+                    film, acc = _film_files(
+                        body, src, f"{pj_root}/{n}_{j}", t, f"{n}_{j}", it.get("SkinName") or n, read
+                    )
                     taken = {f.path for f in files}  # bodies of one coach share nothing else
                     files += [f for f in film if f.path not in taken]
                     if acc:  # choosing the paint job puts its films on; other paint jobs drop them
@@ -897,16 +899,18 @@ def _baked(body: object, region: object, src: Path, model: str) -> Path:
     return path
 
 
-def _film_files(body: object, src: Path, root: str, veh: str, n: str) -> tuple[list[OutFile], str | None]:
+def _film_files(
+    body: object, src: Path, root: str, veh: str, n: str, label: str, read: object
+) -> tuple[list[OutFile], str | None]:
     """Window and trim films for one body, showing the blueprint ``src`` (see :mod:`paintbooth.coach`).
 
-    The films are an accessory of type :data:`paintbooth.coach.FILM_TYPE`, suitable only for the
-    paint job ``n``, so they are on the coach only while that paint job is. The cabin model is
-    written back with one more locator (the films' hook) and no other change.
+    The films come as a window frame accessory (the standard frame plus the films), suitable
+    only for the paint job ``n``; the paint job lists it in ``overrides[]``, which swaps it for
+    the coach's window frame when the paint job is chosen.
 
     Returns:
         The files, and the accessory definition's path for the paint job's ``overrides[]`` (None
-        when the body has neither windows nor trim).
+        when the body has no standard window frame or nothing to cover).
     """
     from . import coach
 
@@ -914,7 +918,7 @@ def _film_files(body: object, src: Path, root: str, veh: str, n: str) -> tuple[l
     outside = TextureJob(src, "film", size, "DXT5", None, 1.0)
     inside = TextureJob(src, "film", size, "DXT5", None, coach.GLASS_OPACITY)
     f = coach.films(body, f"/{root}/film_glass.mat", f"/{root}/film_trim.mat", f"/{root}/film_inside.mat")  # type: ignore[arg-type]
-    if f.model is None:
+    if f is None:
         return [], None
     out = [
         OutFile(f"{root}/film.dds", job=outside),
@@ -924,20 +928,26 @@ def _film_files(body: object, src: Path, root: str, veh: str, n: str) -> tuple[l
         OutFile(f"{root}/film_glass.mat", coach.film_material(f"/{root}/film.tobj", glossy=False)),
         OutFile(f"{root}/film_trim.mat", coach.film_material(f"/{root}/film.tobj", glossy=True)),
         OutFile(f"{root}/film_inside.mat", coach.film_material(f"/{root}/film_inside.tobj", glossy=False)),
-        OutFile(f.cabin_pmg[0].lstrip("/"), f.cabin_pmg[1]),
+        OutFile(f"{root}/frame.pmd", f.exterior[0]),
+        OutFile(f"{root}/frame.pmg", f.exterior[1]),
     ]
-    acc = [
-        ("name", sii_str("Paintbooth window and trim film")),
+    frame = (read(f.frame_def.lstrip("/")) or b"").decode("utf-8", "replace")  # type: ignore[operator]
+    icon = re.search(r'^\s*icon\s*:\s*("[^"]*")', frame, re.M)
+    acc: Attrs = [
+        ("name", sii_str(f"{label} - windows and trim")),
         ("price", "0"),
         ("unlock", "0"),
+        *([("icon", icon.group(1))] if icon else []),
         ("part_type", "factory"),
-        ("suitable_for[]", sii_str(f"{n}.{veh}.paint_job")),
+        ("exterior_model", sii_str(f"/{root}/frame.pmd")),
     ]
-    out += [OutFile(f"{root}/film.pmd", f.model[0]), OutFile(f"{root}/film.pmg", f.model[1])]
-    acc += [
-        ("exterior_model", sii_str(f"/{root}/film.pmd")),
-        ("interior_model", sii_str(f"/{root}/film.pmd")),
-    ]
+    if f.interior is not None:
+        out += [
+            OutFile(f"{root}/film_inside.pmd", f.interior[0]),
+            OutFile(f"{root}/film_inside.pmg", f.interior[1]),
+        ]
+        acc.append(("interior_model", sii_str(f"/{root}/film_inside.pmd")))
+    acc.append(("suitable_for[]", sii_str(f"{n}.{veh}.paint_job")))
     def_path = f"def/vehicle/bus/{veh}/accessory/{coach.FILM_TYPE}/{n}.sii"
     unit = ("accessory_addon_data", f"{n}.{veh}.{coach.FILM_TYPE}", acc)
     out.append(OutFile(def_path, sii_file([unit]).encode()))

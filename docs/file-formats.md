@@ -158,17 +158,16 @@ are interleaved (position, normal, colour, tangent, UV sets); indices are 16 bit
 the coaches' bodies to draw UV templates, and writes new one-part models holding the *films* for
 painted windows and trim (`pmg.new_model`, with `pmd.new_model` for the descriptor). Accessory
 models are drawn around a locator of the cabin named after their type (`f_bumper`...), so
-Paintbooth moves them onto it (`pmg.locators`). The films are an accessory of type `pb_film`; the
-cabin's `.pmg` is written back with one extra locator of that name at its origin
-(`pmg.add_locator`) and is otherwise copied byte for byte.
+Paintbooth moves them onto it (`pmg.locators`).
 
-The film accessory (`def/vehicle/bus/<coach>/accessory/pb_film/<paint job>.sii`) is suitable only
-for its own paint job, and the paint job lists it in `overrides[]`, so choosing the paint job
-puts the films on and other paint jobs leave the coach without them. One model serves as both its
-`exterior_model` and `interior_model`: window films facing out (opaque where painted), trim films
-facing out, and window films facing in at half opacity; faces are only seen from the front, so
-each side shows its own. The films use a neutral vertex colour (the glass's own is often black).
-The materials blend (`...decal.over`) instead of alpha testing, so soft edges stay soft.
+The films travel as a **window frame** accessory
+(`def/vehicle/bus/<coach>/accessory/f_wnd_frame/<paint job>.sii`): the coach's standard frame
+model with the outside films added (`pmg.add_pieces`, positions moved into the frame locator's
+space with `Locator.unapply`), plus an `interior_model` with the inside window films at half
+opacity (`pmg.new_model`, `pmd.new_model`). It is suitable only for its own paint job, and the
+paint job lists it in `overrides[]`; the game log shows that `overrides[]` only swaps an
+accessory of a slot the coach already has, which is why the frame slot is used. The films use a
+neutral vertex colour and a blended material (`...decal.over`).
 
 Which bodies get films is ticked per image in the Skins tab: `<cabin id>+films` next to the
 cabin id in the image's list (`ms2build.FILMS`).
