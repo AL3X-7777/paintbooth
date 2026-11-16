@@ -138,8 +138,8 @@ def is_gloss_black(m: _Mat) -> bool:
     """True for black trim (window surrounds, pillars, grilles, black roof panels).
 
     SCS makes them two ways: a dark diffuse colour on a glossy material (Volvo), or a black
-    texture such as ``maintruckpaint_black`` (MAN, glossy or matte). Metal (chrome, aluminium) is never trim, even
-    when its diffuse colour is dark.
+    texture such as ``maintruckpaint_black`` (MAN, glossy or matte). Metal (chrome, aluminium)
+    is never trim, even when its diffuse colour is dark.
     """
     skip = ("truckpaint", "glass", "shadow", "lamp", "decal", ".a.", "flare")
     if any(k in m.effect for k in skip) or any(k in m.texture for k in ("chrome", "alu", "metal", "steel")):
