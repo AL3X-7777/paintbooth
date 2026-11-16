@@ -869,7 +869,7 @@ def _plan_bus_blueprint(
 
 
 #: Raise when the baking changes, so cached bakes from older versions are not reused.
-BAKE_VERSION = 3
+BAKE_VERSION = 4
 
 
 def _baked(body: object, region: object, src: Path, model: str) -> Path:

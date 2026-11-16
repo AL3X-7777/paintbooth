@@ -46,7 +46,7 @@ from PIL import Image, ImageDraw
 from . import pmd, pmg
 
 #: Raise when the templates change, so start-up writes them again for existing users.
-TEMPLATE_VERSION = 6
+TEMPLATE_VERSION = 7
 #: The virtual paint UV space of the coaches, in pixels.
 VIRTUAL = 4096
 #: Film template size (pixels) and how far films sit off the surface (metres).
@@ -226,18 +226,22 @@ class Body:
     others: list[CabinModel]
     #: The definition (``.sii`` path) and model of each default accessory, by accessory type.
     default_defs: dict[str, tuple[str, str]] = field(default_factory=dict)
+    #: Animated parts in the cabin's space, drawn closed: entrance doors, opening side window.
+    moving: list[CabinModel] = field(default_factory=list)
 
     def all_models(self) -> list[CabinModel]:
         """Every model, cabin first."""
-        return [self.cab, *self.defaults, *self.others]
+        return [self.cab, *self.moving, *self.defaults, *self.others]
 
     def pieces(self, test: Callable[[_Mat], bool], others: bool = False) -> list[pmg.Piece]:
         """The pieces passing ``test`` of the cabin and its default accessories (and the others)."""
-        models = [self.cab, *self.defaults, *(self.others if others else [])]
+        models = [self.cab, *self.moving, *self.defaults, *(self.others if others else [])]
         return [p for m in models for p in m.pieces(test)]
 
 
 _DEFAULTS_RE = re.compile(r'defaults\[\]\s*:\s*"([^"]+)"')
+_DOORS_RE = re.compile(r'type\s*:\s*entrance_doors.*?model\s*:\s*"([^"]+)"', re.S)
+_WINDOWS_RE = re.compile(r'windows_model\s*:\s*"([^"]+)"')
 _EXTERIOR_RE = re.compile(r'exterior_model\s*:\s*"([^"]+)"')
 _SUITABLE_RE = re.compile(r'suitable_for\[\]\s*:\s*"([^"]+)"')
 
@@ -319,6 +323,12 @@ def load_body(read: Reader, vehicle_id: str, cabin_id: str, model: str) -> Body:
 
     body = Body(cab, [a for a in load_all(defaults, False) if _on_body(a, cab)], load_all(others, True))
     body.default_defs = default_defs
+    cab_def = (read(f"def/vehicle/bus/{vehicle_id}/cabin/{short}.sii") or b"").decode("utf-8", "replace")
+    for path in _DOORS_RE.findall(cab_def) + _WINDOWS_RE.findall(cab_def):
+        try:
+            body.moving.append(load_cabin(read, path))
+        except ValueError as e:
+            log.info("skipping moving part %s: %s", path, e)
     return body
 
 
@@ -521,7 +531,11 @@ def blueprint_template(body: Body | CabinModel) -> Image.Image:
     img = Image.new("RGBA", BLUEPRINT_SIZE, (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     layers: list[tuple[list[pmg.Piece], tuple[int, ...], tuple[int, ...]]] = [
-        (body.cab.pieces(is_paint), (85, 85, 85, 255), (150, 150, 150, 255)),
+        (
+            [p for m in [body.cab, *body.moving] for p in m.pieces(is_paint)],
+            (85, 85, 85, 255),
+            (150, 150, 150, 255),
+        ),
         ([p for m in body.defaults for p in m.pieces(is_paint)], (120, 120, 120, 255), (200, 200, 200, 255)),
         (body.pieces(is_gloss_black), (60, 50, 0, 255), (255, 200, 0, 255)),
         (body.pieces(is_window), (20, 50, 90, 255), (90, 170, 255, 255)),
@@ -563,7 +577,7 @@ def bake(body: Body, region: Region, blueprint: Image.Image, pad: int = 8) -> Im
     layout = Layout.for_body(body)
     centre = (layout.lo + layout.hi) / 2
     tris_uv, tris_pos, tris_nrm = [], [], []
-    for m in [*body.others, *body.defaults, body.cab]:
+    for m in [*body.others, *body.defaults, body.cab, *body.moving]:
         for p, px in paint_uvs(m, region):
             tris_uv.append(px[p.triangles])
             tris_pos.append(p.positions[p.triangles].astype(float))
@@ -756,10 +770,13 @@ def films(
     n = len(pmd.material_table(host.pmd_data)[0])
     outer: list[pmg.Piece] = []
     inner: list[pmg.Piece] = []
+    # the doors and opening window are animated models; their films are drawn closed
+    fixed = [body.cab, *body.moving]
+    windows = [p for m in fixed for p in m.pieces(is_window)]
     trim = [
         p
-        for m in [body.cab, *body.defaults]
-        if m is body.cab or not _no_film(m.pmd_path)
+        for m in [*fixed, *body.defaults]
+        if m in fixed or not _no_film(m.pmd_path)
         for p in m.pieces(is_gloss_black)
     ]
     # Two outside layers: an alpha-tested core (slots n, n+1) that hides what is behind it in
@@ -767,11 +784,11 @@ def films(
     # alone lets the seats show through), and a blended layer just above it (slots n+2, n+3)
     # that keeps soft edges soft.
     for slot, lift in ((n, FILM_LIFT), (n + 2, FILM_LIFT * 1.5)):
-        for p in body.cab.pieces(is_window):
+        for p in windows:
             outer += film_piece(p, layout, slot, sides=(1.0,), lift=lift)
         for p in trim:
             outer += film_piece(p, layout, slot + 1, sides=(1.0,), lift=lift)
-    for p in body.cab.pieces(is_window):
+    for p in windows:
         inner += film_piece(p, layout, 0, sides=(-1.0,))
     if not outer:
         return None

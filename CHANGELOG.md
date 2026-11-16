@@ -19,6 +19,8 @@ tagging a release (see RELEASING.md).
 - Outside films have an alpha-tested core under the blended layer, so the coach's interior
   (drawn after blended surfaces) no longer shows through painted windows; soft edges stay soft.
   The lift is back to 1.5 mm, so films no longer peek out over neighbouring silver trim.
+- The entrance doors and the opening side window (separate, animated models) are painted too,
+  on the blueprint, in the bake and with films. Their films are drawn in the closed position.
 
 ## 0.18.0
 - **Community vehicle pack:** *Install vehicle library* also downloads 174 community vehicle
