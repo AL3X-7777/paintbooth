@@ -9,6 +9,11 @@ tagging a release (see RELEASING.md).
   a slot the coach already has, so the earlier separate film accessory was never fitted; the
   pink seen on the windows was the body paint behind the glass. The game's own models are no
   longer changed (no more cabin model override).
+- Trim films are lifted away from the body even where the game's trim stores inward-facing
+  normals (they were hidden under the trim); the lift is now 3 mm.
+- Coach paint is blended between the side, end and top views across rounded corners, instead
+  of breaking into chunks where the surface changes view. Pieces with inward normals are no
+  longer painted from the opposite side's view. The coach templates are rewritten at start-up.
 
 ## 0.18.0
 - **Community vehicle pack:** *Install vehicle library* also downloads 174 community vehicle

@@ -46,13 +46,13 @@ from PIL import Image, ImageDraw
 from . import pmd, pmg
 
 #: Raise when the templates change, so start-up writes them again for existing users.
-TEMPLATE_VERSION = 4
+TEMPLATE_VERSION = 5
 #: The virtual paint UV space of the coaches, in pixels.
 VIRTUAL = 4096
 #: Film template size (pixels) and how far films sit off the surface (metres).
 BLUEPRINT_SIZE = (4096, 2048)
 FILM_SIZE = BLUEPRINT_SIZE  # 0.12.0 name
-FILM_LIFT = 0.0015
+FILM_LIFT = 0.003
 #: Vertex colour of the films: about 1.0 in SCS's doubled vertex colours, like the body paint.
 FILM_RGBA = 0xFF7D7D7D
 #: Seen from inside the coach, window films show the artwork at this opacity (outside: fully).
@@ -419,13 +419,19 @@ class Layout:
         return out
 
 
-def _face_views(p: pmg.Piece) -> list[str]:
-    """The view each triangle of ``p`` belongs to, from its face normal (bottom faces go to top)."""
+def _face_views(p: pmg.Piece, centre: np.ndarray | None = None) -> list[str]:
+    """The view each triangle of ``p`` belongs to, from its face normal (bottom faces go to top).
+
+    With ``centre`` (the middle of the body's box), normals that point towards it are turned
+    round first: some pieces store inward normals, which would put them in the opposite view.
+    """
     a, b, c = (p.positions[p.triangles[:, k]] for k in range(3))
     n = np.cross(b - a, c - a)
     # the stored winding may be either way; trust the vertex normals' direction
     vn = p.normals[p.triangles].sum(axis=1)
     n *= np.sign((n * vn).sum(axis=1, keepdims=True) + 1e-12)
+    if centre is not None:
+        n *= np.where((n * ((a + b + c) / 3 - centre)).sum(axis=1, keepdims=True) < 0, -1.0, 1.0)
     axis = np.abs(n).argmax(axis=1)
     sign = np.sign(n[np.arange(len(n)), axis])
     by_axis = {(na, ns): v for v, (na, ns, *_) in _VIEWS.items()}
@@ -444,11 +450,18 @@ def film_piece(
     """
     tri = src.triangles
     pos = src.positions[tri].reshape(-1, 3)
-    nrm = src.normals[tri].reshape(-1, 3)
+    nrm = src.normals[tri].reshape(-1, 3).astype(float)
+    # Lift away from the body: some trim pieces store their normals pointing inwards, which put
+    # their films under the trim. "Outwards" is away from the middle of the body's box.
+    centre = (layout.lo + layout.hi) / 2
+    inward = (nrm * (pos - centre)).sum(axis=1) < 0
+    nrm[inward] *= -1
     # SCS vertex colours darken by baked shading (0x80 = unchanged); glass often carries black,
     # which would darken the artwork, so films use the colour of the body paint instead
     rgba = np.full(len(pos), FILM_RGBA, dtype=np.uint32)
-    uv = layout.project_faces(list(np.repeat(_face_views(src), 3)), pos) / np.array(BLUEPRINT_SIZE, float)
+    uv = layout.project_faces(list(np.repeat(_face_views(src, centre), 3)), pos) / np.array(
+        BLUEPRINT_SIZE, float
+    )
 
     def build(sign: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         t = np.arange(len(pos)).reshape(-1, 3)
@@ -543,12 +556,13 @@ def bake(body: Body, region: Region, blueprint: Image.Image, pad: int = 8) -> Im
     """
     bp = np.asarray(blueprint.convert("RGBA").resize(BLUEPRINT_SIZE, Image.Resampling.LANCZOS))
     layout = Layout.for_body(body)
-    tris_uv, tris_pos, tris_view = [], [], []
+    centre = (layout.lo + layout.hi) / 2
+    tris_uv, tris_pos, tris_nrm = [], [], []
     for m in [*body.others, *body.defaults, body.cab]:
         for p, px in paint_uvs(m, region):
             tris_uv.append(px[p.triangles])
             tris_pos.append(p.positions[p.triangles].astype(float))
-            tris_view += _face_views(p)
+            tris_nrm.append(p.normals[p.triangles].astype(float))
     w, h = region.w, region.h
     if not tris_uv:
         return Image.new("RGBA", (w, h), (0, 0, 0, 0))
@@ -575,16 +589,60 @@ def bake(body: Body, region: Region, blueprint: Image.Image, pad: int = 8) -> Im
     l0 = 1 - l1 - l2
     world = pos[t, 0] * l0[:, None] + pos[t, 1] * l1[:, None] + pos[t, 2] * l2[:, None]
 
-    # 3. point on the coach -> blueprint pixel, in the view of its triangle's face
-    views = np.asarray(tris_view)[t]
-    bxy = layout.project_faces(list(views), world)
-    bx = np.clip(bxy[:, 0].astype(int), 0, BLUEPRINT_SIZE[0] - 1)
-    by = np.clip(bxy[:, 1].astype(int), 0, BLUEPRINT_SIZE[1] - 1)
+    # 3. point on the coach -> blueprint pixels. Each texel is seen from the views its surface
+    # faces, blended by how squarely it faces each one, so stripes fade across rounded corners
+    # instead of breaking into chunks where the triangles change view.
+    nrm = np.concatenate(tris_nrm)
+    n = nrm[t, 0] * l0[:, None] + nrm[t, 1] * l1[:, None] + nrm[t, 2] * l2[:, None]
+    n *= np.where((n * (world - centre)).sum(axis=1, keepdims=True) < 0, -1.0, 1.0)  # outwards
+    n /= np.linalg.norm(n, axis=1, keepdims=True) + 1e-12
     out = np.zeros((h, w, 4), np.uint8)
-    out[ys, xs] = bp[by, bx]
+    out[ys, xs] = _triplanar(bp, layout, world, n)
     covered = np.zeros((h, w), bool)
     covered[ys, xs] = True
     return Image.fromarray(_pad(out, covered, pad), "RGBA")
+
+
+#: How sharply the views are blended at corners (higher = narrower blend).
+BLEND_POWER = 6
+
+
+def _triplanar(bp: np.ndarray, layout: Layout, world: np.ndarray, n: np.ndarray) -> np.ndarray:
+    """Blueprint colour of each point, blended from the side, end and top views by its normal.
+
+    Args:
+        bp: The blueprint, (height, width, 4) uint8.
+        layout: Where the views sit in it.
+        world: (k, 3) points on the coach.
+        n: (k, 3) outward unit normals.
+
+    Returns:
+        (k, 4) uint8 colours (straight alpha).
+    """
+    acc = np.zeros((len(world), 4))
+    wsum = np.zeros(len(world))
+    choices = (
+        (0, np.where(n[:, 0] < 0, "left", "right")),
+        (2, np.where(n[:, 2] < 0, "front", "rear")),
+        (1, np.full(len(n), "top")),  # bottom faces use the top view too
+    )
+    for axis, views in choices:
+        wgt = np.abs(n[:, axis]) ** BLEND_POWER
+        sel = wgt > 1e-4
+        if not sel.any():
+            continue
+        xy = layout.project_faces(list(views[sel]), world[sel])
+        bx = np.clip(xy[:, 0].astype(int), 0, BLUEPRINT_SIZE[0] - 1)
+        by = np.clip(xy[:, 1].astype(int), 0, BLUEPRINT_SIZE[1] - 1)
+        c = bp[by, bx].astype(float)
+        a = c[:, 3:4] / 255
+        acc[sel, :3] += wgt[sel, None] * a * c[:, :3]  # premultiplied, so empty areas don't darken
+        acc[sel, 3] += wgt[sel] * a[:, 0]
+        wsum[sel] += wgt[sel]
+    wsum[wsum == 0] = 1
+    alpha = acc[:, 3] / wsum
+    rgb = acc[:, :3] / np.maximum(acc[:, 3:4], 1e-6)
+    return np.c_[np.clip(rgb, 0, 255), np.clip(alpha * 255, 0, 255)].round().astype(np.uint8)
 
 
 def _pad(img: np.ndarray, covered: np.ndarray, steps: int) -> np.ndarray:
