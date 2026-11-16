@@ -46,7 +46,7 @@ from PIL import Image, ImageDraw
 from . import pmd, pmg
 
 #: Raise when the templates change, so start-up writes them again for existing users.
-TEMPLATE_VERSION = 5
+TEMPLATE_VERSION = 6
 #: The virtual paint UV space of the coaches, in pixels.
 VIRTUAL = 4096
 #: Film template size (pixels) and how far films sit off the surface (metres).
@@ -135,17 +135,18 @@ def is_window(m: _Mat) -> bool:
 
 
 def is_gloss_black(m: _Mat) -> bool:
-    """True for gloss-black parts (window surrounds, pillars, grilles).
+    """True for black trim (window surrounds, pillars, grilles, black roof panels).
 
     SCS makes them two ways: a dark diffuse colour on a glossy material (Volvo), or a black
-    texture such as ``maintruckpaint_black`` (MAN). Metal (chrome, aluminium) is never trim, even
+    texture such as ``maintruckpaint_black`` (MAN, glossy or matte). Metal (chrome, aluminium) is never trim, even
     when its diffuse colour is dark.
     """
     skip = ("truckpaint", "glass", "shadow", "lamp", "decal", ".a.", "flare")
     if any(k in m.effect for k in skip) or any(k in m.texture for k in ("chrome", "alu", "metal", "steel")):
         return False
-    glossy = m.shininess >= 100
-    return glossy and (m.diffuse < 0.05 or "black" in m.texture)
+    # a black texture is trim whether glossy or matte (MAN's black pillar and roof panels are
+    # matte); a merely dark colour only on glossy materials (rubber seals are dark and matte)
+    return "black" in m.texture or (m.shininess >= 100 and m.diffuse < 0.05)
 
 
 # ---------------------------------------------------------------------------------- models
