@@ -197,20 +197,24 @@ class CoachModel(unittest.TestCase):
     def test_films(self):
         files = coach_files()
         body = coach.load_body(files.get, "test.coach", "c1.test.coach.cabin", "/vehicle/bus/test/cab.pmd")
-        f = coach.films(body, "/f/glass.mat", "/f/trim.mat", "/f/in.mat")
+        f = coach.films(body, "/f/glass.mat", "/f/trim.mat", "/f/in.mat", "/f/gc.mat", "/f/tc.mat")
         self.assertIsNotNone(f)
         self.assertEqual(f.frame_def, "/def/vehicle/bus/test.coach/accessory/f_wnd_frame/std.sii")
         d, g = f.exterior
-        self.assertEqual(pmd.material_table(d)[0][-2:], ["/f/glass.mat", "/f/trim.mat"])
+        self.assertEqual(
+            pmd.material_table(d)[0][-4:], ["/f/gc.mat", "/f/tc.mat", "/f/glass.mat", "/f/trim.mat"]
+        )
         out = pmg.read(g).pieces
-        self.assertEqual(len(out), 4 + 3)  # the frame's own 4 pieces, then window, frame trim, cab trim
-        win_out = out[4]
-        self.assertEqual(win_out.material, 4)
+        # the frame's own 4 pieces, then core and blended layers of window, cab trim, frame trim
+        self.assertEqual(len(out), 4 + 2 * 3)
+        win_core, win_out = out[4], out[7]
+        self.assertEqual((win_core.material, win_out.material), (4, 6))
+        self.assertIn(b".a.rfx", coach.film_material("/x.tobj", False, core=True))
         self.assertTrue((win_out.rgba == coach.FILM_RGBA).all())  # not the glass's dark colour
         (win_in,) = pmg.read(f.interior[1]).pieces
         self.assertEqual(pmd.material_table(f.interior[0]), [["/f/in.mat"]])
         # lifted 1.5 mm outwards (window normal is -x); the inside copy the other way, reversed
-        self.assertAlmostEqual(float(win_out.positions[0, 0]), -1.25 - coach.FILM_LIFT, places=5)
+        self.assertAlmostEqual(float(win_core.positions[0, 0]), -1.25 - coach.FILM_LIFT, places=5)
         self.assertAlmostEqual(float(win_in.positions[0, 0]), -1.25 + coach.FILM_LIFT, places=5)
         np.testing.assert_array_equal(win_in.triangles, win_out.triangles[:, ::-1])
         uv = win_out.uvs[0]
@@ -219,7 +223,7 @@ class CoachModel(unittest.TestCase):
         self.assertIn(b"film.tobj", mat)
         self.assertIn(b".over.", mat)  # blended, not alpha-tested
         # without a standard window frame there is nothing to carry the films
-        self.assertIsNone(coach.films(coach.Body(self.cab, [], []), "/a", "/b", "/c"))
+        self.assertIsNone(coach.films(coach.Body(self.cab, [], []), "/a", "/b", "/c", "/d", "/e"))
 
     def test_new_pmd_and_tokens(self):
         d = pmd.new_model(["/a.mat", "/b.mat"])

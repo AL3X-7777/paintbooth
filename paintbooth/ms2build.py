@@ -917,7 +917,14 @@ def _film_files(
     size = coach.BLUEPRINT_SIZE
     outside = TextureJob(src, "film", size, "DXT5", None, 1.0)
     inside = TextureJob(src, "film", size, "DXT5", None, coach.GLASS_OPACITY)
-    f = coach.films(body, f"/{root}/film_glass.mat", f"/{root}/film_trim.mat", f"/{root}/film_inside.mat")  # type: ignore[arg-type]
+    f = coach.films(
+        body,  # type: ignore[arg-type]
+        f"/{root}/film_glass.mat",
+        f"/{root}/film_trim.mat",
+        f"/{root}/film_inside.mat",
+        f"/{root}/film_glass_core.mat",
+        f"/{root}/film_trim_core.mat",
+    )
     if f is None:
         return [], None
     out = [
@@ -928,6 +935,8 @@ def _film_files(
         OutFile(f"{root}/film_glass.mat", coach.film_material(f"/{root}/film.tobj", glossy=False)),
         OutFile(f"{root}/film_trim.mat", coach.film_material(f"/{root}/film.tobj", glossy=True)),
         OutFile(f"{root}/film_inside.mat", coach.film_material(f"/{root}/film_inside.tobj", glossy=False)),
+        OutFile(f"{root}/film_glass_core.mat", coach.film_material(f"/{root}/film.tobj", False, core=True)),
+        OutFile(f"{root}/film_trim_core.mat", coach.film_material(f"/{root}/film.tobj", True, core=True)),
         OutFile(f"{root}/frame.pmd", f.exterior[0]),
         OutFile(f"{root}/frame.pmg", f.exterior[1]),
     ]

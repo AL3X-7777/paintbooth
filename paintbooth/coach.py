@@ -52,7 +52,7 @@ VIRTUAL = 4096
 #: Film template size (pixels) and how far films sit off the surface (metres).
 BLUEPRINT_SIZE = (4096, 2048)
 FILM_SIZE = BLUEPRINT_SIZE  # 0.12.0 name
-FILM_LIFT = 0.003
+FILM_LIFT = 0.0015
 #: Vertex colour of the films: about 1.0 in SCS's doubled vertex colours, like the body paint.
 FILM_RGBA = 0xFF7D7D7D
 #: Seen from inside the coach, window films show the artwork at this opacity (outside: fully).
@@ -440,7 +440,11 @@ def _face_views(p: pmg.Piece, centre: np.ndarray | None = None) -> list[str]:
 
 
 def film_piece(
-    src: pmg.Piece, layout: Layout, material: int, sides: tuple[float, ...] = (1.0,)
+    src: pmg.Piece,
+    layout: Layout,
+    material: int,
+    sides: tuple[float, ...] = (1.0,),
+    lift: float = FILM_LIFT,
 ) -> list[pmg.Piece]:
     """Make the film pieces over ``src``: its triangles, lifted off the surface, with blueprint UVs.
 
@@ -466,7 +470,7 @@ def film_piece(
 
     def build(sign: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         t = np.arange(len(pos)).reshape(-1, 3)
-        return pos + nrm * FILM_LIFT * sign, nrm * sign, t if sign > 0 else t[:, ::-1]
+        return pos + nrm * lift * sign, nrm * sign, t if sign > 0 else t[:, ::-1]
 
     out = []
     per = (0xFFFF // 3) * 3  # vertices per output piece, whole triangles only
@@ -683,14 +687,18 @@ FILM_MAT = """effect : "eut2.dif.spec.weight.decal.over.rfx" {{
 """
 
 
-def film_material(tobj: str, glossy: bool) -> bytes:
+def film_material(tobj: str, glossy: bool, core: bool = False) -> bytes:
     """The ``.mat`` text of a film: blended over what is behind it by the texture's alpha.
 
     Blending (not alpha testing) keeps the soft edges of the artwork, as on the painted body,
     and lets the inside window film let half the light through.
     """
     shininess, spec = (250.0, 1.0) if glossy else (95.0, 0.3)
-    return FILM_MAT.format(shininess=shininess, spec=spec, tobj=tobj).encode()
+    text = FILM_MAT.format(shininess=shininess, spec=spec, tobj=tobj)
+    if core:  # the alpha-tested layer under the blended one (see films())
+        text = text.replace("eut2.dif.spec.weight.decal.over.rfx", "eut2.dif.spec.weight.a.rfx")
+        text = text.replace("\tqueue_bias : 1\n", "")
+    return text.encode()
 
 
 def _no_film(pmd_path: str) -> bool:
@@ -717,7 +725,9 @@ class Films:
     frame_def: str
 
 
-def films(body: Body, glass_out: str, trim: str, glass_in: str) -> Films | None:
+def films(
+    body: Body, glass_out: str, trim_mat: str, glass_in: str, glass_core: str, trim_core: str
+) -> Films | None:
     """Build the window and trim films of a body, as a window frame accessory.
 
     The films are copies of the glass and gloss-black pieces, lifted off the surface, with UVs
@@ -728,9 +738,11 @@ def films(body: Body, glass_out: str, trim: str, glass_in: str) -> Films | None:
 
     Args:
         body: The body.
-        glass_out: Mod path of the outside window film material (``/...mat``).
-        trim: Mod path of the trim film material.
-        glass_in: Mod path of the inside window film material.
+        glass_out: Mod path of the outside window film material (``/...mat``, blended).
+        trim_mat: Mod path of the trim film material (blended).
+        glass_in: Mod path of the inside window film material (blended).
+        glass_core: Mod path of the outside window core material (alpha-tested).
+        trim_core: Mod path of the trim core material (alpha-tested).
 
     Returns:
         The films, or None when the body has no standard window frame or nothing to cover.
@@ -744,19 +756,33 @@ def films(body: Body, glass_out: str, trim: str, glass_in: str) -> Films | None:
     n = len(pmd.material_table(host.pmd_data)[0])
     outer: list[pmg.Piece] = []
     inner: list[pmg.Piece] = []
+    trim = [
+        p
+        for m in [body.cab, *body.defaults]
+        if m is body.cab or not _no_film(m.pmd_path)
+        for p in m.pieces(is_gloss_black)
+    ]
+    # Two outside layers: an alpha-tested core (slots n, n+1) that hides what is behind it in
+    # the depth buffer (the coach's interior is drawn after blended surfaces, so a blended film
+    # alone lets the seats show through), and a blended layer just above it (slots n+2, n+3)
+    # that keeps soft edges soft.
+    for slot, lift in ((n, FILM_LIFT), (n + 2, FILM_LIFT * 1.5)):
+        for p in body.cab.pieces(is_window):
+            outer += film_piece(p, layout, slot, sides=(1.0,), lift=lift)
+        for p in trim:
+            outer += film_piece(p, layout, slot + 1, sides=(1.0,), lift=lift)
     for p in body.cab.pieces(is_window):
-        outer += film_piece(p, layout, n, sides=(1.0,))
         inner += film_piece(p, layout, 0, sides=(-1.0,))
-    for m in [body.cab, *body.defaults]:
-        if m is body.cab or not _no_film(m.pmd_path):
-            outer += [f for p in m.pieces(is_gloss_black) for f in film_piece(p, layout, n + 1, sides=(1.0,))]
     if not outer:
         return None
     for f in outer + inner:  # cabin space -> the frame's own space
         f.positions = loc.unapply(f.positions).astype("f4")
         f.normals = loc.unapply(f.normals, normals=True).astype("f4")
     return Films(
-        (pmd.add_materials(host.pmd_data, [glass_out, trim]), pmg.add_pieces(host.model, outer)),
+        (
+            pmd.add_materials(host.pmd_data, [glass_core, trim_core, glass_out, trim_mat]),
+            pmg.add_pieces(host.model, outer),
+        ),
         (pmd.new_model([glass_in]), pmg.new_model(inner)) if inner else None,
         host_def[0],
     )

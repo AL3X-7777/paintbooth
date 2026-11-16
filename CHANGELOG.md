@@ -16,6 +16,9 @@ tagging a release (see RELEASING.md).
   longer painted from the opposite side's view. The coach templates are rewritten at start-up.
 - Matte black panels (the MAN's pillar beside the door, its roof panels) now count as trim and
   get the paint too.
+- Outside films have an alpha-tested core under the blended layer, so the coach's interior
+  (drawn after blended surfaces) no longer shows through painted windows; soft edges stay soft.
+  The lift is back to 1.5 mm, so films no longer peek out over neighbouring silver trim.
 
 ## 0.18.0
 - **Community vehicle pack:** *Install vehicle library* also downloads 174 community vehicle
