@@ -176,6 +176,7 @@ class Ribbon(ttk.Frame):
                     "How to use Paintbooth and make paint job mods (F1)",
                     True,
                 ),
+                ("GitHub", "open", a.open_github, "Paintbooth on GitHub: downloads, news, source code", True),
             ],
         )
         return p

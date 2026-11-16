@@ -370,6 +370,7 @@ def load_library(folder: Path) -> tuple[Library, list[str]]:
         return vehicles, errors
     for f in sorted(folder.rglob("*.xml")):
         found += _load_file(f, f.relative_to(folder).as_posix(), errors)
+    found = _drop_generated_duplicates(found)
     counts: dict[str, int] = {}
     for v in found:
         counts[v.id] = counts.get(v.id, 0) + 1
@@ -384,6 +385,32 @@ def load_library(folder: Path) -> tuple[Library, list[str]]:
         v.key = key
         vehicles[key] = v
     return vehicles, errors
+
+
+#: Files Paintbooth writes itself, best first; a vehicle in one of them is hidden when a better
+#: file (the user's own, or a scan of their game) defines the same id.
+_GENERATED = {"Paintbooth scan": 1, "Paintbooth library": 2}
+
+
+def _drop_generated_duplicates(found: list[Vehicle]) -> list[Vehicle]:
+    """Keep one copy of vehicles that Paintbooth wrote more than once.
+
+    The library, a game scan and the coach auto-scan can each write the same vehicle. Per id,
+    only the best kind is kept: the user's own files, else the scan, else the library. Several
+    user files with one id are all kept (they are told apart by file name).
+    """
+    best: dict[str, int] = {}
+    for v in found:
+        rank = _GENERATED.get(v.definition_by, 0)
+        best[v.id] = min(best.get(v.id, rank), rank)
+    out, seen = [], set()
+    for v in found:
+        rank = _GENERATED.get(v.definition_by, 0)
+        if rank != best[v.id] or (rank and v.id in seen):
+            continue
+        seen.add(v.id)
+        out.append(v)
+    return out
 
 
 def to_xml(v: Vehicle, comment: str = "") -> str:

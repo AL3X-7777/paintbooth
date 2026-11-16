@@ -89,7 +89,8 @@ class VehicleManager:
         Tooltip(
             b,
             "Installs Paintbooth's library of every ETS2 truck, coach and trailer (newest version from "
-            "GitHub when online, else the one built in), plus the truck mods in your mod folder.",
+            "GitHub when online, else the one built in), the community vehicle pack from GitHub "
+            "(online), plus the truck mods in your mod folder.",
         )
         ttk.Button(bar, text="Scan game folder…", command=lambda: app.scan_dialog(folder=True)).pack(
             side="left"

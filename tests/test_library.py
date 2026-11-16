@@ -120,6 +120,32 @@ class BuildTest(unittest.TestCase):
         ):
             res = library.install(vehicles, None)
         self.assertEqual((res.version, res.downloaded, res.mods), ("2027.01.01", True, 0))
+        # the community pack comes from the same download, and is kept when offline
+        self.assertEqual(res.community, 2)
+        self.assertTrue((vehicles / "Library" / "Community").is_dir())
+        with mock.patch.object(library, "BUNDLED", pack):
+            res = library.install(vehicles, None, online=False)
+        self.assertEqual(res.community, 2)
+        with mock.patch.object(library.urllib.request, "urlopen") as op:  # only Paintbooth's own packs
+            self.assertIsNone(library._download(url="https://example.com/x.zip"))
+        op.assert_not_called()
+
+    def test_generated_duplicates_are_hidden(self):
+        root = self.tmp / "V"
+        for sub, by in (
+            ("Library/SCS", "Paintbooth library"),
+            ("", "Paintbooth scan"),
+            ("Lib2", "Paintbooth library"),
+        ):
+            (root / sub).mkdir(parents=True, exist_ok=True)
+            (root / sub / "bus.xml").write_text(
+                f"<vehicle id='b.us' definition_by='{by}' type='Buses'><variant id='c'/></vehicle>"
+            )
+        lib, _ = vehlib.load_library(root)
+        self.assertEqual([v.definition_by for v in lib.values()], ["Paintbooth scan"])  # one, the scan
+        (root / "mine.xml").write_text("<vehicle id='b.us' definition_by='me'><variant id='c'/></vehicle>")
+        lib, _ = vehlib.load_library(root)
+        self.assertEqual([v.definition_by for v in lib.values()], ["me"])  # the user's own wins
 
     def test_download_reads_a_flat_pack(self):
         pack = library.write_pack(library.build(self.mod, "ets2"), self.tmp / "pack", "2026.02.02")

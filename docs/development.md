@@ -103,6 +103,13 @@ See [RELEASING.md](../RELEASING.md). In short: raise `__version__` in `paintboot
 only place), add a section to `CHANGELOG.md`, commit, push, then push a tag `vX.Y.Z`. GitHub builds
 the installer, the portable zip, the source zip and the documentation zip, and publishes the release.
 
+## Vehicle packs
+
+`packs/` holds the two packs *Install vehicle library* downloads (from `raw.githubusercontent.com`,
+branch `main`): `vehicle-library.zip` (a zip of `paintbooth/data/library`; rebuild it whenever that
+folder changes, and raise the version in its `index.json`) and `community-vehicles.zip` (community
+XMLs, flat, with an `index.json`). Each zip is flat: XML files plus `index.json`.
+
 ## Building the installer yourself
 
 On Windows with Python 3.13:

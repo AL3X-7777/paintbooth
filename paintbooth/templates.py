@@ -460,6 +460,6 @@ def safe_name(s: str) -> str:
 # Where to download the paint job template packs (Carsmaniac's complete truck & trailer packs,
 # shared on the SCS forum). Downloading needs internet; importing works offline.
 TEMPLATE_PACKS = {
-    "ats": ("ATS truck & trailer templates", "https://forum.scssoft.com/viewtopic.php?t=272386"),
-    "ets2": ("ETS2 truck & trailer templates", "https://forum.scssoft.com/viewtopic.php?t=288778"),
+    "ats": ("ATS truck & trailer templates", "https://forum.scssoft.com/viewtopic.php?t=288778"),
+    "ets2": ("ETS2 truck & trailer templates", "https://forum.scssoft.com/viewtopic.php?t=272386"),
 }

@@ -2,6 +2,6 @@
 <!-- Paintbooth vehicle library 2026.11.14 -->
 <vehicle id="volvo.9700_23" game="ets2" brand="Volvo" name="9700 Double Decker" author="SCS Software" definition_by="Paintbooth library" type="Buses">
   <!-- cabins: id is what goes into suitable_for[] -->
-  <variant id="143d6.volvo.9700_23.cabin" name="DD 4.0m" mask="pjm_at_0x0_size_4096x2048" model="/vehicle/bus/volvo_9700_23/cabin/cab_143d6.pmd"/>
+  <variant id="143d6.volvo.9700_23.cabin" name="14.3 m double-deck, 6 wheels" mask="pjm_at_0x0_size_4096x2048" model="/vehicle/bus/volvo_9700_23/cabin/cab_143d6.pmd"/>
   <!-- paintable accessories: value is what goes into acc_list[] -->
 </vehicle>

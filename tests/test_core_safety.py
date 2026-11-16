@@ -373,6 +373,18 @@ class ReviewTwoFixes(unittest.TestCase):
             updates.urllib.request, "urlopen", side_effect=http.client.IncompleteRead(b"")
         ):
             self.assertIsNone(updates.latest_release())
+        # no release published yet: the version on the main branch is compared, linking the repo
+        init = io.BytesIO(b'"""x"""\n__version__ = "9.1.0"\n')
+        with (
+            mock.patch.object(updates, "latest_release", return_value=None),
+            mock.patch.object(updates.urllib.request, "urlopen", return_value=init),
+        ):
+            self.assertEqual(updates.check("0.1.0"), ("9.1.0", updates.REPO_URL))
+        with (
+            mock.patch.object(updates, "latest_release", return_value=None),
+            mock.patch.object(updates.urllib.request, "urlopen", side_effect=OSError("offline")),
+        ):
+            self.assertIsNone(updates.check("0.1.0"))
 
     def test_cache_folder_problems_do_not_fail_the_build(self):
         import tempfile

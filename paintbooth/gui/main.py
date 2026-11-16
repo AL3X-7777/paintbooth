@@ -796,8 +796,18 @@ class App:
 
         threading.Thread(target=work, daemon=True).start()
 
+    def open_github(self) -> None:
+        """Open Paintbooth's GitHub page in the browser."""
+        from ..updates import REPO_URL
+
+        webbrowser.open(REPO_URL)
+
     def _show_update(self, version: str, url: str) -> None:
-        """Show 'Paintbooth X is available' in the status bar; clicking opens the download page."""
+        """Tell the user about a new version: a message with "Don't tell me again", and the status bar.
+
+        Clicking the status bar text opens the download page.
+        """
+        self._update_dialog(version, url)
         self.update_lbl.configure(text=f"Paintbooth {version} is available - click to download")
         ttk.Separator(self.statusbar, orient="vertical").pack(side="right", fill="y", padx=10)
         self.update_lbl.pack(side="right")
@@ -806,6 +816,42 @@ class App:
             self.update_lbl,
             f"Opens {url}\nInstall it by running the new Setup.exe; your projects and settings are kept.",
         )
+
+    def _update_dialog(self, version: str, url: str) -> None:
+        """A small window: 'Paintbooth X is available', Download / Later, and "Don't tell me again"."""
+        win = tk.Toplevel(self.root)
+        win.title("Update available")
+        win.transient(self.root)
+        win.resizable(False, False)
+        f = ttk.Frame(win, padding=18)
+        f.pack(fill="both", expand=True)
+        ttk.Label(
+            f,
+            text=f"Paintbooth {version} is available (you have {__version__}).",
+            style="NoticeHead.TLabel",
+        ).pack(anchor="w")
+        ttk.Label(f, text="Install it by running the new Setup; your projects and settings are kept.").pack(
+            anchor="w", pady=(6, 0)
+        )
+        never = tk.BooleanVar(value=False)
+        ttk.Checkbutton(f, text="Don't tell me again", variable=never).pack(anchor="w", pady=(12, 0))
+        bar = ttk.Frame(f)
+        bar.pack(fill="x", pady=(14, 0))
+
+        def close(download: bool) -> None:
+            if never.get():  # same switch as Settings > "Check for updates at start-up"
+                self.settings["check_updates"] = False
+                self.save_settings()
+            win.destroy()
+            if download:
+                webbrowser.open(url)
+
+        ttk.Button(bar, text="Later", command=lambda: close(False)).pack(side="right")
+        ttk.Button(bar, text="Download", style="Accent.TButton", command=lambda: close(True)).pack(
+            side="right", padx=(0, 8)
+        )
+        win.protocol("WM_DELETE_WINDOW", lambda: close(False))
+        self.update_dialog = win
 
     # =============================================================== watch
     def _poll(self) -> None:

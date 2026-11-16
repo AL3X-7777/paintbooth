@@ -125,6 +125,7 @@ class LibraryController:
                 self.reload()
                 where = "downloaded from GitHub" if res.downloaded else "built into Paintbooth"
                 text = f"Vehicle library {res.version} installed ({where}): {res.vehicles} SCS vehicles"
+                text += f", {res.community} community vehicles" if res.community else ""
                 text += f", {res.mods} from your mods" if mods else ""
                 app.status(text)
                 if not quiet:
@@ -138,17 +139,20 @@ class LibraryController:
         threading.Thread(target=work, daemon=True).start()
 
     def auto_library(self) -> None:
-        """First start: install the built-in library (offline, without mods) if none is installed."""
-        if not (self.library_dir / "Library").is_dir():
+        """Install the built-in library (offline, without mods) when none or an older one is installed."""
+        from ..library import BUNDLED, pack_version
+
+        installed = self.library_dir / "Library" / "SCS"
+        if not installed.is_dir() or pack_version(installed) < pack_version(BUNDLED):
             self.install_library(online=False, mods=False, quiet=True)
 
     def auto_coaches(self) -> None:
         """Add the Coaches DLC's coaches to the library without a manual scan, once.
 
         Runs at start-up. If the library has no coaches yet and ETS2 with ``dlc_bus.scs`` is found
-        (the folder from Settings, else the Steam libraries), the DLC archive alone is scanned on a
-        worker thread: the coaches are added, their templates written and the game folder
-        remembered for exports.
+        (the folder from Settings, else the Steam libraries), the game folder is remembered for
+        exports and the coach templates are written. The coaches themselves come with the vehicle
+        library; only when it has none is the DLC archive scanned for them (no second copy).
         """
         app = self.app
         from ..coach import TEMPLATE_VERSION
@@ -169,6 +173,12 @@ class LibraryController:
             return
         app.settings.setdefault("game_dirs", {})["ets2"] = str(game)
         app.settings["coach_templates"] = TEMPLATE_VERSION
+        from ..library import BUNDLED
+
+        bundled = [v for v in vehlib.load_library(BUNDLED)[0].values() if v.is_bus]
+        if bundled:  # the vehicle library brings the coaches; only their templates are needed
+            threading.Thread(target=self._bus_templates, args=(game, bundled), daemon=True).start()
+            return
         app.status("Adding the coaches from the Coaches DLC…")
         threading.Thread(target=self._scan, args=(game / "dlc_bus.scs", "ets2"), daemon=True).start()
 

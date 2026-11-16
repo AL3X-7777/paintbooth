@@ -118,8 +118,8 @@ troubleshooting, colours, shortcuts, folders and a glossary. Everything is searc
 ## Templates
 
 Download the template pack for your game (needs internet once):
-[ETS2 truck & trailer templates](https://forum.scssoft.com/viewtopic.php?t=288778) ·
-[ATS truck & trailer templates](https://forum.scssoft.com/viewtopic.php?t=272386)
+[ETS2 truck & trailer templates](https://forum.scssoft.com/viewtopic.php?t=272386) ·
+[ATS truck & trailer templates](https://forum.scssoft.com/viewtopic.php?t=288778)
 (SCS forum; e.g. *ETS2_templates (game ver. 1.59).zip*). Then
 **Settings > Templates > Import template pack**. It is unpacked into
 `Documents\Paintbooth\Templates\ETS2` (or `ATS`).
@@ -168,7 +168,16 @@ first time Paintbooth starts. **Vehicles > Install vehicle library** installs it
 version from GitHub when you're online, else the built-in one, plus any truck, coach or trailer
 mods in your ETS2 mod folder. It lives in `Documents\Paintbooth\Vehicles\Library`; your own
 vehicle files next to it are never changed. Paintbooth builds the library from the game's own
-files; no Mods Studio 2 data is included.
+files; no Mods Studio 2 data is included in the program.
+
+**Community vehicle pack.** When you're online, the same button also downloads 174 vehicle
+definitions made by the community (trucks, trailers and mod vehicles for ETS2 and ATS, in Mods
+Studio 2's XML format; credits to their authors, named in each file) into
+`Vehicles\Library\Community`. They are kept when you reinstall offline. Both packs live in the
+[`packs`](packs) folder of this repository.
+
+When Paintbooth, a library scan and the coach set-up all describe the same vehicle, the list
+shows it once (your own file first, then a scan of your game, then the library).
 
 Every MS2 project stores the full definition of the trucks it uses, so those appear in the
 Vehicle list straight away ("stored in this project"). Your **vehicle library** is the folder

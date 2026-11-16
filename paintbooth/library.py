@@ -41,10 +41,15 @@ from .vehlib import Accessory, Variant, Vehicle, save_to_library
 log = logging.getLogger(__name__)
 Log = Callable[[str], None]
 
-#: Where the library pack ships inside Paintbooth, and its name on GitHub releases.
+#: Where the library pack ships inside Paintbooth, and where newer packs are downloaded from
+#: (the ``packs`` folder of the GitHub repository).
 BUNDLED = Path(__file__).resolve().parent / "data" / "library"
 PACK_NAME = "vehicle-library.zip"
-PACK_URL = f"https://github.com/AL3X-7777/paintbooth/releases/latest/download/{PACK_NAME}"
+PACKS_URL = "https://raw.githubusercontent.com/AL3X-7777/paintbooth/main/packs/"
+PACK_URL = PACKS_URL + PACK_NAME
+#: Community vehicle definitions (Mods Studio 2 format, made by the community); download only.
+COMMUNITY_NAME = "community-vehicles.zip"
+COMMUNITY_URL = PACKS_URL + COMMUNITY_NAME
 #: The installed library's folder inside the user's vehicle folder.
 LIBRARY_FOLDER = "Library"
 
@@ -163,7 +168,9 @@ def _vehicle(kind: str, vid: str, info: _Info, game: str, loc: Localizer, source
     for x_id, raw in sorted(info.variants.items()):
         short = x_id.split(".", 1)[0] if kind != "trailer_owned" else x_id.split(".", 1)[1]
         fallback = _bus_cabin_name(x_id) if kind == "bus" else _pretty(short)
-        v.variants.append(Variant(x_id, loc(raw, fallback) if raw else fallback, model=info.models.get(x_id)))
+        # coach bodies: the game's names ("L 13.9m") say less than ours ("13.9 m high-deck, 6 wheels")
+        label = fallback if kind == "bus" or not raw else loc(raw, fallback)
+        v.variants.append(Variant(x_id, label, model=info.models.get(x_id)))
     for value in sorted(info.acc_used):
         typ, _, item = value.partition(".")
         label = loc(info.acc_names.get(value, ""), _pretty(item))
@@ -260,11 +267,16 @@ def pack_version(folder: Path) -> str:
         return ""
 
 
-def _download(timeout: float = 20.0) -> Path | None:
-    """Download the newest pack from GitHub into a temporary folder; None when offline or absent."""
+def _download(timeout: float = 20.0, url: str = PACK_URL) -> Path | None:
+    """Download a pack (a flat zip of XMLs and ``index.json``) into a temporary folder.
+
+    Returns None when offline or the pack is missing or damaged.
+    """
     tmp = Path(tempfile.mkdtemp(prefix="paintbooth-library-"))
     try:
-        req = urllib.request.Request(PACK_URL, headers={"User-Agent": "Paintbooth-library"})
+        if not url.startswith(PACKS_URL):
+            raise ValueError(f"not a Paintbooth pack URL: {url}")
+        req = urllib.request.Request(url, headers={"User-Agent": "Paintbooth-library"})  # noqa: S310
         with urllib.request.urlopen(req, timeout=timeout) as r:  # noqa: S310 (fixed https:// URL)
             (tmp / PACK_NAME).write_bytes(r.read(64 * 1024 * 1024))
         with zipfile.ZipFile(tmp / PACK_NAME) as z:
@@ -286,6 +298,7 @@ class InstallResult:
     version: str = ""
     downloaded: bool = False
     vehicles: int = 0
+    community: int = 0
     mods: int = 0
     mod_errors: list[str] = field(default_factory=list)
 
@@ -295,8 +308,10 @@ def install(
 ) -> InstallResult:
     r"""Install the library into ``vehicles_dir/Library``, plus the truck mods in ``mod_dir``.
 
-    The newest of the bundled pack and (when ``online``) the GitHub release pack is used. The
-    ``Library`` folder is replaced as a whole; nothing else in ``vehicles_dir`` changes.
+    The newest of the bundled pack and (when ``online``) the GitHub pack is used. Online, the
+    community pack is downloaded into ``Library/Community`` too; offline, the community files
+    already installed are kept. The ``Library`` folder is replaced as a whole; nothing else in
+    ``vehicles_dir`` changes.
 
     Args:
         vehicles_dir: The user's vehicle folder (``Documents\\Paintbooth\\Vehicles``).
@@ -319,6 +334,15 @@ def install(
         shutil.copy2(f, tmp / "SCS" / f.name)
         res.vehicles += 1
     shutil.copy2(pack / "index.json", tmp / "SCS" / "index.json")
+    community = _download(url=COMMUNITY_URL) if online else None
+    if community is None and (target / "Community").is_dir():
+        community = target / "Community"  # offline: keep the community files from last time
+    if community is not None:
+        (tmp / "Community").mkdir()
+        for f in community.glob("*.*"):
+            if f.suffix in (".xml", ".json"):
+                shutil.copy2(f, tmp / "Community" / f.name)
+                res.community += f.suffix == ".xml"
     if mod_dir is not None and mod_dir.is_dir():
         res.mods = _add_mods(mod_dir, tmp / "Mods", res.mod_errors, log_line)
     shutil.rmtree(target, ignore_errors=True)

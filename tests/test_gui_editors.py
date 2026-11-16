@@ -469,6 +469,32 @@ class CoachOptionsTest(TkCase):
 
 
 @needs_display
+class UpdateDialogTest(TkCase):
+    def test_dont_tell_me_again_turns_the_check_off(self):
+        from paintbooth.gui.main import App
+
+        fake = mock.Mock()
+        fake.root, fake.settings = self.root, {"check_updates": True}
+        with mock.patch("webbrowser.open") as web:
+            App._update_dialog(fake, "9.0.0", "https://github.com/AL3X-7777/paintbooth")
+            win = fake.update_dialog
+            self.pump()
+            boxes = [w for w in _walk(win) if w.winfo_class() == "TCheckbutton"]
+            boxes[0].invoke()  # "Don't tell me again"
+            later = [w for w in _walk(win) if w.winfo_class() == "TButton" and w.cget("text") == "Later"]
+            later[0].invoke()
+        self.assertFalse(fake.settings["check_updates"])
+        fake.save_settings.assert_called_once()
+        web.assert_not_called()
+
+
+def _walk(w):
+    for c in w.winfo_children():
+        yield c
+        yield from _walk(c)
+
+
+@needs_display
 class TruckSkinEditorTest(TkCase):
     def setUp(self):
         super().setUp()

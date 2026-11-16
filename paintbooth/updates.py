@@ -15,7 +15,11 @@ import urllib.request
 log = logging.getLogger(__name__)
 
 REPO = "AL3X-7777/paintbooth"  # github.com/<owner>/<repository>
+REPO_URL = f"https://github.com/{REPO}"
 RELEASES_URL = f"https://github.com/{REPO}/releases"
+#: The version on the main branch, used while no release is published.
+MAIN_INIT_URL = f"https://raw.githubusercontent.com/{REPO}/main/paintbooth/__init__.py"
+_VERSION_RE = re.compile(r'^__version__\s*=\s*"([^"]+)"', re.M)
 API_URL = f"https://api.github.com/repos/{REPO}/releases/latest"
 
 
@@ -64,9 +68,29 @@ def latest_release(timeout: float = 5.0) -> tuple[str, str] | None:
         return None
 
 
+def main_version(timeout: float = 5.0) -> str | None:
+    """Return the version on the repository's main branch, or None (offline, unreadable)."""
+    try:
+        req = urllib.request.Request(MAIN_INIT_URL, headers={"User-Agent": "Paintbooth-update-check"})
+        with urllib.request.urlopen(req, timeout=timeout) as r:  # noqa: S310 (fixed https:// URL)
+            m = _VERSION_RE.search(r.read(64 * 1024).decode("utf-8", "replace"))
+        return m.group(1) if m else None
+    except (OSError, ValueError, http.client.HTTPException) as e:
+        log.debug("update check failed: %s", e)
+        return None
+
+
 def check(current: str) -> tuple[str, str] | None:
-    """Return (version, url) if GitHub has a newer release than ``current``, else None."""
+    """Return (version, url) if GitHub has a newer version than ``current``, else None.
+
+    A published release wins (its page has the installer); without one, the version on the
+    main branch is compared, and the link goes to the repository.
+    """
     rel = latest_release()
     if rel and is_newer(rel[0], current):
         return rel
+    if rel is None:
+        ver = main_version()
+        if ver and is_newer(ver, current):
+            return ver, REPO_URL
     return None

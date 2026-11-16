@@ -98,7 +98,9 @@ A template is an image of the truck's paint layout (its "UV map"): where the doo
         """
 # Templates
 ## Importing a template pack
-1. Download the template pack for your game (a .zip).
+1. Download the template pack for your game (a .zip) from SCS's forum:
+   - ETS2: [ETS2 truck & trailer templates](https://forum.scssoft.com/viewtopic.php?t=272386)
+   - ATS: [ATS truck & trailer templates](https://forum.scssoft.com/viewtopic.php?t=288778)
 2. **Settings > Templates > Import template pack (.zip)…**. It is unpacked into Documents\\Paintbooth\\Templates\\ETS2 (or ATS). Importing the same pack again only copies what changed.
 
 You can also unzip a pack into that folder yourself.
@@ -116,8 +118,8 @@ Paintbooth matches vehicles to template folders by name (internal name, in-game 
 # Getting template packs
 Templates are images that show where each part of a truck or trailer sits on the skin texture. You paint on them, then use your image as the skin. Paintbooth doesn't include them: download the complete packs once (needs internet), then everything works offline.
 ## 1. Download
-- ETS2: [ETS2 truck & trailer templates](https://forum.scssoft.com/viewtopic.php?t=288778) (SCS forum)
-- ATS: [ATS truck & trailer templates](https://forum.scssoft.com/viewtopic.php?t=272386) (SCS forum)
+- ETS2: [ETS2 truck & trailer templates](https://forum.scssoft.com/viewtopic.php?t=272386) (SCS forum)
+- ATS: [ATS truck & trailer templates](https://forum.scssoft.com/viewtopic.php?t=288778) (SCS forum)
 
 Open the first post of the topic and download the .zip from one of its links. The packs are large (the ATS pack is about 1 GB) and are updated for new game versions, so check the topic now and then.
 ## 2. Add to Paintbooth

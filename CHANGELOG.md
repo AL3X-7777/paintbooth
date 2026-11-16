@@ -3,6 +3,22 @@
 Each release on GitHub shows the section for its version. Add a new section at the top before
 tagging a release (see RELEASING.md).
 
+## 0.18.0
+- **Community vehicle pack:** *Install vehicle library* also downloads 174 community vehicle
+  definitions (ETS2 and ATS trucks, trailers and mod vehicles) from GitHub into
+  `Vehicles\Library\Community`. Offline, the ones already downloaded are kept.
+- The vehicle library is now downloaded from the repository's `packs` folder, so it works
+  without a GitHub release, and is updated at start-up when Paintbooth brings a newer one.
+- **No more duplicate coaches:** a vehicle that the library, a scan and the coach set-up all
+  describe is listed once. The coach set-up no longer scans the DLC when the library has the
+  coaches. Library coach bodies use the descriptive names ("12.1 m high-deck, 4 wheels").
+- **GitHub** button in the Program group of the Home tab.
+- **Update check at start-up** now also works without a GitHub release (it compares with the
+  version on GitHub) and shows a window with *Download*, *Later* and **Don't tell me again**
+  (the same as turning off *Check for updates* in Settings).
+- The template tutorial links SCS's official template packs (the ETS2 and ATS links were
+  swapped before).
+
 ## 0.17.1
 - Coach window films: the outside film now faces outwards in the game, so windows are fully
   covered from outside where the artwork is opaque (only the half see-through inside film
