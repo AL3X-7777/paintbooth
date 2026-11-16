@@ -446,7 +446,10 @@ def film_piece(
 
     def build(sign: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         t = np.arange(len(pos)).reshape(-1, 3)
-        return pos + nrm * FILM_LIFT * sign, nrm * sign, t if sign > 0 else t[:, ::-1]
+        # In the game the films show the face the other way round from the model they copy
+        # (seen in game: outward copies were invisible from outside, inward ones visible), so the
+        # outward copy gets the reversed triangle order and the inward copy the original one.
+        return pos + nrm * FILM_LIFT * sign, nrm * sign, t[:, ::-1] if sign > 0 else t
 
     out = []
     per = (0xFFFF // 3) * 3  # vertices per output piece, whole triangles only

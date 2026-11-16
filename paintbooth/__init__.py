@@ -8,4 +8,4 @@ with SCS Software or with Mods Studio.
 installer and the update check all read it from here.
 """
 
-__version__ = "0.17.0"
+__version__ = "0.17.1"

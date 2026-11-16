@@ -3,6 +3,12 @@
 Each release on GitHub shows the section for its version. Add a new section at the top before
 tagging a release (see RELEASING.md).
 
+## 0.17.1
+- Coach window films: the outside film now faces outwards in the game, so windows are fully
+  covered from outside where the artwork is opaque (only the half see-through inside film
+  showed before). The trim films, which faced the wrong way too, now show. The inside film is
+  unchanged.
+
 ## 0.17.0
 - **Coaches: windows and trim per body.** In the Skins tab every coach body now has a second
   line, "<body> - windows and trim"; tick it to paint that body's windows and gloss-black trim
