@@ -21,6 +21,9 @@ tagging a release (see RELEASING.md).
   The lift is back to 1.5 mm, so films no longer peek out over neighbouring silver trim.
 - The entrance doors and the opening side window (separate, animated models) are painted too,
   on the blueprint, in the bake and with films. Their films are drawn in the closed position.
+- Films sit 0.5 mm off the surface (under the ~1.1 mm the MAN's silver sweep stands off the
+  glass) and the blended layer no longer uses the decal depth bias, so films no longer show
+  through thin trim strips from a distance.
 
 ## 0.18.0
 - **Community vehicle pack:** *Install vehicle library* also downloads 174 community vehicle

@@ -167,7 +167,8 @@ space with `Locator.unapply`), plus an `interior_model` with the inside window f
 opacity (`pmg.new_model`, `pmd.new_model`). It is suitable only for its own paint job, and the
 paint job lists it in `overrides[]`; the game log shows that `overrides[]` only swaps an
 accessory of a slot the coach already has, which is why the frame slot is used. The films use a
-neutral vertex colour and a blended material (`...decal.over`).
+neutral vertex colour; the outside layers are an alpha-tested core (`eut2.dif.spec.weight.a`) under
+a blended layer (`eut2.dif.spec.weight.over`, no decal depth bias), lifted 0.5 mm.
 
 Which bodies get films is ticked per image in the Skins tab: `<cabin id>+films` next to the
 cabin id in the image's list (`ms2build.FILMS`).

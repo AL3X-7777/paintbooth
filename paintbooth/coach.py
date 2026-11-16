@@ -52,7 +52,9 @@ VIRTUAL = 4096
 #: Film template size (pixels) and how far films sit off the surface (metres).
 BLUEPRINT_SIZE = (4096, 2048)
 FILM_SIZE = BLUEPRINT_SIZE  # 0.12.0 name
-FILM_LIFT = 0.0015
+# Below the ~1.1 mm that thin trim strips (the MAN's silver sweep) stand off the glass, so films
+# never show through them; no decal depth bias either, which grows with distance.
+FILM_LIFT = 0.0005
 #: Vertex colour of the films: about 1.0 in SCS's doubled vertex colours, like the body paint.
 FILM_RGBA = 0xFF7D7D7D
 #: Seen from inside the coach, window films show the artwork at this opacity (outside: fully).
@@ -686,7 +688,7 @@ def _pad(img: np.ndarray, covered: np.ndarray, steps: int) -> np.ndarray:
 #: films) that the paint job puts on.
 FILM_TYPE = "f_wnd_frame"
 
-FILM_MAT = """effect : "eut2.dif.spec.weight.decal.over.rfx" {{
+FILM_MAT = """effect : "eut2.dif.spec.weight.over.rfx" {{
 \tadditional_ambient : 0.000000
 \tdiffuse : {{ 1.000000 , 1.000000 , 1.000000 }}
 \treflection : 0.000000
@@ -710,7 +712,7 @@ def film_material(tobj: str, glossy: bool, core: bool = False) -> bytes:
     shininess, spec = (250.0, 1.0) if glossy else (95.0, 0.3)
     text = FILM_MAT.format(shininess=shininess, spec=spec, tobj=tobj)
     if core:  # the alpha-tested layer under the blended one (see films())
-        text = text.replace("eut2.dif.spec.weight.decal.over.rfx", "eut2.dif.spec.weight.a.rfx")
+        text = text.replace("eut2.dif.spec.weight.over.rfx", "eut2.dif.spec.weight.a.rfx")
         text = text.replace("\tqueue_bias : 1\n", "")
     return text.encode()
 
@@ -783,7 +785,7 @@ def films(
     # the depth buffer (the coach's interior is drawn after blended surfaces, so a blended film
     # alone lets the seats show through), and a blended layer just above it (slots n+2, n+3)
     # that keeps soft edges soft.
-    for slot, lift in ((n, FILM_LIFT), (n + 2, FILM_LIFT * 1.5)):
+    for slot, lift in ((n, FILM_LIFT), (n + 2, FILM_LIFT * 1.3)):
         for p in windows:
             outer += film_piece(p, layout, slot, sides=(1.0,), lift=lift)
         for p in trim:
