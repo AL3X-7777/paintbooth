@@ -113,7 +113,9 @@ class App:
         self.notice = Notice(root)
         from . import filedrop
 
-        self.drops = filedrop.enable(root, self.on_files_dropped)
+        self.drops = False
+        # once the window exists on screen (tkdnd needs its native window to register it)
+        root.after(800, lambda: setattr(self, "drops", filedrop.enable(root, self.on_files_dropped)))
         self.start = StartScreen(self)
         self.file_sidebar = FileSidebar(self)
         if path is not None and Path(path).is_file():

@@ -22,7 +22,7 @@ The full API of each one is in the [HTML reference](../api/index.html).
 | `paintbooth.gui.colorpick` | Colour picker used everywhere in the app. |
 | `paintbooth.gui.editors` | Editors for the two built-in kinds of project item: the mod manifest and Advanced Skins. |
 | `paintbooth.gui.export_ctl` | Exporting the open project to a .scs mod (F5, Shift+F5, File > Export...). |
-| `paintbooth.gui.filedrop` | Files dragged from Explorer onto the Paintbooth window (Windows only). |
+| `paintbooth.gui.filedrop` | Files dragged from Explorer onto the Paintbooth window. |
 | `paintbooth.gui.icons` | Ribbon, toolbar and status icons, drawn in code with Pillow (no bundled artwork). |
 | `paintbooth.gui.library_ctl` | The user's vehicle library (``Documents\Paintbooth\Vehicles\*.xml``) as seen by the main window. |
 | `paintbooth.gui.main` | Paintbooth main window: a fast, dark, Mods Studio 2-style editor for .pb / .ms2 projects. |

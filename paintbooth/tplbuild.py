@@ -404,7 +404,7 @@ def validate_item(
     if it.type == "CargoContainer2":
         _check_cargo(ck, it, find)
     vid = _native_truck(it)
-    if vid and _native_source(vid) is None:
+    if vid and _native_source(vid, it.type) is None:
         ck.error(
             "Truck",
             f"{label}: Paintbooth has no data for this truck; set the ETS2 game folder in Settings "
@@ -428,13 +428,13 @@ def _native_truck(it: TemplateItem) -> str | None:
     return glassdecal.native_vehicle(it.el, it.get("Truck"))
 
 
-def _native_source(vid: str) -> object | None:
+def _native_source(vid: str, kind: str | None = None) -> object | None:
     """Where a truck's windscreen and windows come from: the shipped data, else the game folder."""
     from . import glassdecal
     from .scanner import game_reader
 
     b = glassdecal.bundled()
-    if b is not None and vid in b.trucks():
+    if b is not None and vid in b.trucks(kind):
         return b
     game = _game_dir()
     return glassdecal.GameSource(game_reader(game)) if game is not None else None
@@ -444,7 +444,7 @@ def _plan_native(project: Ms2Project, it: TemplateItem, vid: str) -> list[OutFil
     """Build a windscreen decal or door window for a truck Paintbooth adds (see :mod:`glassdecal`)."""
     from . import glassdecal
 
-    source = _native_source(vid)
+    source = _native_source(vid, it.type)
     if source is None:
         raise TemplateError("no data for this truck, and the ETS2 game folder is not set")
     ms2 = ms2_dir(project)

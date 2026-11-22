@@ -169,6 +169,8 @@ class GlassDecalTest(unittest.TestCase):
                 z.writestr("mat_0_0.mat", win.mats["/m/glass.mat"])
             bundle = gd.BundleSource(zp)
             self.assertEqual(bundle.trucks(), {"acme.road": "Acme Road"})
+            self.assertEqual(bundle.trucks("TruckDoorWindow"), {"acme.road": "Acme Road"})
+            self.assertEqual(bundle.trucks("TruckWindscreenDecal"), {"acme.road": "Acme Road"})
             img = Path(t) / "art.png"
             Image.new("RGBA", (64, 32), (255, 0, 0, 255)).save(img)
 
@@ -186,6 +188,15 @@ class GlassDecalTest(unittest.TestCase):
             self.assertEqual(bundle.cabins("nobody"), [])
         with mock_bundle(Path("/no/such.zip")):
             self.assertIsNone(gd.bundled())
+
+    def test_shipped_bundle_covers_the_game(self):
+        bundle = gd.bundled()
+        if bundle is None:
+            self.skipTest("paintbooth/data/glass.zip is not in this checkout")
+        trucks = bundle.trucks()
+        self.assertGreaterEqual(len(trucks), 20)
+        self.assertEqual(len(set(trucks.values())), len(trucks))  # every name can be told apart
+        self.assertIn("volvo.fh_2024", bundle.trucks("TruckDoorWindow"))
 
     def test_truck_list_options(self):
         el = parse(

@@ -25,7 +25,7 @@ packages = ["paintbooth", "paintbooth.gui"]
 version = { attr = "paintbooth.__version__" }
 
 [tool.setuptools.package-data]
-paintbooth = ["ui/*.html", "data/*.json", "data/*.png", "data/library/*"]
+paintbooth = ["ui/*.html", "data/*.json", "data/*.png", "data/*.zip", "data/library/*"]
 
 # ---------------------------------------------------------------- code quality
 [tool.ruff]

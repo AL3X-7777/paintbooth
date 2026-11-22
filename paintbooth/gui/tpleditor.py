@@ -218,7 +218,7 @@ class TemplateEditor(ttk.Frame):
         if item.type not in glassdecal.ITEMS or project is None or project.game != "ets2":
             return
         bundle = glassdecal.bundled()  # the trucks Paintbooth ships data for
-        trucks = list(bundle.trucks().items()) if bundle is not None else []
+        trucks = list(bundle.trucks(item.type).items()) if bundle is not None else []
         if not trucks:  # no shipped data: every SCS truck of the library (built from the game folder)
             trucks = [
                 (v.id, f"{v.brand} {v.name}".strip())

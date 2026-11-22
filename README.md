@@ -237,8 +237,7 @@ with these items open as editable items too.
 
 **Every ETS2 truck for windscreen decals and door windows.** Besides the trucks Mods Studio 2's
 templates know, the truck list offers every other ETS2 truck under *Paintbooth (from your game)*.
-Paintbooth builds those from the game's own models at export time (the ETS2 game folder must be
-set): the windscreen decal is the windscreen glass seen from the front, the door window art goes
+Paintbooth ships their data (made from the game's own models), so no game folder is needed: the windscreen decal is the windscreen glass seen from the front, the door window art goes
 on the opening windows (mirrored on the right door so it reads the right way round). Their
 templates are written to `Templates\ETS2\Windscreen decals` and `Templates\ETS2\Door windows`.
 

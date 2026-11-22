@@ -3,6 +3,15 @@
 Each release on GitHub shows the section for its version. Add a new section at the top before
 tagging a release (see RELEASING.md).
 
+## 0.21.0
+- **Windscreen decals and door windows need no game folder any more.** Paintbooth ships the data
+  for all 26 SCS trucks of ETS2 1.62 (made from the game by `tools/make_glass_bundle.py`); their
+  templates are written at start-up. The game folder is only used for trucks the data lacks.
+  Each item lists only the trucks it can be built for, and trucks the game names alike
+  ("Volvo FH") show their internal name.
+- **Dragging a mod onto the window no longer crashes Paintbooth.** Drops now go through tkdnd
+  (the `tkinterdnd2` package, bundled with the installer) instead of a hook into the window.
+
 ## 0.20.0
 - **Windscreen decals and door windows for every ETS2 truck.** The truck lists of these two
   items now also offer every truck of the game, under *Paintbooth (from your game)*; Paintbooth

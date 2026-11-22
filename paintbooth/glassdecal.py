@@ -416,14 +416,23 @@ class BundleSource:
         self.zip = zipfile.ZipFile(path)
         self.index = json.loads(self.zip.read("index.json"))
 
-    def trucks(self) -> dict[str, str]:
-        """Vehicle id -> shown name of every truck with a windscreen or windows in the bundle."""
+    def trucks(self, kind: str | None = None) -> dict[str, str]:
+        """Vehicle id -> shown name of the trucks the bundle has data for.
+
+        Args:
+            kind: ``"TruckWindscreenDecal"`` or ``"TruckDoorWindow"`` for the trucks that item
+                can be built for; None for trucks with either.
+        """
         ws, win = self.index["windscreens"], self.index["windows"]
-        return {
+        want_ws, want_win = kind != "TruckDoorWindow", kind != "TruckWindscreenDecal"
+        out = {
             vid: t["name"]
             for vid, t in self.index["trucks"].items()
-            if any(c["model"] in ws or c["windows"] in win for c in t["cabins"])
+            if any((want_ws and c["model"] in ws) or (want_win and c["windows"] in win) for c in t["cabins"])
         }
+        names = [n for vid, t in self.index["trucks"].items() for n in [t["name"]]]
+        # the game calls several trucks just "Volvo FH": add the internal name to tell them apart
+        return {v: (f"{n} ({v.split('.', 1)[-1]})" if names.count(n) > 1 else n) for v, n in out.items()}
 
     def cabins(self, vid: str) -> list[Cabin]:
         """The truck's cabins as the bundle recorded them."""
