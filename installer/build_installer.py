@@ -59,7 +59,9 @@ from paintbooth import __version__  # noqa: E402  (needs the sys.path entry abov
 TRAILER_MAGIC = b"SKYPAYLD"
 TRAILER_SIZE = 16  # magic (8) + uint64 little-endian payload offset (8)
 BUNDLED_WHEEL_TAG = "cp313-cp313-win_amd64"  # matches the Python runtime that is bundled
-BUNDLED_PACKAGES = ("pillow", "numpy")
+#: tkinterdnd2 (dragging files onto the window) is pure Python plus the tkdnd binaries.
+BUNDLED_PACKAGES = ("pillow", "numpy", "tkinterdnd2")
+WHEEL_TAGS = {"tkinterdnd2": "py3-none-any"}
 
 # Parts of the Windows Python runtime that Paintbooth never uses (keeps the installer small).
 DROP_DIRS = {"include", "libs", "Scripts", "share"}
@@ -162,7 +164,7 @@ def bundled_wheels(reqs: dict[str, tuple[str, set[str]]]) -> list[Path]:
     for name in BUNDLED_PACKAGES:
         if name not in reqs:
             raise BuildError(f"{name} is not listed in {OFFLINE_REQUIREMENTS.name}")
-        wheel = WHEELS / f"{name}-{reqs[name][0]}-{BUNDLED_WHEEL_TAG}.whl"
+        wheel = WHEELS / f"{name}-{reqs[name][0]}-{WHEEL_TAGS.get(name, BUNDLED_WHEEL_TAG)}.whl"
         verify_wheel(wheel, reqs)
         out.append(wheel)
     return out

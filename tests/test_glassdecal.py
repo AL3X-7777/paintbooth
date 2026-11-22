@@ -229,3 +229,22 @@ class RibbonLayoutTest(unittest.TestCase):
         self.assertEqual(lay[1]["items"], ["new"])
         self.assertIsNotNone(rb.button_for("add:TruckLightbox"))
         self.assertIsNone(rb.button_for("unknown"))
+
+
+class FileDropTest(unittest.TestCase):
+    def test_parse_and_enable_never_raise(self):
+        try:
+            import tkinter as tk
+
+            from paintbooth.gui import filedrop
+
+            root = tk.Tk()
+        except Exception:  # noqa: BLE001 - no Tk or no display here
+            self.skipTest("needs Tk and a display")
+        try:
+            self.assertEqual(
+                [p.name for p in filedrop.parse(root, "{C:/my mods/a b.scs} C:/y.zip")], ["a b.scs", "y.zip"]
+            )
+            self.assertIn(filedrop.enable(root, lambda files: None), (True, False))  # True with tkdnd
+        finally:
+            root.destroy()

@@ -13,6 +13,8 @@ if not defined PB (
 )
 
 set "GAME=%~1"
+rem next to the game (this folder inside "Euro Truck Simulator 2"): use that game
+if not defined GAME if exist "%~dp0..\def.scs" for %%g in ("%~dp0..") do set "GAME=%%~fg"
 if not defined GAME if exist "F:\SteamLibrary\steamapps\common\Euro Truck Simulator 2\def.scs" set "GAME=F:\SteamLibrary\steamapps\common\Euro Truck Simulator 2"
 if not defined GAME if exist "D:\SteamLibrary\steamapps\common\Euro Truck Simulator 2\def.scs" set "GAME=D:\SteamLibrary\steamapps\common\Euro Truck Simulator 2"
 if not defined GAME if exist "C:\Program Files (x86)\Steam\steamapps\common\Euro Truck Simulator 2\def.scs" set "GAME=C:\Program Files (x86)\Steam\steamapps\common\Euro Truck Simulator 2"

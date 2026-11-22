@@ -1,89 +1,56 @@
-"""Files dragged from Explorer onto the Paintbooth window (Windows only).
+"""Files dragged from Explorer onto the Paintbooth window.
 
-Tk has no drag-and-drop of files of its own. On Windows the main window is registered with
-``DragAcceptFiles`` and its window procedure is wrapped to catch ``WM_DROPFILES``; the dropped
-paths are handed to a callback on the Tk thread. Elsewhere :func:`enable` does nothing and
-returns False, and the Browse buttons remain the way to pick files.
+Tk has no drag and drop of files of its own, so this uses *tkdnd*, the Tk extension behind the
+``tkinterdnd2`` package (bundled with the Windows installer). The extension is loaded into the
+existing Tk and the main window is registered as a drop target for files; Windows passes a drop
+on any part of the window up to it. Without the package :func:`enable` does nothing and returns
+False, and the Browse buttons remain the way to pick files.
+
+(0.20.0 hooked the window procedure through ``ctypes`` instead, which crashed Paintbooth on a
+drop; nothing here touches the window procedure.)
 """
 
 from __future__ import annotations
 
 import logging
-import sys
 import tkinter as tk
 from collections.abc import Callable
 from pathlib import Path
-from typing import Any
 
 log = logging.getLogger(__name__)
 
-WM_DROPFILES = 0x0233
-GWLP_WNDPROC = -4
-
-# the wrapped window procedures, kept alive for as long as the windows are
-_KEEP: list[Any] = []
+DND_FILES = "DND_Files"
 
 
-def enable(root: tk.Misc, on_files: Callable[[list[Path]], None]) -> bool:
-    """Accept files dropped on ``root``'s top-level window; ``on_files`` gets their paths.
+def enable(root: tk.Tk, on_files: Callable[[list[Path]], None]) -> bool:
+    """Accept files dropped on ``root``; ``on_files`` gets their paths on the Tk thread.
 
     Returns:
-        True when drops are enabled (Windows), False otherwise or when the hook failed.
+        True when drops are enabled, False when tkdnd is not available here.
     """
-    if sys.platform != "win32":
-        return False
     try:
-        return _enable_windows(root, on_files)
-    except (OSError, AttributeError, tk.TclError) as e:  # never let this stop the app starting
+        import importlib
+
+        dnd = importlib.import_module("tkinterdnd2.TkinterDnD")  # optional: bundled on Windows
+        dnd._require(root)  # loads the tkdnd package into this Tk
+        root.tk.call("tkdnd::drop_target", "register", str(root), DND_FILES)
+    except Exception as e:  # noqa: BLE001 - a missing or broken extension must never stop the app
         log.info("drag and drop of files is not available: %s", e)
         return False
 
-
-def _enable_windows(
-    root: tk.Misc, on_files: Callable[[list[Path]], None]
-) -> bool:  # pragma: no cover - Windows
-    import ctypes
-    from ctypes import wintypes
-
-    user32 = ctypes.windll.user32  # type: ignore[attr-defined]
-    shell32 = ctypes.windll.shell32  # type: ignore[attr-defined]
-    lresult = ctypes.c_ssize_t
-    wndproc = ctypes.WINFUNCTYPE(lresult, wintypes.HWND, wintypes.UINT, wintypes.WPARAM, wintypes.LPARAM)  # type: ignore[attr-defined]
-    user32.GetParent.restype = wintypes.HWND
-    user32.GetWindowLongPtrW.restype = ctypes.c_void_p
-    user32.SetWindowLongPtrW.restype = ctypes.c_void_p
-    user32.SetWindowLongPtrW.argtypes = [wintypes.HWND, ctypes.c_int, ctypes.c_void_p]
-    user32.CallWindowProcW.restype = lresult
-    user32.CallWindowProcW.argtypes = [
-        ctypes.c_void_p,
-        wintypes.HWND,
-        wintypes.UINT,
-        wintypes.WPARAM,
-        wintypes.LPARAM,
-    ]
-    shell32.DragQueryFileW.argtypes = [wintypes.HANDLE, wintypes.UINT, wintypes.LPWSTR, wintypes.UINT]
-    shell32.DragQueryFileW.restype = wintypes.UINT
-    shell32.DragFinish.argtypes = [wintypes.HANDLE]
-
-    root.update_idletasks()
-    hwnd = user32.GetParent(root.winfo_id()) or root.winfo_id()
-    old = user32.GetWindowLongPtrW(hwnd, GWLP_WNDPROC)
-
-    def proc(h: int, msg: int, wp: int, lp: int) -> int:
-        if msg == WM_DROPFILES:
+    def dropped(data: str) -> str:
+        try:
+            files = parse(root, data)
+        except tk.TclError:
             files = []
-            for i in range(shell32.DragQueryFileW(wp, 0xFFFFFFFF, None, 0)):
-                n = shell32.DragQueryFileW(wp, i, None, 0) + 1
-                buf = ctypes.create_unicode_buffer(n)
-                shell32.DragQueryFileW(wp, i, buf, n)
-                files.append(Path(buf.value))
-            shell32.DragFinish(wp)
-            root.after_idle(on_files, files)
-            return 0
-        return int(user32.CallWindowProcW(old, h, msg, wp, lp))
+        if files:
+            root.after_idle(on_files, files)  # after tkdnd has finished the drop
+        return "copy"
 
-    cb = wndproc(proc)
-    _KEEP.append(cb)
-    user32.SetWindowLongPtrW(hwnd, GWLP_WNDPROC, ctypes.cast(cb, ctypes.c_void_p))
-    shell32.DragAcceptFiles(hwnd, True)
+    root.tk.call("bind", str(root), "<<Drop>>", root.register(dropped) + " %D")
     return True
+
+
+def parse(root: tk.Misc, data: str) -> list[Path]:
+    """The paths in tkdnd's drop data (``{C:/a b/x.scs} C:/y.zip``)."""
+    return [Path(p) for p in root.tk.splitlist(data) if p]

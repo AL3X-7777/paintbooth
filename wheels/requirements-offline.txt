@@ -1,4 +1,4 @@
-# Pillow and numpy for an offline install (install.bat) and for the bundled installer runtime
+# Pillow, numpy and tkinterdnd2 for an offline install (install.bat) and for the bundled installer runtime
 # (installer/build_installer.py). Every wheel in this folder is listed with its SHA-256, so pip
 # and the installer build refuse a wheel that was changed or swapped:
 #
@@ -19,3 +19,6 @@ numpy==2.5.3 \
     --hash=sha256:0a59a421a32580a009e8a1751345bf829631b990dc1794b80514ab722b435def \
     --hash=sha256:71cad2b2a7451ab79d8f5e71b453485b6775963d5cf794179144a7463fe6e8ec \
     --hash=sha256:2c25dfa72943e4336ddb6b0ee4277b47a0c85bede0807530ec68103bf58e2c10
+
+tkinterdnd2==0.7.0 \
+    --hash=sha256:f93d4f5ad439648ba1673f15db3e271cdd08f075c87f43553ffcdde4e634a717
