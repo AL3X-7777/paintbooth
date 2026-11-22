@@ -1,9 +1,9 @@
-"""Build ``paintbooth/data/glass.zip``: windscreen decal and door window data for every ETS2 truck.
+r"""Build ``paintbooth/data/glass.zip``: windscreen decal and door window data for every ETS2 truck.
 
 Paintbooth ships this file so windscreen decals and door windows work for every SCS truck without
 the game folder (see :mod:`paintbooth.glassdecal`). It is made from the game's own files::
 
-    python tools/make_glass_bundle.py "F:\\SteamLibrary\\steamapps\\common\\Euro Truck Simulator 2" glass.zip
+    python tools/make_glass_bundle.py "F:\SteamLibrary\steamapps\common\Euro Truck Simulator 2" glass.zip
 
 It only uses functions that Paintbooth 0.20.0 already has, so it also runs with the Python and
 the Paintbooth of an installed copy (``tools/make_glass_bundle.bat`` does that on Windows).
@@ -35,7 +35,7 @@ except ImportError:
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 
-def build(game: Path, out: Path, log=print) -> dict:  # noqa: ANN001 - also runs on older Paintbooth
+def build(game: Path, out: Path, log=print) -> dict:
     """Write the bundle for the game at ``game`` into ``out``; return its index."""
     from paintbooth import glassdecal as gd
     from paintbooth import pmd
