@@ -182,6 +182,38 @@ class LibraryController:
         app.status("Adding the coaches from the Coaches DLC…")
         threading.Thread(target=self._scan, args=(game / "dlc_bus.scs", "ets2"), daemon=True).start()
 
+    def auto_glass_templates(self) -> None:
+        """Write the windscreen decal and door window templates of every ETS2 truck, once.
+
+        Runs at start-up when the ETS2 game folder is known, on a worker thread, again only when
+        :data:`paintbooth.glassdecal.TEMPLATE_VERSION` changes.
+        """
+        from ..glassdecal import TEMPLATE_VERSION
+
+        app = self.app
+        game_dir = (app.settings.get("game_dirs") or {}).get("ets2")
+        if not game_dir or app.settings.get("glass_templates") == TEMPLATE_VERSION:
+            return
+        trucks = sorted(
+            (v.id, f"{v.brand} {v.name}".strip())
+            for v in self.library.values()
+            if v.game == "ets2" and not v.is_trailer and not v.is_bus and v.author == "SCS Software"
+        )
+        if not trucks:
+            return
+        app.settings["glass_templates"] = TEMPLATE_VERSION
+
+        def work() -> None:
+            from ..glassdecal import write_templates
+            from ..scanner import game_reader
+
+            try:
+                write_templates(game_reader(Path(game_dir)), trucks, appdirs.templates_dir("ets2"))
+            except (OSError, ValueError):
+                log.exception("could not write the windscreen and door window templates")
+
+        threading.Thread(target=work, daemon=True).start()
+
     @staticmethod
     def _bus_templates(src: Path, vehicles: list[vehlib.Vehicle]) -> int:
         """Worker thread: write the UV templates of any scanned coaches; return how many files.

@@ -15,19 +15,21 @@ The full API of each one is in the [HTML reference](../api/index.html).
 | `paintbooth.builder` | Turn a loaded :class:`~paintbooth.model.Project` into a finished .scs mod - fast. |
 | `paintbooth.coach` | Coaches (the ETS2 "Coaches" DLC): the blueprint template, baking, and painted windows and trim. |
 | `paintbooth.formats` | Writers for the game file formats Paintbooth produces. |
+| `paintbooth.glassdecal` | Windscreen decals and door window art for any truck, built from the game's own models. |
 | `paintbooth.gui` | Paintbooth desktop UI. |
 | `paintbooth.gui.codeeditor` | Code editor for XML: line numbers, colouring, find/replace, go to line, auto-indent. |
 | `paintbooth.gui.colorgen` | 'Generate color' dialog: a plain 64x64 DDS swatch with any colour and opacity. |
 | `paintbooth.gui.colorpick` | Colour picker used everywhere in the app. |
 | `paintbooth.gui.editors` | Editors for the two built-in kinds of project item: the mod manifest and Advanced Skins. |
 | `paintbooth.gui.export_ctl` | Exporting the open project to a .scs mod (F5, Shift+F5, File > Export...). |
+| `paintbooth.gui.filedrop` | Files dragged from Explorer onto the Paintbooth window (Windows only). |
 | `paintbooth.gui.icons` | Ribbon, toolbar and status icons, drawn in code with Pillow (no bundled artwork). |
 | `paintbooth.gui.library_ctl` | The user's vehicle library (``Documents\Paintbooth\Vehicles\*.xml``) as seen by the main window. |
 | `paintbooth.gui.main` | Paintbooth main window: a fast, dark, Mods Studio 2-style editor for .pb / .ms2 projects. |
 | `paintbooth.gui.prefs` | Reading and writing the Paintbooth settings file (``~/.paintbooth.json``). |
 | `paintbooth.gui.project_ctl` | Opening, saving and closing projects, and noticing when the file changes on disk. |
 | `paintbooth.gui.psdmaker` | Template folder bar for the Skins tab, and template-pack import. |
-| `paintbooth.gui.ribbon` | The Office-style ribbon at the top of the main window. |
+| `paintbooth.gui.ribbon` | The Office-style ribbon at the top of the main window, which the user can rearrange. |
 | `paintbooth.gui.settings` | The Settings window (ribbon > Program > Settings, or File > Settings). |
 | `paintbooth.gui.startscreen` | Start screen (shown when Paintbooth opens) and the File side bar. |
 | `paintbooth.gui.theme` | Colours, fonts and ttk styles for the Paintbooth window (dark theme by default, light on request). |

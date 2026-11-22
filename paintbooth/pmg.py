@@ -366,3 +366,31 @@ def new_model(pieces: list[Piece], part: str = "films") -> bytes:
     h += [112, 112, base, base, base, 0, base, 0, base, 0]
     data = _HEADER.pack(*h) + _PART.pack(token(part), 0, 0, 0, 0)
     return add_pieces(Model(data, tuple(h)), pieces)
+
+
+def with_uvs(model: Model, uvs: dict[int, np.ndarray], uv_set: int = 0) -> bytes:
+    """Return the .pmg bytes of ``model`` with the UVs of some pieces replaced in place.
+
+    Nothing else moves: skinning, normals and the layout stay as they are, so this works for
+    animated models (a truck's opening windows) too.
+
+    Args:
+        model: The parsed model.
+        uvs: Piece index -> (vertices, 2) new UVs.
+        uv_set: Which UV set to replace.
+
+    Raises:
+        PmgError: A piece has no such UV set or the wrong number of UVs.
+    """
+    out = bytearray(model.data)
+    h = model.header
+    for i, new in uvs.items():
+        w = _PIECE.unpack_from(out, h[20] + i * _PIECE.size)
+        verts, width, stride, uv_off = w[1], w[3], w[15], w[18]
+        if uv_off < 0 or uv_set >= width:
+            raise PmgError(f"piece {i} has no UV set {uv_set}")
+        if len(new) != verts:
+            raise PmgError(f"piece {i} has {verts} vertices, got {len(new)} UVs")
+        for k, (u, v) in enumerate(np.asarray(new, dtype="<f4")):
+            struct.pack_into("<2f", out, uv_off + k * stride + 8 * uv_set, float(u), float(v))
+    return bytes(out)

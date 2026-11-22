@@ -12,7 +12,7 @@ import webbrowser
 from collections.abc import Callable
 from functools import partial
 from pathlib import Path
-from tkinter import filedialog, ttk
+from tkinter import filedialog, messagebox, ttk
 from typing import TYPE_CHECKING
 
 from PIL import ImageTk
@@ -20,6 +20,7 @@ from PIL import ImageTk
 from .. import appdirs, ms2data, templates
 from ..ms2build import export_name
 from .psdmaker import import_dialog
+from .ribbon import clean_layout
 from .widgets import ScrollFrame, Section, Tooltip, open_path
 from .winutil import tool_window
 
@@ -27,6 +28,27 @@ if TYPE_CHECKING:
     from .main import App
 
 LABEL_WIDTH = 24  # characters; keeps the field column aligned across all sections
+
+
+#: Settings that are the user's data rather than preferences, so *Reset to defaults* keeps them.
+KEEP_ON_RESET = (
+    "recent",
+    "recent_times",
+    "exports",
+    "versions",
+    "game_dirs",
+    "coach_templates",
+    "glass_templates",
+    "template_map",
+    "user_palettes",
+)
+
+
+def reset_settings(settings: dict[str, object]) -> None:
+    """Remove every setting except :data:`KEEP_ON_RESET`, in place (the app's defaults then apply)."""
+    for key in list(settings):
+        if key not in KEEP_ON_RESET:
+            del settings[key]
 
 
 class SettingsWindow:
@@ -55,6 +77,13 @@ class SettingsWindow:
         bar.pack(fill="x")
         ttk.Button(bar, text="Cancel", command=self.win.destroy).pack(side="right")
         ttk.Button(bar, text="Save", style="Accent.TButton", command=self.save).pack(side="right", padx=6)
+        reset = ttk.Button(bar, text="Reset to defaults", command=self.reset_defaults)
+        reset.pack(side="left")
+        Tooltip(
+            reset,
+            "Every setting back to how Paintbooth comes: folders, creator name, appearance, ribbon, "
+            "window layout. Your projects, recent files, game folder and vehicle library are kept.",
+        )
         self._preview()
         self._preview_icon()
 
@@ -403,6 +432,26 @@ class SettingsWindow:
         img = appdirs.render_icon(appdirs.SKIN_ICON_SIZE, font_path=f)
         self._photo = ImageTk.PhotoImage(img)
         self.icon_preview.configure(image=self._photo)
+
+    # ------------------------------------------------------------------ reset
+    def reset_defaults(self) -> None:
+        """Ask, then put every setting back to its default (see :data:`KEEP_ON_RESET`)."""
+        if not messagebox.askyesno(
+            "Reset to defaults",
+            "Reset every setting to its default?\n\nFolders, creator name, appearance, the ribbon "
+            "and the window layout go back to how Paintbooth comes. Your projects, recent files, "
+            "game folder and vehicle library are kept.",
+            parent=self.win,
+        ):
+            return
+        s = self.app.settings
+        look = (s.get("font_size", 9), s.get("ui_scale", 100), s.get("theme", "dark")) != (9, 100, "dark")
+        reset_settings(s)
+        self.app.ribbon.layout = clean_layout(None)
+        self.app.ribbon.rebuild(save=False)
+        self.app.settings_changed(True, look)
+        self.win.destroy()
+        self.app.status("Settings reset to their defaults")
 
     # ------------------------------------------------------------------ save
     def save(self) -> None:

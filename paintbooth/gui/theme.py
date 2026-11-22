@@ -276,6 +276,9 @@ def _style_base(s: ttk.Style, link: str) -> None:
     s.configure("Ribbon.TFrame", background=C["ribbon"])
     s.configure("Ribbon.TLabel", background=C["ribbon"], foreground=C["muted"], font="SkSmall")
     s.configure("Muted.TLabel", foreground=C["muted"])
+    s.configure("Menu.TLabel", background=C["panel"])  # the "Add more" list
+    s.configure("MenuHover.TLabel", background=C["select"])
+    s.configure("MenuOff.TLabel", background=C["panel"], foreground=C["muted"])
     s.configure("Head.TLabel", font="SkHead")
     s.configure("Section.TLabel", font="SkSection", foreground=C["fg"])
     s.configure("Ok.TLabel", foreground=C["ok"])

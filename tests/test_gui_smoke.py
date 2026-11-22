@@ -165,6 +165,43 @@ class MainWindowTest(unittest.TestCase):
             self.root.update()
             time.sleep(0.01)
 
+    def test_ribbon_customising_add_popup_drops_and_reset(self):
+        from unittest import mock
+
+        from paintbooth.gui import ribbon as rb
+        from paintbooth.gui.settings import SettingsWindow
+
+        app = self.app
+        self.pump()
+        r = app.ribbon
+        self.assertEqual([g["caption"] for g in r.layout][:2], ["Project", "Items"])
+        # move "Delete" to the front of Project, then add a lightbox button to Export
+        r.drop("delete", 0, 0)
+        self.assertEqual(r.layout[0]["items"][0], "delete")
+        self.assertIn("delete", r.buttons)
+        r.drop("add:TruckLightbox", 2, None)
+        self.assertEqual(r.layout[2]["items"][-1], "add:TruckLightbox")
+        self.assertEqual(app.settings["ribbon_layout"], r.layout)  # remembered
+        # a drop target is found from the screen point of a button
+        b = r.buttons["export"]
+        self.pump()
+        target = r.drop_target(b.winfo_rootx() + 2, b.winfo_rooty() + 2)
+        self.assertEqual(target, (2, 0))
+        # the Add more list opens (hover or click) and closes
+        app.show_add_menu()
+        self.pump()
+        self.assertIsNotNone(r.add_popup)
+        r.close_add_popup()
+        self.assertIsNone(r.add_popup)
+        # Settings > Reset to defaults puts the ribbon (and the settings) back
+        app.settings["creator_name"] = "Someone"
+        sw = SettingsWindow(app)
+        with mock.patch("paintbooth.gui.settings.messagebox.askyesno", return_value=True):
+            sw.reset_defaults()
+        self.assertNotIn("creator_name", app.settings)
+        self.assertEqual(r.layout, rb.DEFAULT_LAYOUT)
+        self.assertFalse(self.errors, self.errors)
+
     def test_open_switch_settings_close(self):
         app = self.app
         self.pump()

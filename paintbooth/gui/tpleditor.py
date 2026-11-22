@@ -182,6 +182,16 @@ class TemplateEditor(ttk.Frame):
 
     def _open_folder(self) -> None:
         """Open the template folder, or the selected truck/model's own sub-folder if there is one."""
+        from .. import appdirs, glassdecal
+
+        item = self.item
+        if item is not None and item.type in glassdecal.ITEMS and glassdecal.is_native(item.get("Truck")):
+            # Paintbooth's own templates
+            kind = "Door windows" if item.type == "TruckDoorWindow" else "Windscreen decals"
+            folder = appdirs.templates_dir("ets2") / kind
+            folder.mkdir(parents=True, exist_ok=True)
+            open_path(folder)
+            return
         d = self.tdir()
         if d is None or self.item is None:
             messagebox.showinfo(
@@ -195,6 +205,24 @@ class TemplateEditor(ttk.Frame):
                     open_path(sub)
                     return
         open_path(d)
+
+    def _add_game_trucks(self, item: TemplateItem) -> None:
+        """Windscreen decals and door windows: offer every ETS2 truck, not only Mods Studio 2's.
+
+        The trucks Paintbooth builds itself from the game files are listed under
+        "Paintbooth (from your game)" (see :mod:`paintbooth.glassdecal`).
+        """
+        from .. import glassdecal
+
+        project = self.app.project
+        if item.type not in glassdecal.ITEMS or project is None or project.game != "ets2":
+            return
+        trucks = sorted(
+            (v.id, f"{v.brand} {v.name}".strip())
+            for v in getattr(self.app, "library", {}).values()
+            if v.game == "ets2" and not v.is_trailer and not v.is_bus and v.author == "SCS Software"
+        )
+        glassdecal.add_native_trucks(item.el, sorted(trucks, key=lambda t: t[1].lower()))
 
     # ---------------------------------------------------------------- building
     def load(self, item: TemplateItem) -> None:
@@ -213,6 +241,8 @@ class TemplateEditor(ttk.Frame):
         for w in self.sf.inner.winfo_children():
             w.destroy()
         self.rows, self.marks = [], {}
+        self.drop_target: tuple[tk.StringVar, set[str]] | None = None
+        self._add_game_trucks(item)
         vars_ = item.variables()
         lookup = _lookup(vars_)
         store = self.app.settings.setdefault("sections", {})
@@ -508,8 +538,10 @@ class TemplateEditor(ttk.Frame):
         return fr
 
     def _file(self, body: ttk.Frame, v: Elem, on_change: OnChange) -> ttk.Frame:
-        """File path field with Browse (the "Existing mod" .scs/.zip)."""
-        fr = ttk.Frame(body)
+        """File path field with Browse (the "Existing mod" .scs/.zip); files can be dropped on the window."""
+        outer = ttk.Frame(body)
+        fr = ttk.Frame(outer)
+        fr.pack(fill="x")
         var = tk.StringVar(value=v.get_text("Value"))
         ttk.Entry(fr, textvariable=var).pack(side="left", fill="x", expand=True)
         exts = _allowed_extensions(v, ("scs", "zip"))
@@ -529,7 +561,19 @@ class TemplateEditor(ttk.Frame):
 
         var.trace_add("write", w)
         ttk.Button(fr, text="Browse", command=browse).pack(side="left", padx=(6, 0))
-        return fr
+        self.drop_target = (var, {f".{x.lower()}" for x in exts})
+        ttk.Label(outer, text="or drag the file onto the Paintbooth window", style="Muted.TLabel").pack(
+            anchor="w"
+        )
+        return outer
+
+    def drop_file(self, path: Path) -> bool:
+        """Put a file dragged onto the window into this item's file field; False if it has none."""
+        target = getattr(self, "drop_target", None)
+        if target is None or path.suffix.lower() not in target[1]:
+            return False
+        target[0].set(str(path))
+        return True
 
     # ---------------------------------------------------------------- state
     def _changed(self, label: bool = False) -> None:

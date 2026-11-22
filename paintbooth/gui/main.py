@@ -111,6 +111,9 @@ class App:
         self._bind_shortcuts()
 
         self.notice = Notice(root)
+        from . import filedrop
+
+        self.drops = filedrop.enable(root, self.on_files_dropped)
         self.start = StartScreen(self)
         self.file_sidebar = FileSidebar(self)
         if path is not None and Path(path).is_file():
@@ -125,6 +128,7 @@ class App:
         root.after(3000, self._check_updates)
         root.after(1000, self.vehicles.auto_library)
         root.after(1500, self.vehicles.auto_coaches)
+        root.after(4000, self.vehicles.auto_glass_templates)
         root.after(150, self._restore_sash)
         self.pane.bind("<ButtonRelease-1>", lambda e: self.root.after(10, self._guard_sash), add="+")
         self.pane.bind("<Configure>", lambda e: self.root.after(10, self._guard_sash), add="+")
@@ -587,32 +591,29 @@ class App:
         return d
 
     def show_add_menu(self) -> None:
-        """The 'Add more' menu: every Mods Studio 2 template kind, greyed out when not for this game."""
-        project = self._ensure_project()
-        m = tk.Menu(self.root, tearoff=False)
-        game = project.game
+        """The 'Add more' list: every Mods Studio 2 template kind, greyed out when not for this game.
+
+        It opens when the pointer rests on the button (or on a click). Entries can be dragged onto
+        the ribbon to get a button of their own (see :class:`~.ribbon.Ribbon`).
+        """
+        game = self.project.game if self.project is not None else "ets2"
         ms2 = self.ms2_dir(ask=False)
         have = ms2data.templates(ms2, game) if ms2 else {}
-        m.add_command(label="Advanced Skin (truck or trailer)", command=self.add_item)
-        m.add_separator()
+        entries: list[tuple[str, str, Callable[[], object] | None]] = [
+            ("Advanced Skin (truck or trailer)", "add_skin", self.add_item),
+            ("", "", None),
+        ]
         for kind, (label, _help) in ms2data.FEATURES.items():
             if ms2 is not None and kind not in have:
-                m.add_command(
-                    label=f"{label}  (not for {'ETS2' if game == 'ets2' else 'ATS'})", state="disabled"
-                )
+                entries.append((f"{label}  (not for {'ETS2' if game == 'ets2' else 'ATS'})", "", None))
             else:
-                m.add_command(label=label, command=partial(self.add_template, kind))
+                entries.append((label, f"add:{kind}", partial(self.add_template, kind)))
         if ms2 is None:
-            m.add_separator()
-            m.add_command(
-                label="These use Mods Studio 2's templates - set its folder…",
-                command=lambda: self.ms2_dir(ask=True),
-            )
-        b = self.ribbon.add_more_btn
-        if b is not None and b.winfo_ismapped():
-            m.tk_popup(b.winfo_rootx(), b.winfo_rooty() + b.winfo_height())
-        else:
-            m.tk_popup(self.root.winfo_pointerx(), self.root.winfo_pointery())
+            entries += [
+                ("", "", None),
+                ("These use Mods Studio 2's templates - set its folder…", "", lambda: self.ms2_dir(ask=True)),
+            ]
+        self.ribbon.open_add_popup(entries)
 
     def add_template(self, kind: str) -> None:
         """Add a Mods Studio 2 template item (lightbox, billboard...) after the selected item."""
@@ -632,6 +633,47 @@ class App:
         self.selected = f"item::{i}"
         self.changed(structure=True)
         self.status(f"Added {ms2data.FEATURES.get(kind, (tdef.name,))[0]} - fill in the fields on the right")
+
+    def on_files_dropped(self, files: list[Path]) -> None:
+        """Files dragged from Explorer onto the window.
+
+        Mods (.scs, .zip) go into the open "Existing mod" item's file field, or each becomes a
+        new "Existing mod" item. A project file (.pb, .ms2) is opened.
+        """
+        mods = [f for f in files if f.suffix.lower() in (".scs", ".zip")]
+        projects = [f for f in files if f.suffix.lower() in (".pb", ".ms2")]
+        if projects and not mods:
+            self.open_project(projects[0])
+            return
+        if not mods:
+            self.status(
+                "Drag mods (.scs or .zip) here to pack them into the project, or a project to open it"
+            )
+            return
+        if self.shown is self.template_editor and self.template_editor.drop_file(mods[0]):
+            self.status(f"Existing mod: {mods[0].name}")
+            mods = mods[1:]
+        for f in mods:
+            self.add_existing_mod(f)
+
+    def add_existing_mod(self, path: Path) -> None:
+        """Add an "Existing mod" item that packs the mod at ``path``."""
+        if self.project is None:
+            self._ensure_project()
+        before = len(self.project.items) if self.project else 0
+        self.add_template("ExistingMod")
+        project = self.project
+        if project is None or len(project.items) == before:
+            return  # Mods Studio 2 or its template is missing (the user was told)
+        it = project.items[self._index() or 0]
+        if isinstance(it, TemplateItem):
+            for v in it.variables():
+                if v.type() == "FileSourceVariable":
+                    from ..ms2 import var_set
+
+                    var_set(v, str(path))
+            self.changed(structure=True)
+            self.status(f"Added the mod {path.name}")
 
     def duplicate_item(self) -> None:
         """Duplicate the selected item (with a new internal name)."""

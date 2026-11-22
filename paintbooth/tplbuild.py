@@ -403,7 +403,62 @@ def validate_item(
         _check_files(ck, v, find, validators)
     if it.type == "CargoContainer2":
         _check_cargo(ck, it, find)
+    if _native_truck(it) and _game_dir() is None:
+        ck.error(
+            "Truck",
+            f"{label}: trucks marked 'Paintbooth (from your game)' are built from the game's own "
+            "files; set the ETS2 game folder in Settings (or Vehicles > Scan game folder)",
+        )
     return ck.probs
+
+
+def _game_dir() -> Path | None:
+    """The ETS2 game folder from the settings, or None."""
+    d = (_settings().get("game_dirs") or {}).get("ets2")
+    return Path(d) if d and Path(d).is_dir() else None
+
+
+def _native_truck(it: TemplateItem) -> str | None:
+    """For a windscreen decal or door window on a truck Paintbooth adds: the vehicle id, else None."""
+    from . import glassdecal
+
+    if it.type not in glassdecal.ITEMS:
+        return None
+    return glassdecal.native_vehicle(it.el, it.get("Truck"))
+
+
+def _plan_native(project: Ms2Project, it: TemplateItem, vid: str) -> list[OutFile]:
+    """Build a windscreen decal or door window for a truck from the game's own models."""
+    from . import glassdecal
+    from .scanner import game_reader
+
+    game = _game_dir()
+    if game is None:
+        raise TemplateError("the ETS2 game folder is not set")
+    ms2 = ms2_dir(project)
+    find = resolver(project, ms2, template_folder(it, ms2))
+    image = find(it.get(glassdecal.ITEMS[it.type][1]))
+    if image is None:
+        raise TemplateError("the decal image was not found")
+    read = game_reader(game)
+    try:
+        if it.type == "TruckDoorWindow":
+            files = glassdecal.plan_door_window(read, vid, image)
+        else:
+            icon = find(it.get("SkinIcon")) if it.get("SkinIcon").strip() else None
+            files = glassdecal.plan_windscreen(
+                read,
+                vid,
+                it.get("InternalName"),
+                it.get("Name") or it.get("InternalName"),
+                it.get("Price"),
+                it.get("UnlockLevel"),
+                image,
+                icon,
+            )
+    except (OSError, ValueError) as e:
+        raise TemplateError(str(e)) from e
+    return files  # type: ignore[return-value]
 
 
 # ====================================================================== export
@@ -418,6 +473,9 @@ def plan_item(project: Ms2Project, it: TemplateItem) -> tuple[list[OutFile], lis
     Raises:
         TemplateError: The template folder is missing or a build action fails.
     """
+    vid = _native_truck(it)
+    if vid:
+        return _plan_native(project, it, vid), []
     ms2 = ms2_dir(project)
     tdir = template_folder(it, ms2)
     if tdir is None:

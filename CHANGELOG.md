@@ -3,6 +3,21 @@
 Each release on GitHub shows the section for its version. Add a new section at the top before
 tagging a release (see RELEASING.md).
 
+## 0.20.0
+- **Windscreen decals and door windows for every ETS2 truck.** The truck lists of these two
+  items now also offer every truck of the game, under *Paintbooth (from your game)*; Paintbooth
+  builds them from the game's own models when you export (no extra files needed). Their
+  templates are written to `Templates\ETS2\Windscreen decals` and `\Door windows` at start-up.
+  Door window art reads the right way round on both doors.
+- **Drag mods onto the window**: a .scs or .zip dropped on Paintbooth goes into the open
+  *Existing mod* item, or becomes a new one. A dropped project (.pb, .ms2) is opened.
+- **Add more** opens its list when the pointer rests on it.
+- **Customisable ribbon**: drag buttons to reorder them or move them to another group, and drag
+  entries of the Add more list onto the ribbon for a button of their own. Right-click for move,
+  new group, rename, remove and *Reset ribbon*.
+- **Settings > Reset to defaults** puts every setting back (projects, recent files, the game
+  folder and the vehicle library are kept).
+
 ## 0.19.0
 - Coach window and trim films now travel as a **window frame** (the coach's standard frame plus
   the films). The game's log showed that a paint job's `overrides[]` only swaps an accessory of

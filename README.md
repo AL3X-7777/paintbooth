@@ -228,12 +228,24 @@ with these items open as editable items too.
 | Item | Game | What it makes |
 |---|---|---|
 | Truck lightbox | ETS2 | your artwork in the Volvo FH3-FH6 roof lightbox, sold in the truck shop |
-| Truck windscreen decal | ETS2, ATS | a windscreen decal per truck, slot pattern and windscreen type |
-| Truck door window | ETS2 | artwork on the Scania R/S 2016 door windows |
+| Truck windscreen decal | ETS2, ATS | a windscreen decal per truck, slot pattern and windscreen type; on ETS2 for every truck of the game (see below) |
+| Truck door window | ETS2 | artwork on the door windows of any ETS2 truck |
 | Billboard | ETS2, ATS | replaces the roadside billboards of one billboard model (one billboard mod at a time) |
 | Cargo container V2 | ETS2, ATS | a cargo with your own 20/40 ft (and ATS 53 ft) container skins, companies, value… |
 | Player company logo | ETS2, ATS | replaces the logos you can choose for your company |
-| Existing mod | ETS2, ATS | packs another mod's files (.scs or .zip) into this mod |
+| Existing mod | ETS2, ATS | packs another mod's files (.scs or .zip) into this mod; drag the mod onto the window |
+
+**Every ETS2 truck for windscreen decals and door windows.** Besides the trucks Mods Studio 2's
+templates know, the truck list offers every other ETS2 truck under *Paintbooth (from your game)*.
+Paintbooth builds those from the game's own models at export time (the ETS2 game folder must be
+set): the windscreen decal is the windscreen glass seen from the front, the door window art goes
+on the opening windows (mirrored on the right door so it reads the right way round). Their
+templates are written to `Templates\ETS2\Windscreen decals` and `Templates\ETS2\Door windows`.
+
+**The ribbon is yours to arrange.** Drag a button onto another one or onto a group's name to move
+it; rest the pointer on **Add more** to open its list and drag an entry onto the ribbon for a
+button of its own. Right-click for move, new group, rename, remove and *Reset ribbon*.
+**Settings > Reset to defaults** puts every setting back.
 
 The form shows the same fields Mods Studio 2 does, grouped the same way; fields that don't apply
 to your choice (e.g. slot patterns for a truck without them) are hidden. **Open template folder**

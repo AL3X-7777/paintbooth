@@ -85,6 +85,7 @@ A template is an image of the truck's paint layout (its "UV map"): where the doo
 - **File** opens the side bar: new/open/save, export, settings, tutorials, recent projects and the start screen.
 - **Home** ribbon: project buttons, the item buttons (Mod manifest, Add Skin, Duplicate, Delete) and export.
 - **Home** ribbon, between Export and Program: Color converter, TOBJ editor and the **Vehicles** library.
+- **Make the ribbon yours**: drag a button onto another button (it goes in front of it) or onto a group's name (it goes at the end of that group). Rest the pointer on **Add more** to open its list, and drag an entry (Truck lightbox, Billboard…) onto the ribbon to give it a button of its own. Right-click a button or a group name to move it, make a new group, rename or remove; **Reset ribbon** there (or **Settings > Reset to defaults**) puts everything back.
 - Left: the project's items. **Mod manifest** is always first; each Advanced Skin is one paint job.
 - Right: the selected item. An Advanced Skin has four tabs: **Vehicle**, **Main**, **Skins**, **Accessories**.
 - Bottom: the status bar. The counter on the right lists problems; click it to see them all. Fields with a problem get a red or orange mark; hover over the mark for details.
@@ -256,11 +257,12 @@ Select a vehicle and edit its XML on the right. Changes are checked as you type,
 **Home > Add more** adds items other than paint jobs:
 - **Truck lightbox** (ETS2): your artwork in the Volvo FH3-FH6 roof lightbox. Pick the truck, internal name and name, the image, and whether it's painted.
 - **Truck windscreen decal**: a windscreen decal. Some trucks offer accessory slot patterns (Jewel, In-Line, …) or windscreen types (Defrost): tick the ones you want and each becomes its own decal in the shop.
-- **Truck door window** (ETS2): artwork on the Scania R/S 2016 door windows.
+- **Truck door window** (ETS2): artwork on the door windows.
+- For both, the truck list also has every other ETS2 truck, under **Paintbooth (from your game)**. Paintbooth builds those from the game's own files when you export (set the ETS2 game folder in Settings). Their templates are in Documents\\Paintbooth\\Templates\\ETS2\\Windscreen decals and \\Door windows (**Open template folder** opens them). The windscreen template is the windscreen seen from the front; the door window template is the left door seen from outside, and the right door gets it mirrored so it reads the right way round on both. Door window art changes the windows of every truck that shares that window model.
 - **Billboard**: replaces the roadside billboards of one model (up to the number shown). Only one billboard mod can be active in the game.
 - **Cargo container V2**: a cargo carried in your own container skins (20 and 40 ft, 53 ft in ATS). Add a cargo by picking one of the game's cargos as a start, then give it your own internal name and change weight, value and companies.
 - **Player company logo**: replaces the logos you can pick for your company (up to 8). Only one logo mod can be active.
-- **Existing mod**: packs another mod (.scs or .zip) into this one. Your manifest replaces theirs.
+- **Existing mod**: packs another mod (.scs or .zip) into this one. Your manifest replaces theirs. Drag the mod from Explorer onto the Paintbooth window: it goes into the open Existing mod item, or becomes a new one (drag several to add them all).
 ## Mods Studio 2 is needed
 These items are made from Mods Studio 2's own template files (models, materials, PNG templates), so it must be installed on the same PC. Paintbooth finds it in C:\\Mods Studio 2 and the usual places; otherwise set the folder in **Settings > Mods Studio 2**.
 > **Open template folder** (top right of the item) opens MS2's folder for the item, with the PNG templates to paint on.
