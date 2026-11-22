@@ -57,6 +57,12 @@ def truck_files() -> dict[str, bytes]:
     }
 
 
+def mock_bundle(path: Path):
+    from unittest import mock
+
+    return mock.patch.object(gd, "BUNDLED", path)
+
+
 class Reader:
     def __init__(self, files: dict[str, bytes]):
         self.files = files
@@ -113,21 +119,73 @@ class GlassDecalTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as t:
             img = Path(t) / "art.png"
             Image.new("RGBA", (64, 32), (255, 0, 0, 255)).save(img)
-            files = gd.plan_windscreen(self.read, "acme.road", "deco", "Deco", "10", "0", img, img)
+            files = gd.plan_windscreen(
+                gd.GameSource(self.read), "acme.road", "deco", "Deco", "10", "0", img, img
+            )
             paths = {f.path for f in files}
             self.assertIn("def/vehicle/truck/acme.road/accessory/set_glass/deco.sii", paths)
             sii = next(f for f in files if f.path.endswith("deco.sii")).data.decode()
             self.assertIn('suitable_for[]: "c1.acme.road.cabin"', sii)
             self.assertIn("deco.acme.road.set_glass", sii)
-            door = {f.path for f in gd.plan_door_window(self.read, "acme.road", img)}
+            door = {f.path for f in gd.plan_door_window(gd.GameSource(self.read), "acme.road", img)}
             self.assertTrue({"v/win.pmd", "v/win.pmg", "v/pb_win_art.dds"} <= door)
-            written = gd.write_templates(self.read, [("acme.road", "Acme Road")], Path(t))
+            written = gd.write_templates(gd.GameSource(self.read), [("acme.road", "Acme Road")], Path(t))
             self.assertEqual(
                 sorted(p.relative_to(t).as_posix() for p in written),
                 ["Door windows/Acme Road.png", "Windscreen decals/Acme Road.png"],
             )
         with self.assertRaises(ValueError):
-            gd.plan_door_window(self.read, "nobody.here", Path("x.png"))
+            gd.plan_door_window(gd.GameSource(self.read), "nobody.here", Path("x.png"))
+
+    def test_bundle_gives_the_same_files_as_the_game(self):
+        """A bundle made from the game files plans the same mod files, with no game folder."""
+        import json
+        import zipfile
+
+        game = gd.GameSource(self.read)
+        (cab,) = game.cabins("acme.road")
+        hookup, ext, inner = game.windscreen(cab.model)
+        win = game.windows(cab.windows)
+        with tempfile.TemporaryDirectory() as t:
+            zp = Path(t) / "glass.zip"
+            index = {
+                "trucks": {"acme.road": {"name": "Acme Road", "cabins": [vars(cab)]}},
+                "windscreens": {cab.model: {"hookup": hookup, "ext": "ws_0_ext.pmg", "int": "ws_0_int.pmg"}},
+                "windows": {
+                    cab.windows: {
+                        "pmd": "win_0.pmd",
+                        "pmg": "win_0.pmg",
+                        "glass": win.glass,
+                        "mats": {"/m/glass.mat": "mat_0_0.mat"},
+                    }
+                },
+            }
+            with zipfile.ZipFile(zp, "w") as z:
+                z.writestr("index.json", json.dumps(index))
+                z.writestr("ws_0_ext.pmg", ext)
+                z.writestr("ws_0_int.pmg", inner)
+                z.writestr("win_0.pmd", win.pmd)
+                z.writestr("win_0.pmg", win.pmg)
+                z.writestr("mat_0_0.mat", win.mats["/m/glass.mat"])
+            bundle = gd.BundleSource(zp)
+            self.assertEqual(bundle.trucks(), {"acme.road": "Acme Road"})
+            img = Path(t) / "art.png"
+            Image.new("RGBA", (64, 32), (255, 0, 0, 255)).save(img)
+
+            def data(files):
+                return {f.path: f.data for f in files if f.data is not None}
+
+            for plan in (
+                lambda src: gd.plan_door_window(src, "acme.road", img),
+                lambda src: gd.plan_windscreen(src, "acme.road", "deco", "Deco", "10", "0", img, None),
+            ):
+                self.assertEqual(data(plan(bundle)), data(plan(game)))
+            self.assertEqual(len(gd.write_templates(bundle, [("acme.road", "Acme Road")], Path(t))), 2)
+            self.assertIsNone(bundle.windscreen("/nope.pmd"))
+            self.assertIsNone(bundle.windows("/nope.pmd"))
+            self.assertEqual(bundle.cabins("nobody"), [])
+        with mock_bundle(Path("/no/such.zip")):
+            self.assertIsNone(gd.bundled())
 
     def test_truck_list_options(self):
         el = parse(

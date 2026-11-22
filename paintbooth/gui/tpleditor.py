@@ -217,11 +217,14 @@ class TemplateEditor(ttk.Frame):
         project = self.app.project
         if item.type not in glassdecal.ITEMS or project is None or project.game != "ets2":
             return
-        trucks = sorted(
-            (v.id, f"{v.brand} {v.name}".strip())
-            for v in getattr(self.app, "library", {}).values()
-            if v.game == "ets2" and not v.is_trailer and not v.is_bus and v.author == "SCS Software"
-        )
+        bundle = glassdecal.bundled()  # the trucks Paintbooth ships data for
+        trucks = list(bundle.trucks().items()) if bundle is not None else []
+        if not trucks:  # no shipped data: every SCS truck of the library (built from the game folder)
+            trucks = [
+                (v.id, f"{v.brand} {v.name}".strip())
+                for v in getattr(self.app, "library", {}).values()
+                if v.game == "ets2" and not v.is_trailer and not v.is_bus and v.author == "SCS Software"
+            ]
         glassdecal.add_native_trucks(item.el, sorted(trucks, key=lambda t: t[1].lower()))
 
     # ---------------------------------------------------------------- building

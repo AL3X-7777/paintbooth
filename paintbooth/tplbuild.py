@@ -403,11 +403,12 @@ def validate_item(
         _check_files(ck, v, find, validators)
     if it.type == "CargoContainer2":
         _check_cargo(ck, it, find)
-    if _native_truck(it) and _game_dir() is None:
+    vid = _native_truck(it)
+    if vid and _native_source(vid) is None:
         ck.error(
             "Truck",
-            f"{label}: trucks marked 'Paintbooth (from your game)' are built from the game's own "
-            "files; set the ETS2 game folder in Settings (or Vehicles > Scan game folder)",
+            f"{label}: Paintbooth has no data for this truck; set the ETS2 game folder in Settings "
+            "(or Vehicles > Scan game folder) so it can be built from the game's files",
         )
     return ck.probs
 
@@ -427,27 +428,37 @@ def _native_truck(it: TemplateItem) -> str | None:
     return glassdecal.native_vehicle(it.el, it.get("Truck"))
 
 
-def _plan_native(project: Ms2Project, it: TemplateItem, vid: str) -> list[OutFile]:
-    """Build a windscreen decal or door window for a truck from the game's own models."""
+def _native_source(vid: str) -> object | None:
+    """Where a truck's windscreen and windows come from: the shipped data, else the game folder."""
     from . import glassdecal
     from .scanner import game_reader
 
+    b = glassdecal.bundled()
+    if b is not None and vid in b.trucks():
+        return b
     game = _game_dir()
-    if game is None:
-        raise TemplateError("the ETS2 game folder is not set")
+    return glassdecal.GameSource(game_reader(game)) if game is not None else None
+
+
+def _plan_native(project: Ms2Project, it: TemplateItem, vid: str) -> list[OutFile]:
+    """Build a windscreen decal or door window for a truck Paintbooth adds (see :mod:`glassdecal`)."""
+    from . import glassdecal
+
+    source = _native_source(vid)
+    if source is None:
+        raise TemplateError("no data for this truck, and the ETS2 game folder is not set")
     ms2 = ms2_dir(project)
     find = resolver(project, ms2, template_folder(it, ms2))
     image = find(it.get(glassdecal.ITEMS[it.type][1]))
     if image is None:
         raise TemplateError("the decal image was not found")
-    read = game_reader(game)
     try:
         if it.type == "TruckDoorWindow":
-            files = glassdecal.plan_door_window(read, vid, image)
+            files = glassdecal.plan_door_window(source, vid, image)  # type: ignore[arg-type]
         else:
             icon = find(it.get("SkinIcon")) if it.get("SkinIcon").strip() else None
             files = glassdecal.plan_windscreen(
-                read,
+                source,  # type: ignore[arg-type]
                 vid,
                 it.get("InternalName"),
                 it.get("Name") or it.get("InternalName"),

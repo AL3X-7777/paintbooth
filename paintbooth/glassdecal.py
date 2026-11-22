@@ -40,7 +40,7 @@ HOOKUPS = ("set_glass", "frntglss_mid")
 #: Prefix of the truck choices Paintbooth adds to the two Mods Studio 2 templates.
 NATIVE_PREFIX = "pb_"
 #: Raise when the templates change, so start-up writes them again.
-TEMPLATE_VERSION = 1
+TEMPLATE_VERSION = 2
 
 _UNIT_RE = re.compile(r"accessory_cabin_data\s*:\s*([\w.]+)")
 _MODEL_RE = re.compile(r'(?m)^\s*model\s*:\s*"([^"]+)"')
@@ -314,34 +314,34 @@ def _draw(
         d.polygon([tuple(c) for c in t], fill=fill, outline=line)
 
 
-def windscreen_template(cab: CabinModel) -> Image.Image | None:
-    """The windscreen seen from the front (as the decal is seen from outside), or None."""
-    glass = windscreen(cab)
-    if glass is None:
-        return None
-    view = _front_view(glass)
+def windscreen_template(ext_pmg: bytes) -> Image.Image:
+    """The windscreen seen from the front, drawn from a windscreen decal's outside model.
+
+    The model's UVs are template positions (see :func:`windscreen_models`), so the template is the
+    outline of its first piece in UV space.
+    """
     img = Image.new("RGBA", TEMPLATE_SIZE, (0, 0, 0, 0))
-    px = view.pixels(glass.positions.astype(float))
-    _draw(img, (px[t] for t in glass.triangles), (90, 170, 255, 110), (90, 170, 255, 255))
+    p = pmg.read(ext_pmg).pieces[0]
+    px = p.uvs[0].astype(float) * np.array(TEMPLATE_SIZE, float)
+    _draw(img, (px[t] for t in p.triangles), (90, 170, 255, 110), (90, 170, 255, 255))
     ImageDraw.Draw(img).text((12, 8), "WINDSCREEN, SEEN FROM THE FRONT", fill=(255, 255, 255, 255))
     return img
 
 
-def door_window_template(win: CabinModel) -> Image.Image | None:
-    """The left door window seen from outside (the right one is its mirror image), or None."""
-    glass = [p for p in win.model.pieces if "glass" in win.mats[p.material].effect]
-    views = _side_views(glass)
-    if views is None:
-        return None
-    lv = views[0]
+def door_window_template(win_pmg: bytes, glass: list[int]) -> Image.Image:
+    """The left door window seen from outside, drawn from a windows model with side-view UVs.
+
+    Args:
+        win_pmg: The windows model as :func:`door_window_model` writes it.
+        glass: Indexes of its glass pieces.
+    """
     img = Image.new("RGBA", TEMPLATE_SIZE, (0, 0, 0, 0))
-    for p in glass:
-        keep = (
-            p.triangles[(p.positions[p.triangles][:, :, 0] < 0).all(axis=1)]
-            if (p.positions[:, 0] < 0).any()
-            else p.triangles
-        )
-        px = lv.pixels(p.positions.astype(float))
+    pieces = pmg.read(win_pmg).pieces
+    for i in glass:
+        p = pieces[i]
+        left = (p.positions[p.triangles][:, :, 0] < 0).all(axis=1)
+        keep = p.triangles[left] if left.any() else p.triangles
+        px = p.uvs[0].astype(float) * np.array(TEMPLATE_SIZE, float)
         _draw(img, (px[t] for t in keep), (90, 170, 255, 90), (90, 170, 255, 255))
     ImageDraw.Draw(img).text(
         (12, 8), "LEFT DOOR WINDOW, FRONT ON THE LEFT (MIRRORED ON THE RIGHT DOOR)", fill=(255, 255, 255, 255)
@@ -349,39 +349,143 @@ def door_window_template(win: CabinModel) -> Image.Image | None:
     return img
 
 
-def write_templates(read: Reader, trucks: Iterable[tuple[str, str]], out_dir: Path) -> list[Path]:
+# ---------------------------------------------------------------------------------- data sources
+#: The data Paintbooth ships: every ETS2 truck's windscreen decal and door window models, made
+#: from the game's files by ``tools/make_glass_bundle.py``.
+BUNDLED = Path(__file__).resolve().parent / "data" / "glass.zip"
+
+
+@dataclass
+class Windows:
+    """An opening windows model ready for artwork: its .pmd, the .pmg with side-view UVs, its glass."""
+
+    pmd: bytes
+    pmg: bytes
+    glass: list[int]  # glass piece indexes
+    mats: dict[str, str]  # glass material path -> material text
+
+
+class GameSource:
+    """Windscreens and windows made on the spot from the game's files (any truck, even new ones)."""
+
+    def __init__(self, read: Reader) -> None:
+        self.read = read
+
+    def trucks(self) -> dict[str, str]:
+        """Not known without the vehicle library; :class:`BundleSource` lists its trucks."""
+        return {}
+
+    def cabins(self, vid: str) -> list[Cabin]:
+        """The truck's cabins (:func:`truck_cabins`)."""
+        return truck_cabins(self.read, vid)
+
+    def windscreen(self, model: str) -> tuple[str, bytes, bytes] | None:
+        """``(hookup, outside .pmg, inside .pmg)`` for a cabin model, or None."""
+        try:
+            made = windscreen_models(load_cabin(self.read, model), "/0", "/1", "/2")
+        except ValueError:
+            return None
+        return (made[0], made[1][1], made[2][1]) if made else None
+
+    def windows(self, path: str) -> Windows | None:
+        """A windows model with side-view UVs, or None."""
+        try:
+            win = load_cabin(self.read, path)
+        except ValueError:
+            return None
+        made = door_window_model(win, {})
+        if made is None:
+            return None
+        mats = {}
+        for mat in pmd.material_table(win.pmd_data)[0]:
+            text = (self.read(mat.lstrip("/")) or b"").decode("utf-8", "replace")
+            if "glass" in text.split("{", 1)[0]:
+                mats[mat] = text
+        glass = [i for i, p in enumerate(win.model.pieces) if "glass" in win.mats[p.material].effect]
+        return Windows(win.pmd_data, made[1], glass, mats)
+
+
+class BundleSource:
+    """The windscreens and windows Paintbooth ships (:data:`BUNDLED`); works without the game."""
+
+    def __init__(self, path: Path = BUNDLED) -> None:
+        import json
+        import zipfile
+
+        self.path = path
+        self.zip = zipfile.ZipFile(path)
+        self.index = json.loads(self.zip.read("index.json"))
+
+    def trucks(self) -> dict[str, str]:
+        """Vehicle id -> shown name of every truck with a windscreen or windows in the bundle."""
+        ws, win = self.index["windscreens"], self.index["windows"]
+        return {
+            vid: t["name"]
+            for vid, t in self.index["trucks"].items()
+            if any(c["model"] in ws or c["windows"] in win for c in t["cabins"])
+        }
+
+    def cabins(self, vid: str) -> list[Cabin]:
+        """The truck's cabins as the bundle recorded them."""
+        t = self.index["trucks"].get(vid)
+        return [Cabin(c["id"], c["model"], c["windows"]) for c in t["cabins"]] if t else []
+
+    def windscreen(self, model: str) -> tuple[str, bytes, bytes] | None:
+        """``(hookup, outside .pmg, inside .pmg)`` for a cabin model, or None."""
+        w = self.index["windscreens"].get(model)
+        return (w["hookup"], self.zip.read(w["ext"]), self.zip.read(w["int"])) if w else None
+
+    def windows(self, path: str) -> Windows | None:
+        """A windows model with side-view UVs, or None."""
+        w = self.index["windows"].get(path)
+        if not w:
+            return None
+        mats = {m: self.zip.read(f).decode("utf-8", "replace") for m, f in w["mats"].items()}
+        return Windows(self.zip.read(w["pmd"]), self.zip.read(w["pmg"]), list(w["glass"]), mats)
+
+
+Source = GameSource | BundleSource
+
+
+def bundled() -> BundleSource | None:
+    """The shipped bundle, or None when it is missing or damaged."""
+    import zipfile
+
+    try:
+        return BundleSource(BUNDLED)
+    except (OSError, ValueError, KeyError, zipfile.BadZipFile):
+        return None
+
+
+def write_templates(source: Source, trucks: Iterable[tuple[str, str]], out_dir: Path) -> list[Path]:
     """Write the windscreen and door window templates of each truck.
 
     Args:
-        read: Reads (and lists) the game's files.
+        source: Where the models come from (the shipped bundle, or the game files).
         trucks: ``(vehicle id, shown name)`` pairs.
         out_dir: The game's template folder; files go to ``Windscreen decals/<name>.png`` and
             ``Door windows/<name>.png``.
 
     Returns:
-        The files written. Trucks whose models can't be read are skipped.
+        The files written. Trucks without data are skipped.
     """
     from .templates import safe_name
 
     written = []
     for vid, name in trucks:
-        cabins = truck_cabins(read, vid)
-        done: set[str] = set()
-        for kind, path_of, make in (
-            ("Windscreen decals", lambda c: c.model, windscreen_template),
-            ("Door windows", lambda c: c.windows, door_window_template),
+        cabins = source.cabins(vid)
+        for kind, paths in (
+            ("Windscreen decals", list(dict.fromkeys(c.model for c in cabins))),
+            ("Door windows", list(dict.fromkeys(c.windows for c in cabins if c.windows))),
         ):
-            models = []
-            for c in cabins:
-                p = path_of(c)
-                if p and p not in done and p not in models:
-                    models.append(p)
             unique: dict[bytes, tuple[str, Image.Image]] = {}  # cabins with the same glass: one template
-            for path in models:
-                try:
-                    img = make(load_cabin(read, path))
-                except ValueError:
-                    continue
+            for path in paths:
+                if kind == "Door windows":
+                    w = source.windows(path)
+                    img = door_window_template(w.pmg, w.glass) if w else None
+                else:
+                    ws = source.windscreen(path)
+                    img = windscreen_template(ws[1]) if ws else None
                 if img is not None:
                     unique.setdefault(img.tobytes(), (path, img))
             for path, img in unique.values():
@@ -390,7 +494,6 @@ def write_templates(read: Reader, trucks: Iterable[tuple[str, str]], out_dir: Pa
                 f.parent.mkdir(parents=True, exist_ok=True)
                 img.save(f)
                 written.append(f)
-            done.update(models)
     return written
 
 
@@ -486,12 +589,12 @@ def native_vehicle(item_el: object, value: str) -> str | None:
 
 
 def plan_windscreen(
-    read: Reader, vid: str, n: str, name: str, price: str, unlock: str, image: Path, icon: Path | None
+    source: Source, vid: str, n: str, name: str, price: str, unlock: str, image: Path, icon: Path | None
 ) -> list[object]:
     """The files of a windscreen decal ``n`` for truck ``vid`` (see the module docstring).
 
     Raises:
-        ValueError: The truck has no cabin with a windscreen and a decal slot in the game files.
+        ValueError: The truck has no cabin with a windscreen and a decal slot.
     """
     from .builder import OutFile, TextureJob
     from .coach import film_material
@@ -512,24 +615,19 @@ def plan_windscreen(
             OutFile(f"{ui}.mat", ui_mat(f"{n}.tobj").encode()),
         ]
     groups: dict[str, list[str]] = {}
-    for c in truck_cabins(read, vid):
+    for c in source.cabins(vid):
         groups.setdefault(c.model, []).append(c.id)
     units = []
     for k, (model, cabins) in enumerate(groups.items()):
-        try:
-            made = windscreen_models(
-                load_cabin(read, model), f"/{root}/core.mat", f"/{root}/over.mat", f"/{root}/over.mat"
-            )
-        except ValueError:
-            continue
+        made = source.windscreen(model)
         if made is None:
             continue
         hookup, ext, inner = made
         out += [
-            OutFile(f"{root}/ext{k}.pmd", ext[0]),
-            OutFile(f"{root}/ext{k}.pmg", ext[1]),
-            OutFile(f"{root}/int{k}.pmd", inner[0]),
-            OutFile(f"{root}/int{k}.pmg", inner[1]),
+            OutFile(f"{root}/ext{k}.pmd", pmd.new_model([f"/{root}/core.mat", f"/{root}/over.mat"])),
+            OutFile(f"{root}/ext{k}.pmg", ext),
+            OutFile(f"{root}/int{k}.pmd", pmd.new_model([f"/{root}/over.mat"])),
+            OutFile(f"{root}/int{k}.pmg", inner),
         ]
         unit = n if len(groups) == 1 else f"{n[:11]}{k}" if k < 10 else f"{n[:10]}{k}"
         attrs = [
@@ -550,47 +648,39 @@ def plan_windscreen(
         )
         units.append(unit)
     if not units:
-        raise ValueError(f"no cabin of {vid} has a windscreen and a decal slot in the game files")
+        raise ValueError(f"no cabin of {vid} has a windscreen and a decal slot")
     return out
 
 
-def plan_door_window(read: Reader, vid: str, image: Path) -> list[object]:
+def plan_door_window(source: Source, vid: str, image: Path) -> list[object]:
     """The files that put ``image`` on the door windows of truck ``vid``.
 
     Raises:
-        ValueError: The truck has no opening windows model in the game files.
+        ValueError: The truck has no opening windows model.
     """
     from .builder import OutFile, TextureJob
     from .formats import tobj_bytes
 
     out: list[object] = []
-    windows = sorted({c.windows for c in truck_cabins(read, vid) if c.windows})
-    for path in windows:
-        try:
-            win = load_cabin(read, path)
-        except ValueError:
+    for path in sorted({c.windows for c in source.cabins(vid) if c.windows}):
+        w = source.windows(path)
+        if w is None or not w.mats:
             continue
         folder = path.lstrip("/").rsplit("/", 1)[0]
         stem = Path(path).stem
         tex = f"{folder}/pb_{stem}_art"
         rename: dict[str, str] = {}
-        for k, mat_path in enumerate(pmd.material_table(win.pmd_data)[0]):
-            text = (read(mat_path.lstrip("/")) or b"").decode("utf-8", "replace")
-            if mat_path in rename or "glass" not in text.split("{", 1)[0]:
-                continue
+        for k, (mat_path, text) in enumerate(w.mats.items()):
             new = f"/{folder}/pb_{stem}_glass{k}.mat"
             rename[mat_path] = new
             out.append(OutFile(new.lstrip("/"), glass_material(text, f"/{tex}.tobj").encode()))
-        made = door_window_model(win, rename)
-        if made is None or not rename:
-            continue
         rel = path.lstrip("/")
         out += [
-            OutFile(rel, made[0]),
-            OutFile(rel[: -len(".pmd")] + ".pmg", made[1]),
+            OutFile(rel, pmd.rewrite(w.pmd, rename)),
+            OutFile(rel[: -len(".pmd")] + ".pmg", w.pmg),
             OutFile(f"{tex}.dds", job=TextureJob(image, "film", TEMPLATE_SIZE, "DXT5", None, 1.0)),
             OutFile(f"{tex}.tobj", tobj_bytes(f"/{tex}.dds", profile="skin")),
         ]
     if not out:
-        raise ValueError(f"{vid} has no opening door windows in the game files")
+        raise ValueError(f"{vid} has no opening door windows")
     return out

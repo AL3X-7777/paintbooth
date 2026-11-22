@@ -185,30 +185,24 @@ class LibraryController:
     def auto_glass_templates(self) -> None:
         """Write the windscreen decal and door window templates of every ETS2 truck, once.
 
-        Runs at start-up when the ETS2 game folder is known, on a worker thread, again only when
-        :data:`paintbooth.glassdecal.TEMPLATE_VERSION` changes.
+        They are drawn from the data Paintbooth ships (no game folder needed), on a worker thread,
+        again only when :data:`paintbooth.glassdecal.TEMPLATE_VERSION` changes.
         """
-        from ..glassdecal import TEMPLATE_VERSION
+        from ..glassdecal import TEMPLATE_VERSION, bundled
 
         app = self.app
-        game_dir = (app.settings.get("game_dirs") or {}).get("ets2")
-        if not game_dir or app.settings.get("glass_templates") == TEMPLATE_VERSION:
+        if app.settings.get("glass_templates") == TEMPLATE_VERSION:
             return
-        trucks = sorted(
-            (v.id, f"{v.brand} {v.name}".strip())
-            for v in self.library.values()
-            if v.game == "ets2" and not v.is_trailer and not v.is_bus and v.author == "SCS Software"
-        )
-        if not trucks:
+        bundle = bundled()
+        if bundle is None:
             return
         app.settings["glass_templates"] = TEMPLATE_VERSION
 
         def work() -> None:
             from ..glassdecal import write_templates
-            from ..scanner import game_reader
 
             try:
-                write_templates(game_reader(Path(game_dir)), trucks, appdirs.templates_dir("ets2"))
+                write_templates(bundle, sorted(bundle.trucks().items()), appdirs.templates_dir("ets2"))
             except (OSError, ValueError):
                 log.exception("could not write the windscreen and door window templates")
 
