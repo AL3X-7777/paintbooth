@@ -409,11 +409,13 @@ class BundleSource:
     """The windscreens and windows Paintbooth ships (:data:`BUNDLED`); works without the game."""
 
     def __init__(self, path: Path = BUNDLED) -> None:
+        import io
         import json
         import zipfile
 
         self.path = path
-        self.zip = zipfile.ZipFile(path)
+        # read into memory: an open file would stay locked on Windows (and the data is small)
+        self.zip = zipfile.ZipFile(io.BytesIO(path.read_bytes()))
         self.index = json.loads(self.zip.read("index.json"))
 
     def trucks(self, kind: str | None = None) -> dict[str, str]:
