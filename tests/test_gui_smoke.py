@@ -165,6 +165,22 @@ class MainWindowTest(unittest.TestCase):
             self.root.update()
             time.sleep(0.01)
 
+    def test_ribbon_buttons_run_on_a_mouse_click(self):
+        """A press and release on a ribbon button runs it (0.21.1 kept clicks from the buttons)."""
+        self.root.geometry("1400x700")
+        self.pump()
+        b = self.app.ribbon.buttons["settings"]
+        w, h = b.winfo_width() // 2, b.winfo_height() // 2
+        at = {"x": w, "y": h, "rootx": b.winfo_rootx() + w, "rooty": b.winfo_rooty() + h}
+        with mock.patch.object(self.app, "open_settings") as opened:
+            b.configure(command=self.app.open_settings)
+            b.event_generate("<Enter>", x=w, y=h)
+            b.event_generate("<ButtonPress-1>", **at)
+            self.pump(0.05)
+            b.event_generate("<ButtonRelease-1>", **at)
+            self.pump(0.1)
+        opened.assert_called_once()
+
     def test_ribbon_customising_add_popup_drops_and_reset(self):
         from unittest import mock
 

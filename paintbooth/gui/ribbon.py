@@ -320,8 +320,6 @@ class Ribbon(ttk.Frame):
 
     def _release(self, e: tk.Event) -> str | None:
         d, self._drag = self._drag, None
-        if isinstance(e.widget, ttk.Button):
-            e.widget.state(["!pressed"])  # the release is kept from the button after a drag
         if self._ghost is not None:
             self._ghost.destroy()
             self._ghost = None
@@ -331,6 +329,10 @@ class Ribbon(ttk.Frame):
             if d["click"] is not None:  # a list entry (not a ttk.Button) was clicked
                 d["click"]()
             return None
+        if isinstance(e.widget, ttk.Button):
+            # only after a drag: the release is kept from the button ("break" below), so its
+            # pressed look is cleared here. On a plain click ttk needs "pressed" to run the command.
+            e.widget.state(["!pressed"])
         target = self.drop_target(e.x_root, e.y_root)
         if target is not None:
             self.drop(d["id"], *target)
