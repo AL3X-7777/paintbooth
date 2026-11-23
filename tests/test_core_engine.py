@@ -15,6 +15,7 @@ import time
 import unittest
 import zipfile
 import zlib
+from typing import ClassVar
 from pathlib import Path
 from unittest import mock
 from xml.sax.saxutils import escape
@@ -420,7 +421,7 @@ class BuilderFixes(TempDir):
         jobs = [TextureJob(good, "copy", None, "RAW")]
 
         class Stuck:
-            _processes: dict = {}
+            _processes: ClassVar[dict] = {}
 
             def __init__(self, *a, **k):
                 pass
