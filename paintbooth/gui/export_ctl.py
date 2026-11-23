@@ -15,10 +15,11 @@ from __future__ import annotations
 import logging
 import multiprocessing
 import threading
+import time
 from dataclasses import dataclass, field
 from functools import partial
 from pathlib import Path
-from tkinter import filedialog, messagebox
+from tkinter import filedialog
 from typing import TYPE_CHECKING
 
 from .. import appdirs
@@ -72,6 +73,8 @@ class ExportController:
         self.builder = Builder(appdirs.cache_dir(), mp_context=multiprocessing.get_context("spawn"))
         self.exporting = False
         self.last_export: Path | None = None
+        self.step = ""  # what the running export is doing (set by the worker, shown each second)
+        self.started = 0.0
 
     def close(self) -> None:
         """Stop the builder's worker processes."""
@@ -109,7 +112,10 @@ class ExportController:
         if not project or self.exporting:
             return
         app.revalidate()
-        if any(p.level == "error" for p in app.problems):
+        n = sum(p.level == "error" for p in app.problems)
+        if n:
+            app.status(f"Not exported: fix the {n} problem(s) listed first")
+            log.info("export stopped: %d problem(s)", n)
             app.show_problems_dialog()
             return
         key = app.projects.key()
@@ -118,10 +124,27 @@ class ExportController:
             return
         job = self._job(project, out, key)
         self.exporting = True
+        self.step = "preparing"
+        self.started = time.monotonic()
+        log.info("export of %s started", out)
         app.status(f"Exporting {out.name}…")
         copy = snapshot(project)  # F8: the worker reads this copy, never the tree being edited
         icons = (app.default_skin_icon(), app.default_mod_icon())
         threading.Thread(target=self._work, args=(job, copy, icons), daemon=True).start()
+        app.root.after(1000, self._tick, job)
+
+    def _tick(self, job: ExportJob) -> None:
+        """Every second while exporting: show what the export is doing and for how long."""
+        if not self.exporting:
+            return
+        secs = int(time.monotonic() - self.started)
+        self.app.status(f"Exporting {job.out.name}… {self.step} ({secs} s)")
+        self.app.root.after(1000, self._tick, job)
+
+    def _progress(self, line: str) -> None:
+        """Worker thread: a progress line of the builder (shown by :meth:`_tick`, and logged)."""
+        log.info("export: %s", line)
+        self.step = line.strip().rstrip(".").lower()[:60] or self.step
 
     def _target(self, project: Ms2Project, key: str, ask: bool, to_mod_folder: bool) -> Path | None:
         """Choose the output file. Returns None if the user cancelled a dialog."""
@@ -178,8 +201,11 @@ class ExportController:
     def _work(self, job: ExportJob, copy: Ms2Project, icons: tuple[Path, Path]) -> None:
         """Worker thread: plan and build the mod, then hand the result to the Tk thread."""
         try:
+            self.step = "reading the items"
             files, _probs = plan_ms2(copy, job.overrides, icons)
-            res = self.builder.build_files(files, job.out, "fast", job.out.parent, log=lambda *a: None)
+            self._progress(f"Packing {len(files)} files...")
+            res = self.builder.build_files(files, job.out, "fast", job.out.parent, log=self._progress)
+            log.info("export of %s finished: ok=%s", job.out, res.ok)
         except Exception as e:  # never leave the app stuck in "Exporting…"; the user sees the message
             log.exception("export of %s failed", job.out)
             res = BuildResult(ok=False, issues=[Issue("error", "", 0, f"Export failed: {e}")])
@@ -193,7 +219,7 @@ class ExportController:
         if not res.ok:
             msg = "\n".join(i.message for i in res.issues) or "Unknown error"
             app.status("Export failed")
-            messagebox.showerror("Export", msg)
+            app.alert("Export failed", msg, error=True)
             return
         if job.version is not None:
             app.settings.setdefault("versions", {})[job.key] = job.version

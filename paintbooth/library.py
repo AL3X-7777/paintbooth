@@ -215,7 +215,7 @@ def build(source: Path, game: str = "ets2", log_line: Callable[[str], object] | 
             kind, vid, rel = m.groups()
             try:
                 text = reader(path)
-            except (OSError, KeyError, ValueError, zipfile.BadZipFile) as e:
+            except (OSError, KeyError, ValueError, zipfile.BadZipFile, RuntimeError) as e:
                 log.debug("unreadable %s: %s", path, e)
                 continue
             found[(kind, vid)].add(kind, vid, rel, text)
@@ -286,7 +286,7 @@ def _download(timeout: float = 20.0, url: str = PACK_URL) -> Path | None:
                     (tmp / "pack").mkdir(exist_ok=True)
                     (tmp / "pack" / name).write_bytes(z.read(info))
         return tmp / "pack" if (tmp / "pack" / "index.json").is_file() else None
-    except (OSError, ValueError, zipfile.BadZipFile) as e:
+    except (OSError, ValueError, zipfile.BadZipFile, RuntimeError) as e:
         log.info("no library download: %s", e)
         return None
 
@@ -356,7 +356,7 @@ def _add_mods(mod_dir: Path, out: Path, errors: list[str], log_line: Log | None)
     for archive in sorted([*mod_dir.glob("*.scs"), *mod_dir.glob("*.zip")]):
         try:
             vehicles = build(archive, "ets2")
-        except (OSError, ValueError, zipfile.BadZipFile) as e:  # a broken mod must not stop the rest
+        except (OSError, ValueError, zipfile.BadZipFile, RuntimeError) as e:
             errors.append(f"{archive.name}: {e}")
             continue
         for v in vehicles:

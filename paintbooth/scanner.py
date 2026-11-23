@@ -282,7 +282,7 @@ def scan(
             for f in src.list(base, ".sii"):
                 try:
                     text = src.read(f)
-                except (OSError, KeyError, ValueError, zipfile.BadZipFile):
+                except (OSError, KeyError, ValueError, zipfile.BadZipFile, RuntimeError):
                     info.problems += 1
                     continue
                 info.add(f[len(base) :], text)

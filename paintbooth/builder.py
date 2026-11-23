@@ -31,7 +31,7 @@ import os
 import shutil
 import time
 from collections.abc import Callable
-from concurrent.futures import Future, ProcessPoolExecutor, ThreadPoolExecutor
+from concurrent.futures import FIRST_COMPLETED, Future, ProcessPoolExecutor, ThreadPoolExecutor, wait
 from concurrent.futures.process import BrokenProcessPool
 from dataclasses import dataclass, field
 from multiprocessing.context import BaseContext
@@ -429,6 +429,10 @@ def plan(project: Project) -> tuple[list[OutFile], list[Issue]]:
 # --------------------------------------------------------------------------
 
 
+class _StalledError(Exception):
+    """No encoder process finished a texture within :attr:`Builder.stall_seconds`."""
+
+
 class Builder:
     """Encodes, packs and writes mods; keeps a texture cache between builds (used by watch/UI).
 
@@ -452,6 +456,9 @@ class Builder:
         self.cache_max_bytes = cache_max_bytes
         self.memory: dict[str, bytes] = {}  # texture key -> encoded bytes (only keys of the last build)
         self._pool: ProcessPoolExecutor | None = None
+        # One texture never takes this long (an 8K DXT5 takes seconds); a pool whose processes
+        # can't start (seen on some Windows set-ups) would otherwise hang the export for ever.
+        self.stall_seconds = 120.0
         self.packed: dict[tuple[str, int | None], Member] = {}  # (texture key, level) -> packed member
 
     # ---------------------------------------------------------------- encoding
@@ -479,11 +486,33 @@ class Builder:
             self.close()
             return self._thread_map(jobs)
         try:
+            pending = set(futures)
+            while pending:
+                done, pending = wait(pending, timeout=self.stall_seconds, return_when=FIRST_COMPLETED)
+                if not done:  # no texture finished for a long time: the processes never started
+                    raise _StalledError
+                for f in done:
+                    f.result()  # an error from an image itself is raised at once
             return [f.result() for f in futures]
         except BrokenProcessPool as e:
             log.warning("encoder process pool broke (%s); using threads", e)
             self.close()
             return self._thread_map(jobs)
+        except _StalledError:
+            log.warning("encoder processes did not answer for %ss; using threads", self.stall_seconds)
+            self._kill_pool()
+            return self._thread_map(jobs)
+
+    def _kill_pool(self) -> None:
+        """Drop a pool that hangs, without waiting for it (its processes are terminated)."""
+        pool, self._pool = self._pool, None
+        if pool is None:
+            return
+        for proc in list(getattr(pool, "_processes", {}).values()):
+            with contextlib.suppress(Exception):
+                proc.terminate()
+        with contextlib.suppress(Exception):
+            pool.shutdown(wait=False, cancel_futures=True)
 
     def close(self) -> None:
         """Stop the worker processes (they are started again on the next build)."""

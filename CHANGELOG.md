@@ -3,6 +3,17 @@
 Each release on GitHub shows the section for its version. Add a new section at the top before
 tagging a release (see RELEASING.md).
 
+## 0.21.1
+- **An export can no longer look frozen.** The status bar now shows what the export is doing and
+  for how long (`Exporting … packing 26 files (4 s)`), and each step is written to
+  `paintbooth.log`. Message boxes (the problems that stop an export, export errors) now always
+  open in front of the Paintbooth window; before, Windows could open one behind it, and the
+  hidden box blocked the window.
+- If the texture encoder processes don't answer for two minutes, the export carries on with
+  threads instead of waiting for ever.
+- A password-protected mod is reported ("this mod is password protected") instead of stopping
+  the export or the library scan with an error.
+
 ## 0.21.0
 - **Windscreen decals and door windows need no game folder any more.** Paintbooth ships the data
   for all 26 SCS trucks of ETS2 1.62 (made from the game by `tools/make_glass_bundle.py`); their

@@ -19,6 +19,7 @@ folder, logging, Windows DPI and taskbar settings) happen there, not when this m
 
 from __future__ import annotations
 
+import contextlib
 import logging
 import logging.handlers
 import subprocess
@@ -784,7 +785,21 @@ class App:
         for p in self.problems:
             where = "Mod manifest" if p.item < 0 else items[p.item].display()
             lines.append(f"{'ERROR' if p.level == 'error' else 'Warning'} - {where}:  {p.message}")
-        messagebox.showinfo("Problems", "\n".join(lines[:40]) + ("\n…" if len(lines) > 40 else ""))
+        self.alert("Problems", "\n".join(lines[:40]) + ("\n…" if len(lines) > 40 else ""))
+
+    def alert(self, title: str, message: str, error: bool = False) -> None:
+        """A message box in front of the Paintbooth window.
+
+        Without a parent, Windows can open the box behind the window (after a drag from
+        Explorer, say); the window then looks frozen, because the hidden box blocks it.
+        """
+        root = self.root
+        with contextlib.suppress(tk.TclError):
+            root.deiconify()
+            root.lift()
+            root.focus_force()
+        show = messagebox.showerror if error else messagebox.showinfo
+        show(title, message, parent=root)
 
     # =============================================================== tools
     def open_vehicle_manager(self, select: str | None = None) -> None:

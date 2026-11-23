@@ -413,6 +413,31 @@ class BuilderFixes(TempDir):
             out = b._pool_map(jobs)
         self.assertEqual(out[1], good.read_bytes())
 
+    def test_stalled_pool_falls_back_to_threads(self):
+        """A pool whose processes never answer must not hang the export (0.21.1)."""
+        good = self.root / "good.png"
+        Image.new("RGBA", (8, 8)).save(good)
+        jobs = [TextureJob(good, "copy", None, "RAW")]
+
+        class Stuck:
+            _processes: dict = {}
+
+            def __init__(self, *a, **k):
+                pass
+
+            def submit(self, *a, **k):
+                return bmod.Future()  # never completes
+
+            def shutdown(self, *a, **k):
+                pass
+
+        b = Builder(None, workers=2)
+        b.stall_seconds = 0.2
+        with mock.patch.object(bmod, "ProcessPoolExecutor", Stuck):
+            out = b._pool_map(jobs)
+        self.assertEqual(out[0], good.read_bytes())
+        self.assertIsNone(b._pool)
+
     def test_worker_init_limits_threads(self):
         old = bcn.THREADS
         try:

@@ -1067,5 +1067,7 @@ def read_archive(src: Path, warnings: list[str]) -> Iterator[tuple[str, bytes]]:
             yield from _read_zip(src, warnings)
         else:
             yield from _read_hashfs(src, warnings)
+    except RuntimeError as e:  # zipfile: an encrypted (password protected) member
+        raise TemplateError(f"{src.name}: this mod is password protected, so it can't be packed ({e})") from e
     except (zipfile.BadZipFile, zlib.error, HashFsError, OSError, EOFError) as e:
         raise TemplateError(f"{src.name}: can't read this mod archive ({e})") from e
