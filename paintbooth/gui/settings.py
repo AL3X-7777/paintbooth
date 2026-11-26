@@ -33,6 +33,7 @@ LABEL_WIDTH = 24  # characters; keeps the field column aligned across all sectio
 #: Settings that are the user's data rather than preferences, so *Reset to defaults* keeps them.
 KEEP_ON_RESET = (
     "recent",
+    "hidden_accessory_groups",
     "recent_times",
     "exports",
     "versions",

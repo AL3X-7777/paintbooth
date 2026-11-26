@@ -167,6 +167,11 @@ Many truck and trailer parts (bumpers, mirrors, sun visors, side skirts, trailer
 ## Generate color
 **Generate color** makes a small 64×64 DDS of one colour, for parts that should simply be painted. Pick the colour (hex, RGB, SCS values, palettes or your saved colours) and the opacity. Below 100 % opacity, the colour lets the underlying paint show through.
 
+## Hide categories you don't use
+A truck can have dozens of accessory categories. To shorten the list, open **Home > Vehicles**, select the vehicle, and click a category under **Accessory categories** to hide it; click it again to show it, or click **Show all**. This only changes Paintbooth's list: the vehicle file is not touched, so nothing has to be saved or reloaded.
+- Hidden categories are left out of every accessory list of that vehicle. Parts that are already ticked stay listed, so nothing painted is out of sight.
+- Tick **Include hidden categories in search results** (in the Vehicles window, or under the search box when categories are hidden) to have the search find parts of hidden categories too; they are marked *(hidden)*.
+
 ## Where do accessory names come from?
 From the vehicle's XML definition (see *Vehicles and XML files*). The game only paints accessories whose internal name (for example `f_bumper.shape3`) is listed. If a part doesn't change in game, its name is probably missing or misspelled in the XML.
 

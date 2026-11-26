@@ -75,6 +75,11 @@ compatible versions), Icon, Text, Multiplayer, Environment.
 | Skins | One block per image: path, preview, and the cabins (or trailer bodies) it is *suitable for*. **Add image** adds an empty block; type or paste a path, or click Browse. |
 | Accessories | Before the first accessory image, lists all of the vehicle's paintable accessories: tick some, then *Add image for the ticked accessories* or *Generate color*. After that, each image has its own list. **Generate color** makes a 64×64 DDS of any colour (hex, RGB or SCS linear values) with an opacity slider or typed value. |
 
+**Hide accessory categories** you don't use: in **Home > Vehicles**, select the vehicle and click a
+category under *Accessory categories* to hide it from its Accessories tab (click again, or *Show
+all*, to bring it back). The vehicle file is not changed. Ticked parts stay listed, and *Include
+hidden categories in search results* lets the search find hidden parts too.
+
 In the Skins and Accessories lists, each entry shows its internal name after the display name,
 and the search box can match the name, the internal name, or both. Right-click a list for
 **Select all / none / invert**, which act only on the entries the search shows, and the

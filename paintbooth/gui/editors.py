@@ -608,6 +608,8 @@ class ImageBlock(ttk.Frame):
         self._loading = True
         self.path.set(entry.image)
         self.check.set_items(options, entry.suitable)
+        if self.array == "AccessorySkins":
+            self.editor.hide_groups_in(self.check)
         self._loading = False
         self._preview_soon.cancel()
         self._update_preview()
@@ -1338,14 +1340,37 @@ class TruckSkinEditor(ttk.Notebook):
             self.blocks[array].append(b)
         self.app.revalidate_soon()
 
-    @staticmethod
+    def hide_groups_in(self, check: CheckList) -> None:
+        """Apply the accessory categories hidden in Home > Vehicles to one accessory list."""
+        item = self.item
+        veh = item.vehicle() if item is not None else None
+        app = self.app
+        check.set_hidden(
+            app.hidden_groups(veh.id) if veh is not None else (),
+            app.search_hidden_groups,
+            app.set_search_hidden_groups,
+        )
+
+    def apply_hidden_groups(self) -> None:
+        """Hidden categories changed: update every accessory list on the Accessories tab."""
+        if self.item is None or "AccessorySkins" not in self.pages:
+            return
+        self.hide_groups_in(self.pages["AccessorySkins"].pick)
+        for b in self.blocks.get("AccessorySkins", []):
+            self.hide_groups_in(b.check)
+
     def _show_overview(
-        page: ImagesPage, veh: vehlib.Vehicle | None, opts: list[Option], has_images: bool
+        self,
+        page: ImagesPage,
+        veh: vehlib.Vehicle | None,
+        opts: list[Option],
+        has_images: bool,
     ) -> None:
         """Accessories tab: list the accessories to tick until the first image exists."""
         if veh is not None and veh.accessories and not has_images:
             # keep ticks that still exist on the (possibly changed) vehicle
             page.pick.set_items(opts, [v for v in page.pick.selected if any(o[0] == v for o in opts)])
+            self.hide_groups_in(page.pick)
             page.overview.pack(fill="x", padx=8, pady=(8, 0), before=page.holder)
             page.add_btn.configure(text=" Add image for the ticked accessories")
         else:

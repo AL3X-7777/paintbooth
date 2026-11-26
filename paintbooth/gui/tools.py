@@ -123,6 +123,98 @@ class VehicleManager:
         self.tv.bind("<<TreeviewSelect>>", self._selected)
         self.errors_lbl = ttk.Label(left, text="", style="Err.TLabel", wraplength=300, justify="left")
         self.errors_lbl.pack(fill="x", pady=(4, 0))
+        self._build_groups(left)
+
+    # ------------------------------------------------------------ accessory categories
+    NO_GROUP = "(no category)"
+
+    def _build_groups(self, left: ttk.Frame) -> None:
+        """Below the list: the selected vehicle's accessory categories, each shown or hidden."""
+        box = ttk.LabelFrame(left, text="Accessory categories", padding=6)
+        box.pack(fill="x", pady=(8, 0))
+        self.groups_lbl = ttk.Label(
+            box,
+            text="Select a vehicle to choose which of its accessory categories the Accessories tab lists.",
+            style="Muted.TLabel",
+            wraplength=300,
+            justify="left",
+        )
+        self.groups_lbl.pack(fill="x")
+        self.groups_tv = ttk.Treeview(box, show="tree", height=7, selectmode="none")
+        self.groups_tv.pack(fill="x", pady=(4, 4))
+        self.groups_tv.bind("<Button-1>", self._group_click)
+        Tooltip(
+            self.groups_tv,
+            "Click a category to hide it on the Accessories tab, click again to show it. Only "
+            "Paintbooth's list changes: the vehicle file is not touched.",
+        )
+        row = ttk.Frame(box)
+        row.pack(fill="x")
+        self.show_all_btn = ttk.Button(row, text="Show all", command=self._show_all_groups)
+        self.show_all_btn.pack(side="left")
+        self.search_hidden = tk.BooleanVar(value=self.app.search_hidden_groups)
+        ttk.Checkbutton(
+            row,
+            text="Include hidden categories in search results",
+            variable=self.search_hidden,
+            command=lambda: self.app.set_search_hidden_groups(self.search_hidden.get()),
+        ).pack(side="left", padx=(8, 0))
+        self._groups_vid: str | None = None
+
+    def _group_vehicle(self) -> vehlib.Vehicle | None:
+        """The vehicle selected in the list, if any."""
+        key = self._selected_id()
+        return self.app.library.get(key) if key else None
+
+    def refresh_groups(self) -> None:
+        """List the selected vehicle's accessory categories, ticked = shown."""
+        tv = self.groups_tv
+        tv.delete(*tv.get_children())
+        self.search_hidden.set(self.app.search_hidden_groups)
+        v = self._group_vehicle()
+        self._groups_vid = v.id if v is not None else None
+        if v is None or not v.accessories:
+            self.groups_lbl.configure(
+                text="Select a vehicle to choose which of its accessory categories the Accessories tab lists."
+                if v is None
+                else f"{v.name or v.id} has no paintable accessories."
+            )
+            self.show_all_btn.state(["disabled"])
+            return
+        counts: dict[str, int] = {}
+        for a in v.accessories:
+            counts[a.group] = counts.get(a.group, 0) + 1
+        hidden = self.app.hidden_groups(v.id)
+        n = len(hidden & set(counts))
+        self.groups_lbl.configure(
+            text=f"{v.name or v.id}: {len(counts)} categories"
+            + (f", {n} hidden" if n else "")
+            + ". Click one to hide or show it."
+        )
+        for g in sorted(counts, key=lambda g: (g == "", g.lower())):
+            shown = g not in hidden
+            tv.insert(
+                "",
+                "end",
+                iid=f"g::{g}",
+                text=f" {g or self.NO_GROUP}   ({counts[g]})" + ("" if shown else "   - hidden"),
+                image=icons_shared().get("chk_on" if shown else "chk_off", 16),
+            )
+        self.show_all_btn.state(["!disabled"] if n else ["disabled"])
+
+    def _group_click(self, e: tk.Event) -> str:
+        """Hide or show the clicked category (stored in the settings, not in the vehicle)."""
+        iid = self.groups_tv.identify_row(e.y)
+        if iid.startswith("g::") and self._groups_vid:
+            hidden = self.app.hidden_groups(self._groups_vid)
+            hidden.symmetric_difference_update({iid[3:]})
+            self.app.set_hidden_groups(self._groups_vid, hidden)
+        return "break"
+
+    def _show_all_groups(self) -> None:
+        """Show every category of the selected vehicle again."""
+        if self._groups_vid:
+            self.app.set_hidden_groups(self._groups_vid, ())
 
     def _build_editor(self, right: ttk.Frame) -> None:
         """Right pane: file label, Save button, editing tools, the XML editor and a status line."""
@@ -225,6 +317,7 @@ class VehicleManager:
 
     def _selected(self, _: object = None) -> None:
         """Open the selected vehicle's file, asking first if the current one has unsaved edits."""
+        self.refresh_groups()
         vid = self._selected_id()
         if not vid:
             return

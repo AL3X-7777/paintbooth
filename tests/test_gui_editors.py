@@ -157,6 +157,33 @@ class FakeApp:
     def open_vehicle_manager(self, select: "str | None" = None) -> None:
         pass
 
+    # hidden accessory categories: the real App's code, without the skin editor
+    def save_settings(self) -> bool:
+        return True
+
+    def refresh_hidden_groups(self) -> None:
+        if self.vehicle_manager is not None:
+            self.vehicle_manager.refresh_groups()
+
+    def hidden_groups(self, vehicle_id: str) -> set:
+        from paintbooth.gui.main import App
+
+        return App.hidden_groups(self, vehicle_id)  # type: ignore[arg-type]
+
+    def set_hidden_groups(self, vehicle_id: str, groups) -> None:
+        from paintbooth.gui.main import App
+
+        App.set_hidden_groups(self, vehicle_id, groups)  # type: ignore[arg-type]
+
+    @property
+    def search_hidden_groups(self) -> bool:
+        return bool(self.settings.get("search_hidden_groups", False))
+
+    def set_search_hidden_groups(self, on: bool) -> None:
+        from paintbooth.gui.main import App
+
+        App.set_search_hidden_groups(self, on)  # type: ignore[arg-type]
+
     def open_tutorials(self, topic: "str | None" = None) -> None:
         pass
 
@@ -397,6 +424,52 @@ class VehicleManagerTest(TkCase):
         self.assertFalse(vm.dirty())
         self.assertIn("<!-- edit -->", vm.current.read_text(encoding=vm.encoding))
         self.assertTrue(vm.msg.cget("text").startswith("Saved"))
+
+
+class HiddenGroupsTest(VehicleManagerTest):
+    """Accessory categories hidden in the Vehicles window, without touching the vehicle file."""
+
+    test_failed_save_reports_error = None  # inherited for setUp/_open only
+    test_save_writes_and_reloads = None
+
+    def test_hide_show_and_search_hidden(self):
+        from paintbooth.gui.widgets import CheckList
+
+        vm = self._open()
+        key, v = next(iter(self.fa.library.items()))
+        before = Path(v.source).read_bytes()
+        vm.tv.selection_set(f"v::{key}")
+        self.pump()
+        rows = vm.groups_tv.get_children()
+        self.assertEqual(len(rows), 9)
+        # click "Axles": hidden, stored in the settings by vehicle id
+        vm.groups_tv.see("g::Axles")
+        self.pump()
+        y = vm.groups_tv.bbox("g::Axles")[1] + 2
+        vm._group_click(mock.Mock(y=y))
+        self.assertEqual(self.fa.hidden_groups(v.id), {"Axles"})
+        self.assertIn("hidden", vm.groups_tv.item("g::Axles", "text"))
+        self.assertEqual(Path(v.source).read_bytes(), before)  # the vehicle is not changed
+
+        check = CheckList(self.root, show_values=True)
+        opts = [(a.value, a.name, a.group) for a in v.accessories]
+        check.set_items(opts, ["axles.3_paint"])  # a ticked entry of a hidden category stays listed
+        check.set_hidden(self.fa.hidden_groups(v.id), False)
+        shown = check._visible_values()
+        self.assertIn("axles.3_paint", shown)
+        self.assertNotIn("axles.2_paint", shown)
+        check.filter.set("axles.2_paint")
+        self.assertEqual(check._visible_values(), [])  # not found while searching is off
+        check.search_hidden.set(True)
+        check._search_hidden_changed()
+        self.assertIn("axles.2_paint", check._visible_values())
+
+        # the option is shared with the Vehicles window, and "Show all" brings everything back
+        self.fa.set_search_hidden_groups(True)
+        self.assertTrue(vm.search_hidden.get())
+        vm._show_all_groups()
+        self.assertEqual(self.fa.hidden_groups(v.id), set())
+        self.assertNotIn("hidden", vm.groups_tv.item("g::Axles", "text"))
 
 
 # ---------------------------------------------------------------------------------- editors

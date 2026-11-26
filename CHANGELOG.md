@@ -3,6 +3,15 @@
 Each release on GitHub shows the section for its version. Add a new section at the top before
 tagging a release (see RELEASING.md).
 
+## 0.22.0
+- **Hide accessory categories.** In **Home > Vehicles**, select a vehicle and click a category
+  under *Accessory categories* to hide it from that vehicle's Accessories tab; click again, or
+  *Show all*, to bring it back. It is kept in Paintbooth's settings, so the vehicle file is not
+  changed and nothing has to be saved or reloaded. Parts that are ticked stay listed.
+- **Include hidden categories in search results:** a tick box (in the Vehicles window, and under
+  the accessory search while categories are hidden) lets the search find parts of hidden
+  categories, marked *(hidden)*.
+
 ## 0.21.2
 - **The ribbon buttons work again.** Since 0.20.0 (buttons you can drag), a click on a ribbon
   button often did nothing: the drag code cleared the button's pressed state before the button

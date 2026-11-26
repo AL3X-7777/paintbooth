@@ -27,7 +27,7 @@ import sys
 import threading
 import tkinter as tk
 import webbrowser
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from functools import partial
 from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
@@ -416,6 +416,41 @@ class App:
     def scan_dialog(self, folder: bool = True) -> None:
         """Scan the game (or a mod) for trucks."""
         self.vehicles.scan_dialog(folder)
+
+    # ---------------------------------------------------------- hidden accessory categories
+    # Kept in the settings by vehicle id, never in the vehicle files, so hiding a category needs
+    # no change to (or reload of) the vehicle.
+    def hidden_groups(self, vehicle_id: str) -> set[str]:
+        """The accessory categories hidden for the vehicle ``vehicle_id`` (Home > Vehicles)."""
+        return set(self.settings.get("hidden_accessory_groups", {}).get(vehicle_id, []))
+
+    def set_hidden_groups(self, vehicle_id: str, groups: Iterable[str]) -> None:
+        """Hide exactly ``groups`` of the vehicle's accessory categories (none: show all)."""
+        store = self.settings.setdefault("hidden_accessory_groups", {})
+        groups = sorted(set(groups))
+        if groups:
+            store[vehicle_id] = groups
+        else:
+            store.pop(vehicle_id, None)
+        self.save_settings()
+        self.refresh_hidden_groups()
+
+    @property
+    def search_hidden_groups(self) -> bool:
+        """Whether accessory filters also list entries of hidden categories."""
+        return bool(self.settings.get("search_hidden_groups", False))
+
+    def set_search_hidden_groups(self, on: bool) -> None:
+        """Turn "Include hidden categories in search results" on or off (everywhere)."""
+        self.settings["search_hidden_groups"] = bool(on)
+        self.save_settings()
+        self.refresh_hidden_groups()
+
+    def refresh_hidden_groups(self) -> None:
+        """Show the current hidden categories in the open skin and the Vehicles window."""
+        self.truck_editor.apply_hidden_groups()
+        if self.vehicle_manager is not None:
+            self.vehicle_manager.refresh_groups()
 
     # =============================================================== project (see project_ctl)
     def _project_key(self) -> str:

@@ -279,6 +279,8 @@ class CheckList(ttk.Frame):
     * ``show_values``: show the internal name after each entry ("Day Cab  (day.x.y.cabin)")
     * search by name, internal name or both
     * right-click menu: select all / none / invert (visible entries), and the same for one group
+    * hidden groups (:meth:`set_hidden`): left out of the list, except entries that are ticked, and,
+      when searching hidden groups is on, entries that match the filter
 
     Tree item ids are ``g::<group>`` for group rows and ``v::<value>`` for entries.
     """
@@ -298,6 +300,9 @@ class CheckList(ttk.Frame):
         self.items: list[tuple[str, str, str]] = []  # value, text, group
         self.selected: list[str] = []
         self.collapsed: set[str] = set()
+        self.hidden: set[str] = set()  # groups left out of the list (see set_hidden)
+        self.search_hidden = tk.BooleanVar(value=False)
+        self.on_search_hidden: Callable[[bool], None] | None = None
         self.filter = tk.StringVar()
         self.mode = tk.StringVar(value=self.MODES[0])
         self._build_toolbar()
@@ -343,9 +348,46 @@ class CheckList(ttk.Frame):
             b.pack(side="left", padx=(4 if text == "All" else 0, 0))
             Tooltip(b, tip)
 
+        # shown only while groups are hidden: how many, and whether the filter searches them
+        self._hidden_bar = ttk.Frame(self)
+        self._hidden_lbl = ttk.Label(self._hidden_bar, text="", style="Muted.TLabel")
+        self._hidden_lbl.pack(side="left")
+        hid = ttk.Checkbutton(
+            self._hidden_bar,
+            text="Include hidden categories in search results",
+            variable=self.search_hidden,
+            command=self._search_hidden_changed,
+        )
+        hid.pack(side="right")
+        Tooltip(hid, "Entries of hidden categories that match the filter are listed too, marked (hidden)")
+
+    def set_hidden(
+        self,
+        groups: Iterable[str],
+        search_hidden: bool = False,
+        on_search_hidden: Callable[[bool], None] | None = None,
+    ) -> None:
+        """Leave the entries of ``groups`` out of the list (hidden in Home > Vehicles).
+
+        Ticked entries stay listed, so nothing that is painted is out of sight. With
+        ``search_hidden`` the filter also finds entries of hidden groups. ``on_search_hidden`` is
+        told when the user flips that box.
+        """
+        self.hidden = set(groups)
+        self.search_hidden.set(search_hidden)
+        self.on_search_hidden = on_search_hidden
+        self._render()
+
+    def _search_hidden_changed(self) -> None:
+        """The "Include hidden categories" box was flipped."""
+        self._render()
+        if self.on_search_hidden:
+            self.on_search_hidden(self.search_hidden.get())
+
     def _build_tree(self, height: int) -> None:
         """The tree view with its scroll bar and mouse/keyboard bindings."""
         body = ttk.Frame(self)
+        self._body = body
         body.pack(fill="both", expand=True)
         self.tv = ttk.Treeview(body, show="tree", height=height, selectmode="none")
         sb = ttk.Scrollbar(body, command=self.tv.yview)
@@ -397,15 +439,25 @@ class CheckList(ttk.Frame):
         q = self.filter.get().strip().lower()
         known = {v for v, _, _ in self.items}
         groups: dict[str, str] = {}
+        present = {g for _, _, g in self.items}
+        hidden = self.hidden & present
+        searching_hidden = bool(q) and self.search_hidden.get()
         for value, text, group in self.items:
             if not self._matches(q, value, text, group):
+                continue
+            if group in hidden and not searching_hidden and value not in self.selected:
                 continue
             parent = ""
             if group:
                 if group not in groups:
                     is_open = q != "" or group not in self.collapsed  # a filter always opens groups
                     groups[group] = tv.insert(
-                        "", "end", iid=f"g::{group}", text=group, open=is_open, tags=("group",)
+                        "",
+                        "end",
+                        iid=f"g::{group}",
+                        text=group + ("   (hidden)" if group in hidden else ""),
+                        open=is_open,
+                        tags=("group",),
                     )
                 parent = groups[group]
             img = icons().get("chk_on" if value in self.selected else "chk_off", 16)
@@ -422,6 +474,15 @@ class CheckList(ttk.Frame):
                     tags=("stale",),
                     image=icons().get("chk_on", 16),
                 )
+        if hidden:
+            n = len(hidden)
+            self._hidden_lbl.configure(
+                text=f"{n} {'category' if n == 1 else 'categories'} hidden (Home > Vehicles)"
+            )
+            if not self._hidden_bar.winfo_manager():
+                self._hidden_bar.pack(fill="x", pady=(0, 2), before=self._body)
+        elif self._hidden_bar.winfo_manager():
+            self._hidden_bar.pack_forget()
         tv.yview_moveto(top)
 
     def _changed(self) -> None:
