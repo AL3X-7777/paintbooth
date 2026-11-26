@@ -1,0 +1,145 @@
+# Publishes the versions listed in .github/past-releases.txt that have no GitHub release yet
+# (they were made before a push to main released a new version by itself; see release.yml).
+#
+# Each one is built from the commit it was released from, with that commit's own build script,
+# so its installer is the program as it was. Its release notes come from today's CHANGELOG.md,
+# and it is never marked "Latest", so the update check and the vehicle library still use the
+# newest release. Versions that have a release are skipped, so running this again is harmless.
+
+name: Past releases
+
+on:
+  push:
+    branches: [main]
+    paths: [".github/past-releases.txt", ".github/workflows/past-releases.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  missing:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.list.outputs.matrix }}
+      any: ${{ steps.list.outputs.any }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - name: Versions without a release
+        id: list
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          items=()
+          while read -r v sha; do
+            [[ -z "$v" || "$v" == \#* ]] && continue
+            if gh release view "v$v" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+              echo "v$v: released already"
+            else
+              echo "v$v: to publish (from $sha)"
+              items+=("{\"version\":\"$v\",\"sha\":\"$sha\"}")
+            fi
+          done < .github/past-releases.txt
+          joined=$(IFS=,; echo "${items[*]}")
+          echo "matrix={\"include\":[$joined]}" >> "$GITHUB_OUTPUT"
+          echo "any=$([ ${#items[@]} -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: missing
+    if: needs.missing.outputs.any == 'true'
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix: ${{ fromJSON(needs.missing.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: ${{ matrix.sha }}
+          persist-credentials: false
+
+      - name: Python 3.13 (also bundled inside Paintbooth)
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.13"
+
+      - name: Build tools of that version (pinned, hash-checked)
+        run: python -m pip install --require-hashes -r requirements-dev.txt
+
+      - name: Offline wheels of that version
+        shell: bash
+        run: |
+          for v in 3.12 3.13 3.14; do
+            python -m pip download --only-binary=:all: --no-deps --platform win_amd64 \
+              --python-version "$v" --require-hashes -r wheels/requirements-offline.txt -d wheels \
+              || [ "$v" != 3.13 ]  # only the bundled Python's wheels are required
+          done
+
+      - name: Check the version
+        shell: bash
+        run: |
+          v=$(python -c "import paintbooth; print(paintbooth.__version__)")
+          if [ "$v" != "${{ matrix.version }}" ]; then
+            echo "::error::${{ matrix.sha }} is version $v, not ${{ matrix.version }}"
+            exit 1
+          fi
+
+      - name: Build installer, portable zip, source zip and documentation zip
+        shell: bash
+        run: |
+          python installer/build_installer.py --python "${{ env.pythonLocation }}" --out dist --source-zip
+          python tools/gen_docs.py
+          python -c "import shutil, paintbooth; shutil.make_archive(f'dist/Paintbooth {paintbooth.__version__} docs', 'zip', '.', 'docs')"
+
+      - name: Upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: past-${{ matrix.version }}
+          path: |
+            dist/Paintbooth Setup *.exe
+            dist/Paintbooth * portable.zip
+            dist/Paintbooth * source.zip
+            dist/Paintbooth * docs.zip
+          if-no-files-found: error
+
+  release:
+    needs: [missing, build]
+    if: needs.missing.outputs.any == 'true' && !cancelled()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # create the releases
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.missing.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - name: Download the build
+        id: get
+        continue-on-error: true # that version failed to build: no release for it this time
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: past-${{ matrix.version }}
+          path: dist
+
+      - name: Publish
+        if: steps.get.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ matrix.version }}
+          SHA: ${{ matrix.sha }}
+        shell: bash
+        run: |
+          {
+            echo "> An earlier version. The newest Paintbooth is at the top of the Releases page."
+            echo
+            python3 .github/release_notes.py "$VERSION"
+          } > notes.md
+          gh release create "v$VERSION" dist/* --repo "$GITHUB_REPOSITORY" --target "$SHA" \
+            --title "Paintbooth $VERSION" --notes-file notes.md --latest=false

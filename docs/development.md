@@ -31,7 +31,8 @@ Offline on Windows, `install.bat` installs Pillow and numpy from the `wheels` fo
 | `tools/make_glass_bundle.py`, `.bat` | Builds `paintbooth/data/glass.zip` from the game |
 | `packs/` | The vehicle library and community vehicle packs Paintbooth downloads |
 | `docs/` | This documentation |
-| `.github/workflows/release.yml` | Lint, test, build and release on GitHub |
+| `.github/workflows/release.yml` | Lint, test, build, and release a new version on GitHub |
+| `.github/workflows/past-releases.yml` | Builds and publishes the earlier versions listed in `.github/past-releases.txt` |
 
 ## Tests
 
@@ -102,8 +103,10 @@ update them when behaviour changes.
 ## Releasing
 
 See [RELEASING.md](../RELEASING.md). In short: raise `__version__` in `paintbooth/__init__.py` (the
-only place), add a section to `CHANGELOG.md`, commit, push, then push a tag `vX.Y.Z`. GitHub builds
-the installer, the portable zip, the source zip and the documentation zip, and publishes the release.
+only place), add a section to `CHANGELOG.md`, commit and push to `main`. When the checks pass and the
+version has no release yet, GitHub tags the commit, builds the installer, the portable zip, the source
+zip and the documentation zip, and publishes the release. Versions from before that are rebuilt from
+their own commits by `past-releases.yml` (list: `.github/past-releases.txt`).
 
 ## Vehicle packs
 

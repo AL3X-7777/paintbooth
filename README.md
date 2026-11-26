@@ -331,7 +331,7 @@ a verified Mods Studio 2 export, but check your first one in game.
 ## Development and releases
 
 Source and releases: <https://github.com/AL3X-7777/paintbooth>. Every push is built and tested on
-GitHub (Actions); pushing a version tag (`v` plus the version number) publishes a release with the
+GitHub (Actions); a push that raises the version number publishes a release with the
 installer, the portable zip, the source zip (with the offline wheels for `install.bat`), the
 documentation and the vehicle library. See [RELEASING.md](RELEASING.md).
 Changes per version: [CHANGELOG.md](CHANGELOG.md). Code signing and privacy: [CODE_SIGNING.md](CODE_SIGNING.md).
