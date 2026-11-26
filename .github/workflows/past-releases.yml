@@ -118,7 +118,8 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
-          persist-credentials: false
+          fetch-depth: 0 # the version's commit
+          persist-credentials: true # to push its tag
 
       - name: Download the build
         id: get
@@ -141,5 +142,19 @@ jobs:
             echo
             python3 .github/release_notes.py "$VERSION"
           } > notes.md
-          gh release create "v$VERSION" dist/* --repo "$GITHUB_REPOSITORY" --target "$SHA" \
+          # GitHub's token may not create a tag on a commit whose .github/workflows differ from
+          # today's, so the tag goes on a child of the version's commit: the same files, with
+          # today's .github folder (the program, and what the installer was built from, is the
+          # version's own).
+          export GIT_INDEX_FILE="$RUNNER_TEMP/index"
+          git read-tree "$SHA"
+          git rm -r -q --cached .github
+          git read-tree --prefix=.github/ HEAD:.github
+          tree=$(git write-tree)
+          unset GIT_INDEX_FILE
+          commit=$(GIT_AUTHOR_NAME="github-actions" GIT_AUTHOR_EMAIL="github-actions@users.noreply.github.com" \
+            GIT_COMMITTER_NAME="github-actions" GIT_COMMITTER_EMAIL="github-actions@users.noreply.github.com" \
+            git commit-tree "$tree" -p "$SHA" -m "Paintbooth $VERSION (release tag; .github as of today)")
+          git push origin "$commit:refs/tags/v$VERSION"
+          gh release create "v$VERSION" dist/* --repo "$GITHUB_REPOSITORY" --verify-tag \
             --title "Paintbooth $VERSION" --notes-file notes.md --latest=false
