@@ -148,7 +148,7 @@ jobs:
           # version's own).
           export GIT_INDEX_FILE="$RUNNER_TEMP/index"
           git read-tree "$SHA"
-          git rm -r -q --cached .github
+          git rm -r -q -f --cached .github
           git read-tree --prefix=.github/ HEAD:.github
           tree=$(git write-tree)
           unset GIT_INDEX_FILE
