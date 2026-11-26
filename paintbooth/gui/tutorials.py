@@ -211,6 +211,27 @@ You need to own the trailer in game to choose a paint job for it.
     ),
     (
         "Vehicles",
+        "Coach skins",
+        """
+# Coach skins (ETS2 Coaches DLC)
+The Volvo 9700 Double Decker, Scania Touring and MAN Lion's Coach are painted like trucks. They appear in the vehicle list by themselves when Paintbooth finds ETS2 in your Steam libraries.
+
+## The blueprint
+Each coach body has one template in Documents\\Paintbooth\\Templates\\ETS2\\Buses: a **blueprint**, flat views of the coach from every side with the bumpers, panels, doors, windows and black trim drawn in. Paint it like a drawing of the coach. When you export, Paintbooth fits it onto the game's own layout and blends the views across rounded corners, so a design runs across the body and the accessories without seams.
+
+Prefer the game's own layout? Paint **... UV layout.png** instead and tick **Images are drawn on the UV layout**.
+
+## Windows and trim
+On the **Skins** tab every coach body has a second line, **<body> - windows and trim**. Tick it to put the same image on that body's windows, black trim, entrance doors and opening window:
+- Windows are covered from the outside where your artwork is opaque, and half see-through from the inside.
+- Leave an area **transparent** to keep the stock glass or trim there.
+- The films belong to your paint job, so other paint jobs on the same coach don't show them.
+
+> After a game update that changes a coach, export the mod again.
+""",  # noqa: E501 - tutorial prose, one paragraph per source line
+    ),
+    (
+        "Vehicles",
         "Vehicles and XML files",
         """
 # Vehicles and XML files
@@ -325,6 +346,8 @@ What the game's **Mod Manager** shows about your mod:
 - Messages on the right of the status bar list everything Paintbooth checks; click them.
 - Paintbooth's own error log: Documents\\Paintbooth\\paintbooth.log.
 - If the item list has disappeared, press **Ctrl+M**, or drag the divider at the left edge.
+- **The export seems stuck:** the status bar shows what the export is doing and for how many seconds. If nothing changes, look for a message box hidden behind another window (Alt+Tab), and check paintbooth.log: every export step is written there.
+- An export doesn't start while the project has errors: the list of problems opens. Fix them (an *Existing mod* item without a mod file is one) or delete those items.
 - Windows SmartScreen warns about the installer because it isn't signed: **More info > Run anyway**.
 """,  # noqa: E501 - tutorial prose, one paragraph per source line
     ),

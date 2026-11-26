@@ -16,8 +16,8 @@ installation, read at export time.
 
 ## Install (Windows, works offline)
 
-Download **Paintbooth Setup 0.15.0.exe** from [Releases](https://github.com/AL3X-7777/paintbooth/releases)
-and run it. It needs no admin rights and no internet, and it includes everything Paintbooth needs,
+Download the newest **Paintbooth Setup <version>.exe** from
+[Releases](https://github.com/AL3X-7777/paintbooth/releases/latest) and run it. It needs no admin rights and no internet, and it includes everything Paintbooth needs,
 Python too. You can choose the install folder (default `%LOCALAPPDATA%\Programs\Paintbooth`;
 updates go to the same folder) and tick *Create a desktop icon*. A Start-menu entry is always
 added; to pin Paintbooth to Start or the taskbar, right-click it there. `.pb` project files open in Paintbooth, and Paintbooth
@@ -32,7 +32,10 @@ Paintbooth used to be called Paint booth, and before that Skinyard. Installing i
 removes the old program and moves `Documents\Paint booth` (or `Documents\Skinyard`) to
 `Documents\Paintbooth`, with the same folders inside. Your settings and recent projects come along.
 
-No installer? Unzip **Paintbooth 0.15.0 portable.zip** anywhere and run `Paintbooth.exe`.
+No installer? Unzip **Paintbooth <version> portable.zip** (same page) anywhere and run
+`Paintbooth.exe`. Older versions and what changed in each are on the
+[Releases](https://github.com/AL3X-7777/paintbooth/releases) page and in [CHANGELOG.md](CHANGELOG.md).
+When you're online, Paintbooth tells you at start-up when a newer version is out.
 
 ### Your Paintbooth folder
 
@@ -43,10 +46,10 @@ No installer? Unzip **Paintbooth 0.15.0 portable.zip** anywhere and run `Paintbo
 | Projects | default place for project files (`.pb`) |
 | Vehicles | vehicle library XML files (edit them any time) |
 | Exports\ATS, Exports\ETS2 | where F5 saves mods unless Settings says otherwise |
-| Templates\ETS2, Templates\ATS | imported paint job template packs |
+| Templates\ETS2, Templates\ATS | imported paint job template packs, plus the templates Paintbooth writes itself (`Buses`, `Windscreen decals`, `Door windows`) |
 | Generated | colour swatches made outside a project |
 | Defaults | the default icons |
-| paintbooth.log | error log |
+| paintbooth.log | log: errors, and each step of every export |
 
 ## The window
 
@@ -85,6 +88,10 @@ defaults; the author is filled in only if you set a default creator name in Sett
 reading "paintbooth by AL3X" in the Forgore font) unless you choose otherwise: **Browse** for an image,
 or **Use skin image**. **Use default icon** goes back to it. Forgore isn't bundled, so install it in
 Windows or choose the font file in Settings; until then a bold system font is used.
+
+**Drag and drop:** drag mods (`.scs`, `.zip`) from Explorer onto the window to pack them into
+the project as *Existing mod* items (onto an open Existing mod item, the mod goes into its file
+field), or drag a `.pb` / `.ms2` file onto it to open it.
 
 **Can't see the item list?** Press **Ctrl+M** or the ribbon's *Mod manifest* button. The list
 also can't be dragged narrower than 180 px any more.
@@ -160,6 +167,24 @@ Shortcuts: **Ctrl+Shift+S** save as · **F5** export (to the default export fold
 * Images are found even if the project has moved to another folder or PC, as long as the
   image files sit somewhere in the project's folder.
 
+## Coaches (ETS2 Coaches DLC)
+
+The Volvo 9700 Double Decker, Scania Touring and MAN Lion's Coach are skinned like trucks. They
+appear in the vehicle list by themselves (Paintbooth finds ETS2 in your Steam libraries), with
+their templates in `Templates\ETS2\Buses`.
+
+* **One blueprint per coach body:** flat views of the coach from every side, with the body,
+  bumpers, panels and other accessories, the doors, windows and black trim drawn in. Paint it like
+  a drawing of the coach; at export Paintbooth fits it onto the game's own layout, blending the
+  views across rounded corners, so a design runs across the paint and the accessories without
+  seams. Prefer the game's layout? Paint `... UV layout.png` and tick *Images are drawn on the UV
+  layout*.
+* **Windows and trim:** in the Skins tab every coach body has a second line, "<body> - windows and
+  trim". Tick it to put the same image on that body's windows (opaque from outside, half
+  see-through from inside), gloss- and matte-black trim, entrance doors and opening window. Leave
+  an area transparent to keep it stock. The films come with the paint job, so other paint jobs
+  don't show them, and the game's own models are not changed.
+
 ## Vehicles - editable XML, live
 
 **Vehicle library.** Paintbooth comes with a library of every ETS2 truck, coach and ownable
@@ -223,7 +248,8 @@ Besides Advanced Skins, a project can hold the items below. They work like Mods 
 because they are built from Mods Studio 2's own template files: models, materials and the PNG
 templates you paint on. So **Mods Studio 2 must be installed on the same PC** (Paintbooth finds
 it in `C:\Mods Studio 2` and the usual places, or set the folder in Settings). Your MS2 projects
-with these items open as editable items too.
+with these items open as editable items too. (Windscreen decals and door windows for the trucks under
+*Paintbooth (from your game)*, below, don't need Mods Studio 2.)
 
 | Item | Game | What it makes |
 |---|---|---|
@@ -276,6 +302,10 @@ anti-aliased, partly transparent edges stay smooth. Fully transparent pixels tak
 paint, so edges don't fringe when the game filters the texture, and mipmaps are averaged with alpha
 weighting.
 
+While it runs, the status bar shows what it is doing and for how long, and each step is written
+to `paintbooth.log`. If an export can't start (problems to fix first), the list of problems opens
+in front of the window.
+
 It is fast because:
 
 * Textures are converted on all CPU cores at once.
@@ -301,6 +331,9 @@ a verified Mods Studio 2 export, but check your first one in game.
 ## Development and releases
 
 Source and releases: <https://github.com/AL3X-7777/paintbooth>. Every push is built and tested on
-GitHub (Actions); pushing a tag such as `v0.15.0` publishes a release. See [RELEASING.md](RELEASING.md).
+GitHub (Actions); pushing a version tag (`v` plus the version number) publishes a release with the
+installer, the portable zip, the source zip (with the offline wheels for `install.bat`), the
+documentation and the vehicle library. See [RELEASING.md](RELEASING.md).
 Changes per version: [CHANGELOG.md](CHANGELOG.md). Code signing and privacy: [CODE_SIGNING.md](CODE_SIGNING.md).
+Documentation for working on the code: [docs/](docs/README.md).
 

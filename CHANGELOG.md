@@ -7,6 +7,7 @@ tagging a release (see RELEASING.md).
 - **The ribbon buttons work again.** Since 0.20.0 (buttons you can drag), a click on a ribbon
   button often did nothing: the drag code cleared the button's pressed state before the button
   saw the click. It is now cleared only after a real drag.
+- New tutorial *Coach skins*; *Troubleshooting* explains what to do when an export seems stuck.
 
 ## 0.21.1
 - **An export can no longer look frozen.** The status bar now shows what the export is doing and

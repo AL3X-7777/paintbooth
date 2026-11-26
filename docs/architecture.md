@@ -1,14 +1,14 @@
 # Architecture
 
-Paintbooth is a Python 3.11+ desktop program with a tkinter window. Its only third-party libraries are
-Pillow and numpy. It never needs the internet; the one optional network call is the update check. The
+Paintbooth is a Python 3.11+ desktop program with a tkinter window. Its third-party libraries are
+Pillow and numpy, plus the optional `tkinterdnd2` (drag and drop of files; bundled by the installer). It never needs the internet; the one optional network call is the update check. The
 Python package is called `paintbooth`.
 
 ## Layers
 
 ```
 ┌──────────────────────────────── paintbooth.gui ────────────────────────────────┐
-│ main.App ── ribbon · startscreen · settings · tutorials                        │
+│ main.App ── ribbon · startscreen · settings · tutorials · filedrop             │
 │   ├─ project_ctl.ProjectController   open / save / close / watch the file      │
 │   ├─ export_ctl.ExportController     snapshot → background export → Notice     │
 │   ├─ library_ctl.LibraryController   the user's vehicle library                │
@@ -21,7 +21,8 @@ Python package is called `paintbooth`.
 │ Planning        ms2build.plan_ms2 → list[OutFile]                               │
 │                   └ tplbuild.plan_item → ms2tpl.Engine (+ pmd, ms2data)         │
 │ Building        builder.Builder.build_files → bcn (DXT) · formats · packer      │
-│ Game data       hashfs · scanner · vehlib · templates                           │
+│ Game data       hashfs · scanner · vehlib · library · templates                 │
+│ Models          pmd · pmg · coach (coach paint) · glassdecal (glass items)      │
 │ Support         appdirs · safepath · util · updates                             │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -40,6 +41,10 @@ Exporting goes through three stages that are kept strictly apart, so each can be
    one holds either ready bytes (a `.sii`, `.mat` or `.tobj`) or a `TextureJob` saying "encode this
    image as DXT5 at this size". Nothing is written yet.
    * *Advanced skins* are planned directly in `ms2build`.
+   * *Coaches* get their paint fitted from the blueprint and their window and trim films planned by
+     `coach`.
+   * *Windscreen decals and door windows for trucks without an MS2 template* are planned by
+     `glassdecal`, from the data Paintbooth ships in `data/glass.zip` (or the game folder).
    * *Mods Studio 2 template items*, such as a lightbox, cargo or windscreen decal, are planned by
      `tplbuild.plan_item`. It runs the item's build actions in `ms2tpl.Engine`, a small interpreter
      for MS2's `template.xml` language; see [build actions](reference/build-actions.md). The engine
@@ -58,7 +63,10 @@ project exported by Paintbooth matches Mods Studio 2's own export file for file.
   builds from that copy in a worker thread. So you can keep editing while an export runs. The result
   is passed back with `root.after`.
 * **Texture encoding** runs in a `ProcessPoolExecutor`. Each worker sets `bcn.THREADS = 1`, so N
-  processes use N cores, not N×8 threads. If the pool can't start, it falls back to threads.
+  processes use N cores, not N×8 threads. If the pool can't start, breaks, or no texture finishes
+  for two minutes (`Builder.stall_seconds`), it falls back to threads, so an export never hangs.
+  While it runs, the status bar shows the current step and the seconds taken, and each step is
+  logged to `paintbooth.log`.
 * **Background helpers:** the update check, the thumbnail decoder and the template-pack import are
   daemon threads that report back through `root.after`.
 

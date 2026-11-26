@@ -184,3 +184,23 @@ Users paint coaches on a *blueprint* (`coach.blueprint_template`): flat views fr
 front, rear and top. `coach.bake` turns it into the paint mask by tracing every texel of the
 game's UV layout back to its point on the coach and from there to the blueprint; window and trim
 films use blueprint positions as their UVs, so all three line up.
+
+## Glass data: `paintbooth/data/glass.zip`
+
+What windscreen decals and door windows need for every SCS truck of ETS2, so they work without
+the game folder (`glassdecal.BundleSource`; `glassdecal.GameSource` reads the same from the game).
+Made from the game by `tools/make_glass_bundle.py` (or `make_glass_bundle.bat` with an installed
+Paintbooth). A flat zip, all names lower case:
+
+* `index.json`: `{"version", "game_version", "trucks": {vehicle id: {"name", "cabins": [{"id",
+  "model", "windows"}]}}, "windscreens": {cabin model: {"hookup", "ext", "int"}}, "windows":
+  {windows model: {"pmd", "pmg", "glass": [piece index…], "mats": {material path: file}}}}`;
+* `ws_<n>_ext.pmg` / `ws_<n>_int.pmg`: the windscreen decal models (outside: an alpha-tested
+  core and a blended layer; inside: the blended layer), in the hookup locator's space, with
+  front-view template UVs;
+* `win_<n>.pmd` / `win_<n>.pmg`: a truck's opening windows model, with side-view UVs on its
+  glass (mirrored for the right door);
+* `mat_<n>_<i>.mat`: the windows' original glass materials.
+
+Its templates (2048×1024) are written to `Templates\ETS2\Windscreen decals` and `\Door windows`
+at start-up.

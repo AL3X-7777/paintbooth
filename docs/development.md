@@ -24,10 +24,12 @@ Offline on Windows, `install.bat` installs Pillow and numpy from the `wheels` fo
 |---|---|
 | `paintbooth/` | The core: project model, validation, export, file formats ([module list](reference/modules.md)) |
 | `paintbooth/gui/` | The tkinter window |
-| `paintbooth/data/` | The logo and the list of vehicle display names |
+| `paintbooth/data/` | The logo, the list of vehicle display names, the built-in vehicle library (`library/`) and the glass data (`glass.zip`) |
 | `installer/` | `setup.c` (Setup.exe), `launcher.c` (Paintbooth.exe), `winsetup.py` (shortcuts, registry), `build_installer.py` |
 | `tests/` | Unit and GUI tests |
 | `tools/gen_docs.py` | Documentation generator |
+| `tools/make_glass_bundle.py`, `.bat` | Builds `paintbooth/data/glass.zip` from the game |
+| `packs/` | The vehicle library and community vehicle packs Paintbooth downloads |
 | `docs/` | This documentation |
 | `.github/workflows/release.yml` | Lint, test, build and release on GitHub |
 
@@ -109,6 +111,18 @@ the installer, the portable zip, the source zip and the documentation zip, and p
 branch `main`): `vehicle-library.zip` (a zip of `paintbooth/data/library`; rebuild it whenever that
 folder changes, and raise the version in its `index.json`) and `community-vehicles.zip` (community
 XMLs, flat, with an `index.json`). Each zip is flat: XML files plus `index.json`.
+
+## Glass data
+
+`paintbooth/data/glass.zip` (see [file formats](file-formats.md)) is made from the game, not by
+hand. After a game update that adds or changes trucks, rebuild it:
+
+```
+python tools/make_glass_bundle.py "F:\SteamLibrary\steamapps\common\Euro Truck Simulator 2" paintbooth/data/glass.zip
+```
+
+On a PC with only an installed Paintbooth, `tools/make_glass_bundle.bat` does the same with the
+installed Python and writes `glass.zip` next to itself.
 
 ## Building the installer yourself
 
