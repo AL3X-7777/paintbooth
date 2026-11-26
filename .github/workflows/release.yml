@@ -2,7 +2,8 @@
 #
 #  * every push / pull request: lint, type-check and test with coverage (Linux), then build the
 #    installer (Windows; download it from the run's "Artifacts" box to try it)
-#  * pushing a version tag such as v0.10.0: the same, then sign Setup.exe through SignPath (once it
+#  * a push to main whose version (paintbooth/__init__.py) has no GitHub release yet, or pushing a
+#    version tag such as v0.10.0: the same, then sign Setup.exe through SignPath (once it
 #    is set up, see RELEASING.md) and publish a GitHub release with the installer, the portable zip,
 #    the source zip (which includes the offline wheels for install.bat) and the documentation zip
 #
@@ -114,6 +115,10 @@ jobs:
           python tools/gen_docs.py
           python -c "import shutil, paintbooth; shutil.make_archive(f'dist/Paintbooth {paintbooth.__version__} docs', 'zip', '.', 'docs')"
 
+      - name: Vehicle library pack (what "Install vehicle library" downloads)
+        shell: bash
+        run: python -c "import shutil; shutil.make_archive('dist/vehicle-library', 'zip', 'paintbooth/data/library')"
+
       - name: Upload (unsigned)
         id: upload-unsigned
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -131,10 +136,13 @@ jobs:
           path: |
             dist/Paintbooth * source.zip
             dist/Paintbooth * docs.zip
+            dist/vehicle-library.zip
           if-no-files-found: error
 
   release:
-    if: startsWith(github.ref, 'refs/tags/v')
+    # A tag push, or a push to main with a version that has no release yet (checked below), so
+    # raising __version__ and pushing is all a release needs.
+    if: github.event_name == 'push' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main')
     needs: [lint, build]
     runs-on: ubuntu-latest
     permissions:
@@ -147,20 +155,36 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Is this version released already?
+        id: new
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.build.outputs.version }}
+        shell: bash
+        run: |
+          if gh release view "v$VERSION" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Paintbooth $VERSION is released already; nothing to do"
+            echo "release=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "release=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Download the build
+        if: steps.new.outputs.release == 'true'
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: paintbooth-${{ needs.build.outputs.version }}
           path: unsigned
 
       - name: Download the source zip
+        if: steps.new.outputs.release == 'true'
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: paintbooth-${{ needs.build.outputs.version }}-source
           path: source
 
       - name: Sign Setup.exe (SignPath)
-        if: env.HAS_SIGNPATH == 'true'
+        if: steps.new.outputs.release == 'true' && env.HAS_SIGNPATH == 'true'
         uses: signpath/github-action-submit-signing-request@f6d04783b4569d051e0c80105fe66e82819d0092 # v3.0
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
@@ -172,11 +196,13 @@ jobs:
           output-artifact-directory: signed
 
       - name: Release notes from CHANGELOG.md
+        if: steps.new.outputs.release == 'true'
         env:
           VERSION: ${{ needs.build.outputs.version }}
         run: python3 .github/release_notes.py "$VERSION" > notes.md
 
       - name: Publish the release
+        if: steps.new.outputs.release == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ needs.build.outputs.version }}
@@ -184,5 +210,6 @@ jobs:
         run: |
           files=unsigned
           if [ -d signed ]; then files=signed; echo "Publishing the signed build"; fi
+          # --target: on a push to main the tag v$VERSION is made here, on the pushed commit
           gh release create "v$VERSION" "$files"/* source/* --repo "$GITHUB_REPOSITORY" \
-            --title "Paintbooth $VERSION" --notes-file notes.md
+            --target "$GITHUB_SHA" --title "Paintbooth $VERSION" --notes-file notes.md --latest
